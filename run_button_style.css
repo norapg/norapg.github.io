@@ -1,0 +1,33 @@
+/* run_button_style.css */
+
+.run-scheme-button {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.run-scheme-button:hover {
+    background-color: #0056b3;
+}
+
+.scheme-output-area {
+    background-color: #333; /* 暗い背景色 */
+    color: #eee;           /* 明るいテキスト色 */
+    padding: 10px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    white-space: pre-wrap; /* 改行を保持し、折り返す */
+    word-break: break-all; /* 長い単語でも折り返す */
+    font-family: monospace;
+    font-size: 14px;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    overflow-x: auto; /* 横に長い出力に対応 */
+}

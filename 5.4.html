@@ -1,0 +1,1119 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>The Explicit-Control Evaluator - SICP</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="./src/styles/docco.min.css">
+        <link rel="stylesheet" href="./run_button_style.css">
+        <link rel="stylesheet" href="./custom.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">SICP</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="54--the-explicit-control-evaluator"><a class="header" href="#54--the-explicit-control-evaluator"><a href="book-Z-H-4.html#%_toc_%_sec_5.4">5.4  The Explicit-Control Evaluator</a></a></h2>
+<p>In section <a href="book-Z-H-31.html#%_sec_5.1">5.1</a> we saw how
+to transform simple Scheme programs into descriptions of register
+machines. We will now perform this transformation on a more complex
+program, the metacircular evaluator of sections
+<a href="book-Z-H-26.html#%_sec_4.1.1">4.1.1</a>-<a href="book-Z-H-26.html#%_sec_4.1.4">4.1.4</a>,
+which shows how the behavior of a Scheme interpreter can be described in
+terms of the procedures <code>eval</code> and <code>apply</code>. The <em>explicit-control
+evaluator</em> that we develop in this section shows how the underlying
+procedure-calling and argument-passing mechanisms used in the evaluation
+process can be described in terms of operations on registers and stacks.
+In addition, the explicit-control evaluator can serve as an
+implementation of a Scheme interpreter, written in a language that is
+very similar to the native machine language of conventional computers.
+The evaluator can be executed by the register-machine simulator of
+section <a href="book-Z-H-32.html#%_sec_5.2">5.2</a>. Alternatively, it can be used
+as a starting point for building a machine-language implementation of a
+Scheme evaluator, or even a
+special-purpose machine for
+evaluating Scheme expressions.
+Figure <a href="book-Z-H-34.html#%_fig_5.16">5.16</a> shows such a hardware
+implementation: a silicon chip that acts as an evaluator for Scheme. The
+chip designers started with the data-path and controller specifications
+for a register machine similar to the evaluator described in this
+section and used design automation programs to construct the
+integrated-circuit
+layout.<a href="book-Z-H-34.html#footnote_Temp_765">^[19]{.small}^</a></p>
+<h4 id="registers-and-operations"><a class="header" href="#registers-and-operations"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_766">Registers and operations</a></a></h4>
+<p>In designing the explicit-control
+evaluator, we must specify the operations to be used in our register
+machine. We described the metacircular evaluator in terms of abstract
+syntax, using procedures such as <code>quoted?</code> and <code>make-procedure</code>. In
+implementing the register machine, we could expand these procedures into
+sequences of elementary list-structure memory operations, and implement
+these operations on our register machine. However, this would make our
+evaluator very long, obscuring the basic structure with details. To
+clarify the presentation, we will include as primitive operations of the
+register machine the syntax procedures given in
+section <a href="book-Z-H-26.html#%_sec_4.1.2">4.1.2</a> and the procedures for
+representing environments and other run-time data given in
+sections <a href="book-Z-H-26.html#%_sec_4.1.3">4.1.3</a>
+and <a href="book-Z-H-26.html#%_sec_4.1.4">4.1.4</a>. In order to completely
+specify an evaluator that could be programmed in a low-level machine
+language or implemented in hardware, we would replace these operations
+by more elementary operations, using the list-structure implementation
+we described in section <a href="book-Z-H-33.html#%_sec_5.3">5.3</a>.</p>
+<p><img src="chip.jpg" alt="" /></p>
+<p><strong>Figure 5.16:</strong>  A silicon-chip implementation of an evaluator for
+Scheme.</p>
+<p>Our
+Scheme evaluator register machine includes a stack and seven registers:
+<code>exp</code>, <code>env</code>, <code>val</code>, <code>continue</code>, <code>proc</code>, <code>argl</code>, and <code>unev</code>. <code>Exp</code> is
+used to hold the expression to be evaluated, and <code>env</code> contains the
+environment in which the evaluation is to be performed. At the end of an
+evaluation, <code>val</code> contains the value obtained by evaluating the
+expression in the designated environment. The <code>continue</code> register is
+used to implement recursion, as explained in
+section <a href="book-Z-H-31.html#%_sec_5.1.4">5.1.4</a>. (The evaluator needs to
+call itself recursively, since evaluating an expression requires
+evaluating its subexpressions.) The registers <code>proc</code>, <code>argl</code>, and <code>unev</code>
+are used in evaluating combinations.</p>
+<p>We will not provide a data-path diagram to show how the registers and
+operations of the evaluator are connected, nor will we give the complete
+list of machine operations. These are implicit in the evaluator's
+controller, which will be presented in detail.</p>
+<h3 id="541--the-core-of-the-explicit-control-evaluator"><a class="header" href="#541--the-core-of-the-explicit-control-evaluator"><a href="book-Z-H-4.html#%_toc_%_sec_5.4.1">5.4.1  The Core of the Explicit-Control Evaluator</a></a></h3>
+<p>The central element in the evaluator is the sequence of
+instructions beginning at <code>eval-dispatch</code>. This corresponds to the
+<code>eval</code> procedure of the metacircular evaluator described in
+section <a href="book-Z-H-26.html#%_sec_4.1.1">4.1.1</a>. When the controller
+starts at <code>eval-dispatch</code>, it evaluates the expression specified by
+<code>exp</code> in the environment specified by <code>env</code>. When evaluation is
+complete, the controller will go to the entry point stored in
+<code>continue</code>, and the <code>val</code> register will hold the value of the
+expression. As with the metacircular <code>eval</code>, the structure of
+<code>eval-dispatch</code> is a case analysis on the syntactic type of the
+expression to be
+evaluated.<a href="book-Z-H-34.html#footnote_Temp_767">^[20]{.small}^</a></p>
+<pre><code class="language-scheme editable">eval-dispatch
+  (test (op self-evaluating?) (reg exp))
+  (branch (label ev-self-eval))
+  (test (op variable?) (reg exp))
+  (branch (label ev-variable))
+  (test (op quoted?) (reg exp))
+  (branch (label ev-quoted))
+  (test (op assignment?) (reg exp))
+  (branch (label ev-assignment))
+  (test (op definition?) (reg exp))
+  (branch (label ev-definition))
+  (test (op if?) (reg exp))
+  (branch (label ev-if))
+  (test (op lambda?) (reg exp))
+  (branch (label ev-lambda))
+  (test (op begin?) (reg exp))
+  (branch (label ev-begin))
+  (test (op application?) (reg exp))
+  (branch (label ev-application))
+  (goto (label unknown-expression-type))
+</code></pre>
+<h4 id="evaluating-simple-expressions"><a class="header" href="#evaluating-simple-expressions"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_768">Evaluating simple expressions</a></a></h4>
+<p>Numbers and strings (which are self-evaluating),
+variables, quotations, and <code>lambda</code> expressions have no subexpressions
+to be evaluated. For these, the evaluator simply places the correct
+value in the <code>val</code> register and continues execution at the entry point
+specified by <code>continue</code>. Evaluation of simple expressions is performed
+by the following controller code:</p>
+<pre><code class="language-scheme editable">ev-self-eval
+  (assign val (reg exp))
+  (goto (reg continue))
+</code></pre>
+<pre><code class="language-scheme editable">ev-variable
+  (assign val (op lookup-variable-value) (reg exp) (reg env))
+  (goto (reg continue))
+</code></pre>
+<pre><code class="language-scheme editable">ev-quoted
+  (assign val (op text-of-quotation) (reg exp))
+  (goto (reg continue))
+</code></pre>
+<pre><code class="language-scheme editable">ev-lambda
+  (assign unev (op lambda-parameters) (reg exp))
+  (assign exp (op lambda-body) (reg exp))
+  (assign val (op make-procedure)
+              (reg unev) (reg exp) (reg env))
+  (goto (reg continue))
+</code></pre>
+<p>Observe how <code>ev-lambda</code> uses the <code>unev</code> and <code>exp</code> registers to hold the
+parameters and body of the lambda expression so that they can be passed
+to the <code>make-procedure</code> operation, along with the environment in <code>env</code>.</p>
+<h4 id="evaluating-procedure-applications"><a class="header" href="#evaluating-procedure-applications"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_769">Evaluating procedure applications</a></a></h4>
+<p>A procedure application is specified by a
+combination containing an operator and operands. The operator is a
+subexpression whose value is a procedure, and the operands are
+subexpressions whose values are the arguments to which the procedure
+should be applied. The metacircular <code>eval</code> handles applications by
+calling itself recursively to evaluate each element of the combination,
+and then passing the results to <code>apply</code>, which performs the actual
+procedure application. The explicit-control evaluator does the same
+thing; these recursive calls are implemented by <code>goto</code> instructions,
+together with use of the stack to save registers that
+will be restored after the recursive call returns. Before each call we
+will be careful to identify which registers must be saved (because their
+values will be needed
+later).<a href="book-Z-H-34.html#footnote_Temp_770">^[21]{.small}^</a></p>
+<p>We begin the evaluation of an application by evaluating the operator to
+produce a procedure, which will later be applied to the evaluated
+operands. To evaluate the operator, we move it to the <code>exp</code> register and
+go to <code>eval-dispatch</code>. The environment in the <code>env</code> register is already
+the correct one in which to evaluate the operator. However, we save
+<code>env</code> because we will need it later to evaluate the operands. We also
+extract the operands into <code>unev</code> and save this on the stack. We set up
+<code>continue</code> so that <code>eval-dispatch</code> will resume at <code>ev-appl-did-operator</code>
+after the operator has been evaluated. First, however, we save the old
+value of <code>continue</code>, which tells the controller where to continue after
+the application.</p>
+<pre><code class="language-scheme editable">ev-application
+  (save continue)
+  (save env)
+  (assign unev (op operands) (reg exp))
+  (save unev)
+  (assign exp (op operator) (reg exp))
+  (assign continue (label ev-appl-did-operator))
+  (goto (label eval-dispatch))
+</code></pre>
+<p>Upon returning from evaluating the operator
+subexpression, we proceed to evaluate the operands of the combination
+and to accumulate the resulting arguments in a list, held in <code>argl</code>.
+First we restore the unevaluated operands and the environment. We
+initialize <code>argl</code> to an empty list. Then we assign to the <code>proc</code>
+register the procedure that was produced by evaluating the operator. If
+there are no operands, we go directly to <code>apply-dispatch</code>. Otherwise we
+save <code>proc</code> on the stack and start the argument-evaluation
+loop:<a href="book-Z-H-34.html#footnote_Temp_771">^[22]{.small}^</a></p>
+<pre><code class="language-scheme editable">ev-appl-did-operator
+  (restore unev)                  ; the operands
+  (restore env)
+  (assign argl (op empty-arglist))
+  (assign proc (reg val))         ; the operator
+  (test (op no-operands?) (reg unev))
+  (branch (label apply-dispatch))
+  (save proc)
+</code></pre>
+<p>Each cycle of the argument-evaluation loop evaluates an operand from the
+list in <code>unev</code> and accumulates the result into <code>argl</code>. To evaluate an
+operand, we place it in the <code>exp</code> register and go to <code>eval-dispatch</code>,
+after setting <code>continue</code> so that execution will resume with the
+argument-accumulation phase. But first we save the arguments accumulated
+so far (held in <code>argl</code>), the environment (held in <code>env</code>), and the
+remaining operands to be evaluated (held in <code>unev</code>). A special case is
+made for the evaluation of the last operand, which is handled at
+<code>ev-appl-last-arg</code>.</p>
+<pre><code class="language-scheme editable">ev-appl-operand-loop
+  (save argl)
+  (assign exp (op first-operand) (reg unev))
+  (test (op last-operand?) (reg unev))
+  (branch (label ev-appl-last-arg))
+  (save env)
+  (save unev)
+  (assign continue (label ev-appl-accumulate-arg))
+  (goto (label eval-dispatch))
+</code></pre>
+<p>When an operand has been evaluated, the value is accumulated into the
+list held in <code>argl</code>. The operand is then removed from the list of
+unevaluated operands in <code>unev</code>, and the argument-evaluation continues.</p>
+<pre><code class="language-scheme editable">ev-appl-accumulate-arg
+  (restore unev)
+  (restore env)
+  (restore argl)
+  (assign argl (op adjoin-arg) (reg val) (reg argl))
+  (assign unev (op rest-operands) (reg unev))
+  (goto (label ev-appl-operand-loop))
+</code></pre>
+<p>Evaluation of the last argument is handled differently. There is no need
+to save the environment or the list of unevaluated operands before going
+to <code>eval-dispatch</code>, since they will not be required after the last
+operand is evaluated. Thus, we return from the evaluation to a special
+entry point <code>ev-appl-accum-last-arg</code>, which restores the argument list,
+accumulates the new argument, restores the saved procedure, and goes off
+to perform the
+application.<a href="book-Z-H-34.html#footnote_Temp_772">^[23]{.small}^</a></p>
+<pre><code class="language-scheme editable">ev-appl-last-arg
+  (assign continue (label ev-appl-accum-last-arg))
+  (goto (label eval-dispatch))
+eveval-appl-accum-last-arg
+  (restore argl)
+  (assign argl (op adjoin-arg) (reg val) (reg argl))
+  (restore proc)
+  (goto (label apply-dispatch))
+</code></pre>
+<p>The details of the argument-evaluation loop determine the
+order in which the interpreter evaluates the operands of a combination
+(e.g., left to right or right to left -- see
+exercise <a href="book-Z-H-20.html#%_thm_3.8">3.8</a>). This order is not
+determined by the metacircular evaluator, which inherits its control
+structure from the underlying Scheme in which it is
+implemented.<a href="book-Z-H-34.html#footnote_Temp_773">^[24]{.small}^</a>
+Because the <code>first-operand</code> selector (used in <code>ev-appl-operand-loop</code> to
+extract successive operands from <code>unev</code>) is implemented as <code>car</code> and the
+<code>rest-operands</code> selector is implemented as <code>cdr</code>, the explicit-control
+evaluator will evaluate the operands of a combination in left-to-right
+order.</p>
+<h4 id="procedure-application"><a class="header" href="#procedure-application"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_774">Procedure application</a></a></h4>
+<p>The entry point <code>apply-dispatch</code> corresponds to the <code>apply</code> procedure of
+the metacircular evaluator. By the time we get to <code>apply-dispatch</code>, the
+<code>proc</code> register contains the procedure to apply and <code>argl</code> contains the
+list of evaluated arguments to which it must be applied. The saved value
+of <code>continue</code> (originally passed to <code>eval-dispatch</code> and saved at
+<code>ev-application</code>), which tells where to return with the result of the
+procedure application, is on the stack. When the application is
+complete, the controller transfers to the entry point specified by the
+saved <code>continue</code>, with the result of the application in <code>val</code>. As with
+the metacircular <code>apply</code>, there are two cases to consider. Either the
+procedure to be applied is a primitive or it is a compound procedure.</p>
+<pre><code class="language-scheme editable">apply-dispatch
+  (test (op primitive-procedure?) (reg proc))
+  (branch (label primitive-apply))
+  (test (op compound-procedure?) (reg proc))  
+  (branch (label compound-apply))
+  (goto (label unknown-procedure-type))
+</code></pre>
+<p>We assume that each primitive is implemented so as to
+obtain its arguments from <code>argl</code> and place its result in <code>val</code>. To
+specify how the machine handles primitives, we would have to provide a
+sequence of controller instructions to implement each primitive and
+arrange for <code>primitive-apply</code> to dispatch to the instructions for the
+primitive identified by the contents of <code>proc</code>. Since we are interested
+in the structure of the evaluation process rather than the details of
+the primitives, we will instead just use an <code>apply-primitive-procedure</code>
+operation that applies the procedure in <code>proc</code> to the arguments in
+<code>argl</code>. For the purpose of simulating the evaluator with the simulator
+of section <a href="book-Z-H-32.html#%_sec_5.2">5.2</a> we use the procedure
+<code>apply-primitive-procedure</code>, which calls on the underlying Scheme system
+to perform the application, just as we did for the metacircular
+evaluator in section <a href="book-Z-H-26.html#%_sec_4.1.4">4.1.4</a>. After
+computing the value of the primitive application, we restore <code>continue</code>
+and go to the designated entry point.</p>
+<pre><code class="language-scheme editable">primitive-apply
+  (assign val (op apply-primitive-procedure)
+              (reg proc)
+              (reg argl))
+  (restore continue)
+  (goto (reg continue))
+</code></pre>
+<p>To apply a compound procedure, we proceed just as with
+the metacircular evaluator. We construct a frame that binds the
+procedure's parameters to the arguments, use this frame to extend the
+environment carried by the procedure, and evaluate in this extended
+environment the sequence of expressions that forms the body of the
+procedure. <code>Ev-sequence</code>, described below in
+section <a href="book-Z-H-34.html#%_sec_5.4.2">5.4.2</a>, handles the evaluation of
+the sequence.</p>
+<pre><code class="language-scheme editable">compound-apply
+  (assign unev (op procedure-parameters) (reg proc))
+  (assign env (op procedure-environment) (reg proc))
+  (assign env (op extend-environment)
+              (reg unev) (reg argl) (reg env))
+  (assign unev (op procedure-body) (reg proc))
+  (goto (label ev-sequence))
+</code></pre>
+<p><code>Compound-apply</code> is the only place in the interpreter where the <code>env</code>
+register is ever assigned a new value. Just as in the metacircular
+evaluator, the new environment is constructed from the environment
+carried by the procedure, together with the argument list and the
+corresponding list of variables to be bound.</p>
+<h3 id="542--sequence-evaluation-and-tail-recursion"><a class="header" href="#542--sequence-evaluation-and-tail-recursion"><a href="book-Z-H-4.html#%_toc_%_sec_5.4.2">5.4.2  Sequence Evaluation and Tail Recursion</a></a></h3>
+<p>The portion of the explicit-control evaluator at
+<code>ev-sequence</code> is analogous to the metacircular evaluator's
+<code>eval-sequence</code> procedure. It handles sequences of expressions in
+procedure bodies or in explicit <code>begin</code> expressions.</p>
+<p>Explicit <code>begin</code> expressions are evaluated by placing the sequence of
+expressions to be evaluated in <code>unev</code>, saving <code>continue</code> on the stack,
+and jumping to <code>ev-sequence</code>.</p>
+<pre><code class="language-scheme editable">ev-begin
+  (assign unev (op begin-actions) (reg exp))
+  (save continue)
+  (goto (label ev-sequence))
+</code></pre>
+<p>The implicit sequences in procedure bodies are handled by jumping to
+<code>ev-sequence</code> from <code>compound-apply</code>, at which point <code>continue</code> is
+already on the stack, having been saved at <code>ev-application</code>.</p>
+<p>The entries at <code>ev-sequence</code> and <code>ev-sequence-continue</code> form a loop that
+successively evaluates each expression in a sequence. The list of
+unevaluated expressions is kept in <code>unev</code>. Before evaluating each
+expression, we check to see if there are additional expressions to be
+evaluated in the sequence. If so, we save the rest of the unevaluated
+expressions (held in <code>unev</code>) and the environment in which these must be
+evaluated (held in <code>env</code>) and call <code>eval-dispatch</code> to evaluate the
+expression. The two saved registers are restored upon the return from
+this evaluation, at <code>ev-sequence-continue</code>.</p>
+<p>The final expression in the sequence is handled differently, at the
+entry point <code>ev-sequence-last-exp</code>. Since there are no more expressions
+to be evaluated after this one, we need not save <code>unev</code> or <code>env</code> before
+going to <code>eval-dispatch</code>. The value of the whole sequence is the value
+of the last expression, so after the evaluation of the last expression
+there is nothing left to do except continue at the entry point currently
+held on the stack (which was saved by <code>ev-application</code> or <code>ev-begin</code>.)
+Rather than setting up <code>continue</code> to arrange for <code>eval-dispatch</code> to
+return here and then restoring <code>continue</code> from the stack and continuing
+at that entry point, we restore <code>continue</code> from the stack before going
+to <code>eval-dispatch</code>, so that <code>eval-dispatch</code> will continue at that entry
+point after evaluating the expression.</p>
+<pre><code class="language-scheme editable">ev-sequence
+  (assign exp (op first-exp) (reg unev))
+  (test (op last-exp?) (reg unev))
+  (branch (label ev-sequence-last-exp))
+  (save unev)
+  (save env)
+  (assign continue (label ev-sequence-continue))
+  (goto (label eval-dispatch))
+eveval-sequence-continue
+  (restore env)
+  (restore unev)
+  (assign unev (op rest-exps) (reg unev))
+  (goto (label ev-sequence))
+eveval-sequence-last-exp
+  (restore continue)
+  (goto (label eval-dispatch))
+</code></pre>
+<h4 id="tail-recursion"><a class="header" href="#tail-recursion"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_775">Tail recursion</a></a></h4>
+<p>In chapter 1 we said that the process
+described by a procedure such as</p>
+<pre><code class="language-scheme editable">(define (sqrt-iter guess x)
+  (if (good-enough? guess x)
+      guess
+      (sqrt-iter (improve guess x)
+                 x)))
+</code></pre>
+<p>is an iterative process. Even though the procedure is syntactically
+recursive (defined in terms of itself), it is not logically necessary
+for an evaluator to save information in passing from one call to
+<code>sqrt-iter</code> to the
+next.<a href="book-Z-H-34.html#footnote_Temp_776">^[25]{.small}^</a>
+An evaluator that can execute a procedure such as <code>sqrt-iter</code> without
+requiring increasing storage as the procedure continues to call itself
+is called a <em>tail-recursive</em> evaluator.
+The metacircular implementation of the
+evaluator in chapter 4 does not specify whether the evaluator is
+tail-recursive, because that evaluator inherits its mechanism for saving
+state from the underlying Scheme. With the explicit-control evaluator,
+however, we can trace through the evaluation process to see when
+procedure calls cause a net accumulation of information on the stack.</p>
+<p>Our evaluator is tail-recursive, because in order to evaluate the final
+expression of a sequence we transfer directly to <code>eval-dispatch</code> without
+saving any information on the stack. Hence, evaluating the final
+expression in a sequence -- even if it is a procedure call (as in
+<code>sqrt-iter</code>, where the <code>if</code> expression, which is the last expression in
+the procedure body, reduces to a call to <code>sqrt-iter</code>) -- will not cause
+any information to be accumulated on the
+stack.<a href="book-Z-H-34.html#footnote_Temp_777">^[26]{.small}^</a></p>
+<p>If we did not think to take advantage of the fact that it was
+unnecessary to save information in this case, we might have implemented
+<code>eval-sequence</code> by treating all the expressions in a sequence in the
+same way -- saving the registers, evaluating the expression, returning
+to restore the registers, and repeating this until all the expressions
+have been
+evaluated:<a href="book-Z-H-34.html#footnote_Temp_778">^[27]{.small}^</a></p>
+<pre><code class="language-scheme editable">ev-sequence
+  (test (op no-more-exps?) (reg unev))
+  (branch (label ev-sequence-end))
+  (assign exp (op first-exp) (reg unev))
+  (save unev)
+  (save env)
+  (assign continue (label ev-sequence-continue))
+  (goto (label eval-dispatch))
+eveval-sequence-continue
+  (restore env)
+  (restore unev)
+  (assign unev (op rest-exps) (reg unev))
+  (goto (label ev-sequence))
+eveval-sequence-end
+  (restore continue)
+  (goto (reg continue))
+</code></pre>
+<p>This may seem like a minor change to our previous code for evaluation of
+a sequence: The only difference is that we go through the save-restore
+cycle for the last expression in a sequence as well as for the others.
+The interpreter will still give the same value for any expression. But
+this change is fatal to the tail-recursive implementation, because we
+must now return after evaluating the final expression in a sequence in
+order to undo the (useless) register saves. These extra saves will
+accumulate during a nest of procedure calls. Consequently, processes
+such as <code>sqrt-iter</code> will require space proportional to the number of
+iterations rather than requiring constant space. This difference can be
+significant. For example, with tail recursion, an
+infinite loop can be expressed using only the procedure-call mechanism:</p>
+<pre><code class="language-scheme editable">(define (count n)
+  (newline)
+  (display n)
+  (count (+ n 1)))
+</code></pre>
+<p>Without tail recursion, such a procedure would eventually run out of
+stack space, and expressing a true iteration would require some control
+mechanism other than procedure call.</p>
+<h3 id="543--conditionals-assignments-and-definitions"><a class="header" href="#543--conditionals-assignments-and-definitions"><a href="book-Z-H-4.html#%_toc_%_sec_5.4.3">5.4.3  Conditionals, Assignments, and Definitions</a></a></h3>
+<p>As with the metacircular evaluator, special forms are
+handled by selectively evaluating fragments of the expression. For an
+<code>if</code> expression, we must evaluate the predicate and decide, based on the
+value of predicate, whether to evaluate the consequent or the
+alternative.</p>
+<p>Before evaluating the predicate, we save the <code>if</code> expression itself so
+that we can later extract the consequent or alternative. We also save
+the environment, which we will need later in order to evaluate the
+consequent or the alternative, and we save <code>continue</code>, which we will
+need later in order to return to the evaluation of the expression that
+is waiting for the value of the <code>if</code>.</p>
+<pre><code class="language-scheme editable">ev-if
+  (save exp)                    ; save expression for later
+  (save env)
+  (save continue)
+  (assign continue (label ev-if-decide))
+  (assign exp (op if-predicate) (reg exp))
+  (goto (label eval-dispatch))  ; evaluate the predicate
+</code></pre>
+<p>When we return from evaluating the predicate, we test whether it was
+true or false and, depending on the result, place either the consequent
+or the alternative in <code>exp</code> before going to <code>eval-dispatch</code>. Notice that
+restoring <code>env</code> and <code>continue</code> here sets up <code>eval-dispatch</code> to have the
+correct environment and to continue at the right place to receive the
+value of the <code>if</code> expression.</p>
+<pre><code class="language-scheme editable">ev-if-decide
+  (restore continue)
+  (restore env)
+  (restore exp)
+  (test (op true?) (reg val))
+  (branch (label ev-if-consequent))
+
+ev-if-alternative
+  (assign exp (op if-alternative) (reg exp))
+  (goto (label eval-dispatch))
+ev-if-consequent
+  (assign exp (op if-consequent) (reg exp))
+  (goto (label eval-dispatch))
+</code></pre>
+<h4 id="assignments-and-definitions"><a class="header" href="#assignments-and-definitions"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_779">Assignments and definitions</a></a></h4>
+<p>Assignments are handled by <code>ev-assignment</code>, which is
+reached from <code>eval-dispatch</code> with the assignment expression in <code>exp</code>.
+The code at <code>ev-assignment</code> first evaluates the value part of the
+expression and then installs the new value in the environment.
+<code>Set-variable-value!</code> is assumed to be available as a machine operation.</p>
+<pre><code class="language-scheme editable">ev-assignment
+  (assign unev (op assignment-variable) (reg exp))
+  (save unev)                   ; save variable for later
+  (assign exp (op assignment-value) (reg exp))
+  (save env)
+  (save continue)
+  (assign continue (label ev-assignment-1))
+  (goto (label eval-dispatch))  ; evaluate the assignment value
+ev-assignment-1
+  (restore continue)
+  (restore env)
+  (restore unev)
+  (perform
+   (op set-variable-value!) (reg unev) (reg val) (reg env))
+  (assign val (const ok))
+  (goto (reg continue))
+</code></pre>
+<p>Definitions are handled in a similar way:</p>
+<pre><code class="language-scheme editable">ev-definition
+  (assign unev (op definition-variable) (reg exp))
+  (save unev)                   ; save variable for later
+  (assign exp (op definition-value) (reg exp))
+  (save env)
+  (save continue)
+  (assign continue (label ev-definition-1))
+  (goto (label eval-dispatch))  ; evaluate the definition value
+ev-definition-1
+  (restore continue)
+  (restore env)
+  (restore unev)
+  (perform
+   (op define-variable!) (reg unev) (reg val) (reg env))
+  (assign val (const ok))
+  (goto (reg continue))
+</code></pre>
+<p><strong>Exercise
+5.23.</strong>  Extend the
+evaluator to handle derived expressions such as <code>cond</code>, <code>let</code>, and so on
+(section <a href="book-Z-H-26.html#%_sec_4.1.2">4.1.2</a>). You may ''cheat''
+and assume that the syntax transformers such as <code>cond-&gt;if</code> are available
+as machine
+operations.<a href="book-Z-H-34.html#footnote_Temp_781">^[28]{.small}^</a></p>
+<p><strong>Exercise 5.24.</strong>  Implement <code>cond</code> as a
+new basic special form without reducing it to <code>if</code>. You will have to
+construct a loop that tests the predicates of successive <code>cond</code> clauses
+until you find one that is true, and then use <code>ev-sequence</code> to evaluate
+the actions of the clause.</p>
+<p><strong>Exercise 5.25.</strong>  Modify
+the evaluator so that it uses normal-order evaluation, based on the lazy
+evaluator of section <a href="book-Z-H-27.html#%_sec_4.2">4.2</a>.</p>
+<h3 id="544--running-the-evaluator"><a class="header" href="#544--running-the-evaluator"><a href="book-Z-H-4.html#%_toc_%_sec_5.4.4">5.4.4  Running the Evaluator</a></a></h3>
+<p>With the implementation of
+the explicit-control evaluator we come to the end of a development,
+begun in chapter 1, in which we have explored successively more precise
+models of the evaluation process. We started with the relatively
+informal substitution model, then extended this in chapter 3 to the
+environment model, which enabled us to deal with state and change. In
+the metacircular evaluator of chapter 4, we used Scheme itself as a
+language for making more explicit the environment structure constructed
+during evaluation of an expression. Now, with register machines, we have
+taken a close look at the evaluator's mechanisms for storage
+management, argument passing, and control. At each new level of
+description, we have had to raise issues and resolve ambiguities that
+were not apparent at the previous, less precise treatment of evaluation.
+To understand the behavior of the explicit-control evaluator, we can
+simulate it and monitor its performance.</p>
+<p>We will install a driver loop in our
+evaluator machine. This plays the role of the <code>driver-loop</code> procedure of
+section <a href="book-Z-H-26.html#%_sec_4.1.4">4.1.4</a>. The evaluator will
+repeatedly print a prompt, read an expression, evaluate the expression
+by going to <code>eval-dispatch</code>, and print the result. The following
+instructions form the beginning of the explicit-control evaluator's
+controller
+sequence:<a href="book-Z-H-34.html#footnote_Temp_784">^[29]{.small}^</a></p>
+<pre><code class="language-scheme editable">read-eval-print-loop
+  (perform (op initialize-stack))
+  (perform
+   (op prompt-for-input) (const ";;; EC-Eval input:"))
+  (assign exp (op read))
+  (assign env (op get-global-environment))
+  (assign continue (label print-result))
+  (goto (label eval-dispatch))
+</code></pre>
+<pre><code class="language-scheme editable">print-result
+  (perform
+   (op announce-output) (const ";;; EC-Eval value:"))
+  (perform (op user-print) (reg val))
+  (goto (label read-eval-print-loop))
+</code></pre>
+<p>When we encounter an error in a procedure
+(such as the ''unknown procedure type error'' indicated at
+<code>apply-dispatch</code>), we print an error message and return to the driver
+loop.<a href="book-Z-H-34.html#footnote_Temp_785">^[30]{.small}^</a></p>
+<pre><code class="language-scheme editable">unknown-expression-type
+  (assign val (const unknown-expression-type-error))
+  (goto (label signal-error))
+</code></pre>
+<pre><code class="language-scheme editable">unknown-procedure-type
+  (restore continue)    ; clean up stack (from ``apply-dispatch``)
+  (assign val (const unknown-procedure-type-error))
+  (goto (label signal-error))
+</code></pre>
+<pre><code class="language-scheme editable">signal-error
+  (perform (op user-print) (reg val))
+  (goto (label read-eval-print-loop))
+</code></pre>
+<p>For the purposes of the simulation, we initialize the stack each time
+through the driver loop, since it might not be empty after an error
+(such as an undefined variable) interrupts an
+evaluation.<a href="book-Z-H-34.html#footnote_Temp_786">^[31]{.small}^</a></p>
+<p>If we combine all the code fragments presented in
+sections
+<a href="book-Z-H-34.html#%_sec_5.4.1">5.4.1</a>-<a href="book-Z-H-34.html#%_sec_5.4.4">5.4.4</a>,
+we can create an evaluator machine model that we can run using the
+register-machine simulator of section <a href="book-Z-H-32.html#%_sec_5.2">5.2</a>.</p>
+<pre><code class="language-scheme editable">(define eceval
+  (make-machine
+   '(exp env val proc argl continue unev)
+   eceval-operations
+  '(
+    read-eval-print-loop
+      &lt;*entire machine controller as given above*&gt;
+   )))
+</code></pre>
+<p>We must define Scheme procedures to simulate the operations used as
+primitives by the evaluator. These are the same procedures we used for
+the metacircular evaluator in section <a href="book-Z-H-26.html#%_sec_4.1">4.1</a>,
+together with the few additional ones defined in footnotes throughout
+section <a href="book-Z-H-34.html#%_sec_5.4">5.4</a>.</p>
+<pre><code class="language-scheme editable">(define eceval-operations
+  (list (list 'self-evaluating? self-evaluating)
+        &lt;*complete list of operations for eceval machine*&gt;))
+</code></pre>
+<p>Finally, we can initialize the global environment and run the evaluator:</p>
+<pre><code class="language-scheme editable">(define the-global-environment (setup-environment))
+
+(start eceval)
+</code></pre>
+<p><em>;;; EC-Eval input:</em></p>
+<pre><code class="language-scheme editable">(define (append x y)
+  (if (null? x)
+      y
+      (cons (car x)
+            (append (cdr x) y))))
+</code></pre>
+<p><em>;;; EC-Eval value:</em>
+<em><code>ok</code></em>
+<em>;;; EC-Eval input:</em></p>
+<pre><code class="language-scheme editable">(append '(a b c) '(d e f))
+</code></pre>
+<p><em>;;; EC-Eval value:</em>
+<em><code>(a b c d e f)</code></em></p>
+<p>Of course, evaluating expressions in this way will take much longer than
+if we had directly typed them into Scheme, because of the multiple
+levels of simulation involved. Our expressions are evaluated by the
+explicit-control-evaluator machine, which is being simulated by a Scheme
+program, which is itself being evaluated by the Scheme interpreter.</p>
+<h4 id="monitoring-the-performance-of-the-evaluator"><a class="header" href="#monitoring-the-performance-of-the-evaluator"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_787">Monitoring the performance of the evaluator</a></a></h4>
+<p>Simulation can be a powerful tool to
+guide the implementation of evaluators. Simulations make it easy not
+only to explore variations of the register-machine design but also to
+monitor the performance of the simulated evaluator. For example, one
+important factor in performance is how efficiently the evaluator uses
+the stack. We can observe the number of stack operations required to
+evaluate various expressions by defining the evaluator register machine
+with the version of the simulator that collects statistics on stack use
+(section <a href="book-Z-H-32.html#%_sec_5.2.4">5.2.4</a>), and adding an
+instruction at the evaluator's <code>print-result</code> entry point to print the
+statistics:</p>
+<pre><code class="language-scheme editable">print-result
+  (perform (op print-stack-statistics)); added instruction
+  (perform
+   (op announce-output) (const ";;; EC-Eval value:"))
+  ... ; same as before
+</code></pre>
+<p>Interactions with the evaluator now look like this:</p>
+<p><em>;;; EC-Eval input:</em></p>
+<pre><code class="language-scheme editable">(define (factorial n)
+  (if (= n 1)
+      1
+      (* (factorial (- n 1)) n)))
+</code></pre>
+<p><em><code>(total-pushes = 3 maximum-depth = 3)</code></em>
+<em>;;; EC-Eval value:</em>
+<em><code>ok</code></em>
+<em>;;; EC-Eval input:</em></p>
+<pre><code class="language-scheme editable">(factorial 5)
+</code></pre>
+<p><em><code>(total-pushes = 144 maximum-depth = 28)</code></em>
+<em>;;; EC-Eval value:</em>
+<em><code>120</code></em></p>
+<p>Note that the driver loop of the evaluator reinitializes the stack at
+the start of each interaction, so that the statistics printed will refer
+only to stack operations used to evaluate the previous expression.</p>
+<p><strong>Exercise
+5.26.</strong>  Use the monitored
+stack to explore the tail-recursive property of the evaluator
+(section <a href="book-Z-H-34.html#%_sec_5.4.2">5.4.2</a>). Start the evaluator and
+define the iterative <code>factorial</code> procedure from
+section <a href="book-Z-H-11.html#%_sec_1.2.1">1.2.1</a>:</p>
+<pre><code class="language-scheme editable">(define (factorial n)
+  (define (iter product counter)
+    (if (&gt; counter n)
+        product
+        (iter (* counter product)
+              (+ counter 1))))
+  (iter 1 1))
+</code></pre>
+<p>Run the procedure with some small values of <em>n</em>. Record the maximum
+stack depth and the number of pushes required to compute <em>n</em>! for each
+of these values.</p>
+<p>a. You will find that the maximum depth required to evaluate <em>n</em>! is
+independent of <em>n</em>. What is that depth?</p>
+<p>b. Determine from your data a formula in terms of <em>n</em> for the total
+number of push operations used in evaluating <em>n</em>! for any <em>n</em>
+[&gt;]{.underline} 1. Note that the number of operations used is a linear
+function of <em>n</em> and is thus determined by two constants.</p>
+<p><strong>Exercise 5.27.</strong>  For comparison with
+exercise <a href="book-Z-H-34.html#%_thm_5.26">5.26</a>, explore the behavior of
+the following procedure for computing factorials recursively:</p>
+<pre><code class="language-scheme editable">(define (factorial n)
+  (if (= n 1)
+      1
+      (* (factorial (- n 1)) n)))
+</code></pre>
+<p>By running this procedure with the monitored stack, determine, as a
+function of <em>n</em>, the maximum depth of the stack and the total number of
+pushes used in evaluating <em>n</em>! for <em>n</em> [&gt;]{.underline} 1. (Again, these
+functions will be linear.) Summarize your experiments by filling in the
+following table with the appropriate expressions in terms of <em>n</em>:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left"></th><th style="text-align: left">Maximum depth</th><th style="text-align: left">Number of pushes</th></tr></thead><tbody>
+<tr><td style="text-align: left">Recursive factorial</td><td style="text-align: left"></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: left">Iterative factorial</td><td style="text-align: left"></td><td style="text-align: left"></td></tr>
+</tbody></table>
+</div>
+<p>The maximum depth is a measure of the amount of space used by the
+evaluator in carrying out the computation, and the number of pushes
+correlates well with the time required.</p>
+<p><strong>Exercise 5.28.</strong>  Modify
+the definition of the evaluator by changing <code>eval-sequence</code> as described
+in section <a href="book-Z-H-34.html#%_sec_5.4.2">5.4.2</a> so that the evaluator
+is no longer tail-recursive. Rerun your experiments from
+exercises <a href="book-Z-H-34.html#%_sec_5.26">5.26</a>
+and <a href="book-Z-H-34.html#%_sec_5.27">5.27</a> to demonstrate that both
+versions of the <code>factorial</code> procedure now require space that grows
+linearly with their input.</p>
+<p><strong>Exercise 5.29.</strong>  Monitor the stack
+operations in the tree-recursive Fibonacci computation:</p>
+<pre><code class="language-scheme editable">(define (fib n)
+  (if (&lt; n 2)
+      n
+      (+ (fib (- n 1)) (fib (- n 2)))))
+</code></pre>
+<p>a. Give a formula in terms of <em>n</em> for the maximum depth of the stack
+required to compute <em>Fib</em>(<em>n</em>) for <em>n</em> [&gt;]{.underline} 2. Hint: In
+section <a href="book-Z-H-11.html#%_sec_1.2.2">1.2.2</a> we argued that the space
+used by this process grows linearly with <em>n</em>.</p>
+<p>b. Give a formula for the total number of pushes used to compute
+<em>Fib</em>(<em>n</em>) for <em>n</em> [&gt;]{.underline} 2. You should find that the number
+of pushes (which correlates well with the time used) grows exponentially
+with <em>n</em>. Hint: Let <em>S</em>(<em>n</em>) be the number of pushes used in computing
+<em>Fib</em>(<em>n</em>). You should be able to argue that there is a formula that
+expresses <em>S</em>(<em>n</em>) in terms of <em>S</em>(<em>n</em> - 1), <em>S</em>(<em>n</em> - 2), and some
+fixed ''overhead'' constant <em>k</em> that is independent of <em>n</em>. Give the
+formula, and say what <em>k</em> is. Then show that <em>S</em>(<em>n</em>) can be expressed
+as <em>a</em> <em>Fib</em>(<em>n</em> + 1) + <em>b</em> and give the values of <em>a</em> and <em>b</em>.</p>
+<p><strong>Exercise 5.30.</strong>  Our
+evaluator currently catches and signals only two kinds of errors --
+unknown expression types and unknown procedure types. Other errors will
+take us out of the evaluator read-eval-print loop. When we run the
+evaluator using the register-machine simulator, these errors are caught
+by the underlying Scheme system. This is analogous to the computer
+crashing when a user program makes an
+error.<a href="book-Z-H-34.html#footnote_Temp_793">^[32]{.small}^</a>
+It is a large project to make a real error system work, but it is well
+worth the effort to understand what is involved here.</p>
+<p>a. Errors that occur in the evaluation process, such as an attempt to
+access an unbound variable, could be caught by changing the lookup
+operation to make it return a distinguished condition code, which cannot
+be a possible value of any user variable. The evaluator can test for
+this condition code and then do what is necessary to go to
+<code>signal-error</code>. Find all of the places in the evaluator where such a
+change is necessary and fix them. This is lots of work.</p>
+<p>b. Much worse is the problem of handling errors that are signaled by
+applying primitive procedures, such as an attempt to divide by zero or
+an attempt to extract the <code>car</code> of a symbol. In a professionally written
+high-quality system, each primitive application is checked for safety as
+part of the primitive. For example, every call to <code>car</code> could first
+check that the argument is a pair. If the argument is not a pair, the
+application would return a distinguished condition code to the
+evaluator, which would then report the failure. We could arrange for
+this in our register-machine simulator by making each primitive
+procedure check for applicability and returning an appropriate
+distinguished condition code on failure. Then the <code>primitive-apply</code> code
+in the evaluator can check for the condition code and go to
+<code>signal-error</code> if necessary. Build this structure and make it work. This
+is a major project.</p>
+<hr />
+<p>^[19]{.small}^](book-Z-H-34.html#call_footnote_Temp_765)
+See Batali et al. 1982 for more information on the chip
+and the method by which it was designed.</p>
+<p>^[20]{.small}^](book-Z-H-34.html#call_footnote_Temp_767)
+In our controller, the dispatch is written as a sequence of <code>test</code> and
+<code>branch</code> instructions. Alternatively, it could have been written in a
+data-directed style (and in a real system it probably would have been)
+to avoid the need to perform sequential tests and to facilitate the
+definition of new expression types. A machine designed to run Lisp would
+probably include a <code>dispatch-on-type</code> instruction that would efficiently
+execute such data-directed dispatches.</p>
+<p>^[21]{.small}^](book-Z-H-34.html#call_footnote_Temp_770)
+This is an important but subtle point in translating algorithms from a
+procedural language, such as Lisp, to a register-machine language. As an
+alternative to saving only what is needed, we could save all the
+registers (except <code>val</code>) before each recursive call. This is called a
+<em>framed-stack</em> discipline. This would work
+but might save more registers than necessary; this could be an important
+consideration in a system where stack operations are expensive. Saving
+registers whose contents will not be needed later may also hold onto
+useless data that could otherwise be garbage-collected, freeing space to
+be reused.</p>
+<p>^[22]{.small}^](book-Z-H-34.html#call_footnote_Temp_771)
+We add to the evaluator data-structure procedures in
+section <a href="book-Z-H-26.html#%_sec_4.1.3">4.1.3</a> the following two
+procedures for manipulating argument lists:</p>
+<pre><code class="language-scheme editable">(define (empty-arglist) '())
+</code></pre>
+<pre><code class="language-scheme editable">(define (adjoin-arg arg arglist)
+  (append arglist (list arg)))
+</code></pre>
+<p>We also use an additional syntax procedure to test for the last operand
+in a combination:</p>
+<pre><code class="language-scheme editable">(define (last-operand? ops)
+  (null? (cdr ops)))
+</code></pre>
+<p>^[23]{.small}^](book-Z-H-34.html#call_footnote_Temp_772)
+The optimization of treating the last operand specially
+is known as <em>evlis tail recursion</em> (see Wand 1980). We
+could be somewhat more efficient in the argument evaluation loop if we
+made evaluation of the first operand a special case too. This would
+permit us to postpone initializing <code>argl</code> until after evaluating the
+first operand, so as to avoid saving <code>argl</code> in this case. The compiler
+in section <a href="book-Z-H-35.html#%_sec_5.5">5.5</a> performs this optimization.
+(Compare the <code>construct-arglist</code> procedure of
+section <a href="book-Z-H-35.html#%_sec_5.5.3">5.5.3</a>.)</p>
+<p>^[24]{.small}^](book-Z-H-34.html#call_footnote_Temp_773)
+The order of operand evaluation in the metacircular evaluator is
+determined by the order of evaluation of the arguments to <code>cons</code> in the
+procedure <code>list-of-values</code> of
+section <a href="book-Z-H-26.html#%_sec_4.1.1">4.1.1</a> (see
+exercise <a href="book-Z-H-26.html#%_thm_4.1">4.1</a>).</p>
+<p>^[25]{.small}^](book-Z-H-34.html#call_footnote_Temp_776)
+We saw in section <a href="book-Z-H-31.html#%_sec_5.1">5.1</a> how to implement
+such a process with a register machine that had no stack; the state of
+the process was stored in a fixed set of registers.</p>
+<p>^[26]{.small}^](book-Z-H-34.html#call_footnote_Temp_777)
+This implementation of tail recursion in <code>ev-sequence</code> is one variety of
+a well-known optimization technique used by many compilers. In compiling
+a procedure that ends with a procedure call, one can replace the call by
+a jump to the called procedure's entry point. Building this strategy
+into the interpreter, as we have done in this section, provides the
+optimization uniformly throughout the language.</p>
+<p>^[27]{.small}^](book-Z-H-34.html#call_footnote_Temp_778)
+We can define <code>no-more-exps?</code> as follows:</p>
+<pre><code class="language-scheme editable">(define (no-more-exps? seq) (null? seq))
+</code></pre>
+<p>^[28]{.small}^](book-Z-H-34.html#call_footnote_Temp_781)
+This isn't really cheating. In an actual implementation built from
+scratch, we would use our explicit-control evaluator to interpret a
+Scheme program that performs source-level transformations like
+<code>cond-&gt;if</code> in a syntax phase that runs before execution.</p>
+<p>^[29]{.small}^](book-Z-H-34.html#call_footnote_Temp_784)
+We assume here that <code>read</code> and the various printing operations are
+available as primitive machine operations, which is useful for our
+simulation, but completely unrealistic in practice. These are actually
+extremely complex operations. In practice, they would be implemented
+using low-level input-output operations such as transferring single
+characters to and from a device.</p>
+<p>To support the <code>get-global-environment</code> operation we define</p>
+<pre><code class="language-scheme editable">(define the-global-environment (setup-environment))
+</code></pre>
+<pre><code class="language-scheme editable">(define (get-global-environment)
+  the-global-environment)
+</code></pre>
+<p>^[30]{.small}^](book-Z-H-34.html#call_footnote_Temp_785)
+There are other errors that we would like the interpreter to handle, but
+these are not so simple. See
+exercise <a href="book-Z-H-34.html#%_thm_5.30">5.30</a>.</p>
+<p>^[31]{.small}^](book-Z-H-34.html#call_footnote_Temp_786)
+We could perform the stack initialization only after errors, but doing
+it in the driver loop will be convenient for monitoring the evaluator's
+performance, as described below.</p>
+<p>^[32]{.small}^](book-Z-H-34.html#call_footnote_Temp_793)
+Regrettably, this is the normal state of affairs in
+conventional compiler-based language systems such as C.
+In UNIX ^<em>TM</em>^ the system
+''dumps core,'' and in DOS/Windows ^<em>TM</em>^ it becomes catatonic. The
+Macintosh ^<em>TM</em>^ displays a picture of an exploding bomb and offers you
+the opportunity to reboot the computer -- if you're lucky.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="5.3.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="5.5.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="5.3.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="5.5.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="./highlight.js"></script>
+        <script src="./src/languages/scheme.min.js"></script>
+        <script src="./biwascheme.min.js"></script>
+        <script src="./biwascheme_run_logic.js"></script>
+
+
+    </div>
+    </body>
+</html>

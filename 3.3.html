@@ -1,0 +1,996 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Modeling with Mutable Data - SICP</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="./src/styles/docco.min.css">
+        <link rel="stylesheet" href="./run_button_style.css">
+        <link rel="stylesheet" href="./custom.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">SICP</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="33--modeling-with-mutable-data"><a class="header" href="#33--modeling-with-mutable-data"><a href="book-Z-H-4.html#%_toc_%_sec_3.3">3.3  Modeling with Mutable Data</a></a></h2>
+<p>Chapter 2 dealt with compound data as a means for
+constructing computational objects that have several parts, in order to
+model real-world objects that have several aspects. In that chapter we
+introduced the discipline of data abstraction, according to which data
+structures are specified in terms of constructors, which create data
+objects, and selectors, which access the parts of compound data objects.
+But we now know that there is another aspect of data that chapter 2 did
+not address. The desire to model systems composed of objects that have
+changing state leads us to the need to modify compound data objects, as
+well as to construct and select from them. In order to model compound
+objects with changing state, we will design data abstractions to
+include, in addition to selectors and constructors, operations called
+<em>mutators</em>, which modify data objects. For instance,
+modeling a banking system requires us to change account balances. Thus,
+a data structure for representing bank accounts might admit an operation</p>
+<pre><code class="language-scheme editable">(set-balance! &lt;account&gt; &lt;new-value&gt;)
+</code></pre>
+<p>that changes the balance of the designated account to the designated new
+value. Data objects for which mutators are defined are known as <em>mutable
+data objects</em>.</p>
+<p>Chapter 2 introduced pairs as a general-purpose ``glue'' for
+synthesizing compound data. We begin this section by defining basic
+mutators for pairs, so that pairs can serve as building blocks for
+constructing mutable data objects. These mutators greatly enhance the
+representational power of pairs, enabling us to build data structures
+other than the sequences and trees that we worked with in
+section <a href="book-Z-H-15.html#%_sec_2.2">2.2</a>. We also present some examples
+of simulations in which complex systems are modeled as collections of
+objects with local state.</p>
+<h3 id="331--mutable-list-structure"><a class="header" href="#331--mutable-list-structure"><a href="book-Z-H-4.html#%_toc_%_sec_3.3.1">3.3.1  Mutable List Structure</a></a></h3>
+<p>The basic
+operations on pairs -- <code>cons</code>, <code>car</code>, and <code>cdr</code> -- can be used to
+construct list structure and to select parts from list structure, but
+they are incapable of modifying list structure. The same is true of the
+list operations we have used so far, such as <code>append</code> and <code>list</code>, since
+these can be defined in terms of <code>cons</code>, <code>car</code>, and <code>cdr</code>. To modify
+list structures we need new operations.</p>
+<p><img src="ch3-Z-G-13.gif" alt="" />{border="0"}</p>
+<p><strong>Figure 3.12:</strong>  Lists <code>x</code>: <code>((a b) c d)</code> and <code>y</code>: <code>(e f)</code>.</p>
+<p><img src="ch3-Z-G-14.gif" alt="" />{border="0"}</p>
+<p><strong>Figure 3.13:</strong>  Effect of <code>(set-car! x y)</code> on the lists in
+figure <a href="book-Z-H-22.html#%_fig_3.12">3.12</a>.</p>
+<p><img src="ch3-Z-G-15.gif" alt="" />{border="0"}</p>
+<p><strong>Figure 3.14:</strong>  Effect of <code>(define z (cons y (cdr x)))</code> on the lists
+in figure <a href="book-Z-H-22.html#%_fig_3.12">3.12</a>.</p>
+<p><img src="ch3-Z-G-16.gif" alt="" />{border="0"}</p>
+<p><strong>Figure 3.15:</strong>  Effect of <code>(set-cdr! x y)</code> on the lists in
+figure <a href="book-Z-H-22.html#%_fig_3.12">3.12</a>.</p>
+<p>The
+primitive mutators for pairs are <code>set-car!</code> and <code>set-cdr!</code>. <code>Set-car!</code>
+takes two arguments, the first of which must be a pair. It modifies this
+pair, replacing the <code>car</code> pointer by a pointer to the second argument of
+<code>set-car!</code>.<a href="book-Z-H-22.html#footnote_Temp_349">^[16]{.small}^</a>{#call_footnote_Temp_349}</p>
+<p>As an example, suppose that <code>x</code> is bound to the list <code>((a b) c d)</code> and
+<code>y</code> to the list <code>(e f)</code> as illustrated in
+figure <a href="book-Z-H-22.html#%_fig_3.12">3.12</a>. Evaluating the expression
+<code>(set-car! x y)</code> modifies the pair to which <code>x</code> is bound, replacing its
+<code>car</code> by the value of <code>y</code>. The result of the operation is shown in
+figure <a href="book-Z-H-22.html#%_fig_3.13">3.13</a>. The structure <code>x</code> has been
+modified and would now be printed as <code>((e f) c d)</code>. The pairs
+representing the list <code>(a b)</code>, identified by the pointer that was
+replaced, are now detached from the original
+structure.<a href="book-Z-H-22.html#footnote_Temp_350">^[17]{.small}^</a>{#call_footnote_Temp_350}</p>
+<p>Compare figure <a href="book-Z-H-22.html#%_fig_3.13">3.13</a> with
+figure <a href="book-Z-H-22.html#%_fig_3.14">3.14</a>, which illustrates the result
+of executing <code>(define z (cons y (cdr x)))</code> with <code>x</code> and <code>y</code> bound to the
+original lists of figure <a href="book-Z-H-22.html#%_fig_3.12">3.12</a>. The
+variable <code>z</code> is now bound to a new pair created by the <code>cons</code> operation;
+the list to which <code>x</code> is bound is unchanged.</p>
+<p>The <code>set-cdr!</code> operation is similar to <code>set-car!</code>. The only difference
+is that the <code>cdr</code> pointer of the pair, rather than the <code>car</code> pointer, is
+replaced. The effect of executing <code>(set-cdr! x y)</code> on the lists of
+figure <a href="book-Z-H-22.html#%_fig_3.12">3.12</a> is shown in
+figure <a href="book-Z-H-22.html#%_fig_3.15">3.15</a>. Here the <code>cdr</code> pointer of
+<code>x</code> has been replaced by the pointer to <code>(e f)</code>. Also, the list <code>(c d)</code>,
+which used to be the <code>cdr</code> of <code>x</code>, is now detached from the structure.</p>
+<p><code>Cons</code> builds new list structure by creating new pairs,
+while <code>set-car!</code> and <code>set-cdr!</code> modify existing pairs. Indeed, we could
+implement <code>cons</code> in terms of the two mutators, together with a procedure
+<code>get-new-pair</code>, which returns a new pair that is not part of any
+existing list structure. We obtain the new pair, set its <code>car</code> and <code>cdr</code>
+pointers to the designated objects, and return the new pair as the
+result of the
+<code>cons</code>.<a href="book-Z-H-22.html#footnote_Temp_351">^[18]{.small}^</a>{#call_footnote_Temp_351}</p>
+<pre><code class="language-scheme editable">(define (cons x y)
+  (let ((new (get-new-pair)))
+    (set-car! new x)
+    (set-cdr! new y)
+    new))
+</code></pre>
+<p><strong>Exercise 3.12.</strong>  The following
+procedure for appending lists was introduced in
+section <a href="book-Z-H-15.html#%_sec_2.2.1">2.2.1</a>:</p>
+<pre><code class="language-scheme editable">(define (append x y)
+  (if (null? x)
+      y
+      (cons (car x) (append (cdr x) y))))
+</code></pre>
+<p><code>Append</code> forms a new list by successively <code>cons</code>ing the elements of <code>x</code>
+onto <code>y</code>. The procedure <code>append!</code> is similar to <code>append</code>, but it is a
+mutator rather than a constructor. It appends the lists by splicing them
+together, modifying the final pair of <code>x</code> so that its <code>cdr</code> is now <code>y</code>.
+(It is an error to call <code>append!</code> with an empty <code>x</code>.)</p>
+<pre><code class="language-scheme editable">(define (append! x y)
+  (set-cdr! (last-pair x) y)
+  x)
+</code></pre>
+<p>Here <code>last-pair</code> is a procedure that returns the last pair in its
+argument:</p>
+<pre><code class="language-scheme editable">(define (last-pair x)
+  (if (null? (cdr x))
+      x
+      (last-pair (cdr x))))
+</code></pre>
+<p>Consider the interaction</p>
+<pre><code class="language-scheme editable">(define x (list 'a 'b))
+(define y (list 'c 'd))
+(define z (append x y))
+z
+</code></pre>
+<p><em><code>(a b c d)</code></em></p>
+<pre><code class="language-scheme editable">(cdr x)
+</code></pre>
+<p><code>&lt;</code><em><code>response</code></em><code>&gt;</code></p>
+<pre><code class="language-scheme editable">(define w (append! x y))
+w
+</code></pre>
+<p><em><code>(a b c d)</code></em></p>
+<pre><code class="language-scheme editable">(cdr x)
+</code></pre>
+<p><code>&lt;</code><em><code>response</code></em><code>&gt;</code></p>
+<p>What are the missing &lt;<em>response</em>&gt;s? Draw box-and-pointer diagrams to
+explain your answer.</p>
+<p><strong>Exercise 3.13.</strong>  Consider the
+following <code>make-cycle</code> procedure, which uses the <code>last-pair</code> procedure
+defined in exercise <a href="book-Z-H-22.html#%_thm_3.12">3.12</a>:</p>
+<pre><code class="language-scheme editable">(define (make-cycle x)
+  (set-cdr! (last-pair x) x)
+  x)
+</code></pre>
+<p>Draw a box-and-pointer diagram that shows the structure <code>z</code> created by</p>
+<pre><code class="language-scheme editable">(define z (make-cycle (list 'a 'b 'c)))
+</code></pre>
+<p>What happens if we try to compute <code>(last-pair z)</code>?</p>
+<p><strong>Exercise 3.14.</strong>  The following procedure is quite
+useful, although obscure:</p>
+<pre><code class="language-scheme editable">(define (mystery x)
+  (define (loop x y)
+    (if (null? x)
+        y
+        (let ((temp (cdr x)))
+          (set-cdr! x y)
+          (loop temp x))))
+  (loop x '()))
+</code></pre>
+<p><code>Loop</code> uses the ``temporary'' variable <code>temp</code> to hold the old value
+of the <code>cdr</code> of <code>x</code>, since the <code>set-cdr!</code> on the next line destroys the
+<code>cdr</code>. Explain what <code>mystery</code> does in general. Suppose <code>v</code> is defined by
+<code>(define v (list 'a 'b 'c 'd))</code>. Draw the box-and-pointer diagram that
+represents the list to which <code>v</code> is bound. Suppose that we now evaluate
+<code>(define w (mystery v))</code>. Draw box-and-pointer diagrams that show the
+structures <code>v</code> and <code>w</code> after evaluating this expression. What would be
+printed as the values of <code>v</code> and <code>w</code> ?</p>
+<h4 id="sharing-and-identity"><a class="header" href="#sharing-and-identity"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_355">Sharing and identity</a></a></h4>
+<p>We
+mentioned in section <a href="book-Z-H-20.html#%_sec_3.1.3">3.1.3</a> the
+theoretical issues of <code>sameness'' and </code>change'' raised by the
+introduction of assignment. These issues arise in practice when
+individual pairs are <em>shared</em> among different data objects. For example,
+consider the structure formed by</p>
+<pre><code class="language-scheme editable">(define x (list 'a 'b))
+(define z1 (cons x x))
+</code></pre>
+<p>As shown in figure <a href="book-Z-H-22.html#%_fig_3.16">3.16</a>, <code>z1</code> is a pair
+whose <code>car</code> and <code>cdr</code> both point to the same pair <code>x</code>. This sharing of
+<code>x</code> by the <code>car</code> and <code>cdr</code> of <code>z1</code> is a consequence of the
+straightforward way in which <code>cons</code> is implemented. In general, using
+<code>cons</code> to construct lists will result in an interlinked structure of
+pairs in which many individual pairs are shared by many different
+structures.</p>
+<p><img src="ch3-Z-G-17.gif" alt="" />{border="0"}</p>
+<p><strong>Figure 3.16:</strong>  The list <code>z1</code> formed by <code>(cons x x)</code>.</p>
+<p><img src="ch3-Z-G-18.gif" alt="" />{border="0"}</p>
+<p><strong>Figure 3.17:</strong>  The list <code>z2</code> formed by
+<code>(cons (list 'a 'b) (list 'a 'b))</code>.</p>
+<p>In contrast to figure <a href="book-Z-H-22.html#%_fig_3.16">3.16</a>,
+figure <a href="book-Z-H-22.html#%_fig_3.17">3.17</a> shows the structure created
+by</p>
+<pre><code class="language-scheme editable">(define z2 (cons (list 'a 'b) (list 'a 'b)))
+</code></pre>
+<p>In this structure, the pairs in the two <code>(a b)</code> lists are distinct,
+although the actual symbols are
+shared.<a href="book-Z-H-22.html#footnote_Temp_356">^[19]{.small}^</a>{#call_footnote_Temp_356}</p>
+<p>When thought of as a list, <code>z1</code> and <code>z2</code> both represent ``the same''
+list, <code>((a b) a b)</code>. In general, sharing is completely undetectable if
+we operate on lists using only <code>cons</code>, <code>car</code>, and <code>cdr</code>. However, if we
+allow mutators on list structure, sharing becomes significant. As an
+example of the difference that sharing can make, consider the following
+procedure, which modifies the <code>car</code> of the structure to which it is
+applied:</p>
+<pre><code class="language-scheme editable">(define (set-to-wow! x)
+  (set-car! (car x) 'wow)
+  x)
+</code></pre>
+<p>Even though <code>z1</code> and <code>z2</code> are ``the same'' structure, applying
+<code>set-to-wow!</code> to them yields different results. With <code>z1</code>, altering the
+<code>car</code> also changes the <code>cdr</code>, because in <code>z1</code> the <code>car</code> and the <code>cdr</code>
+are the same pair. With <code>z2</code>, the <code>car</code> and <code>cdr</code> are distinct, so
+<code>set-to-wow!</code> modifies only the <code>car</code>:</p>
+<pre><code class="language-scheme editable">z1
+</code></pre>
+<p><em><code>((a b) a b)</code></em></p>
+<pre><code class="language-scheme editable">(set-to-wow! z1)
+</code></pre>
+<p><em><code>((wow b) wow b)</code></em></p>
+<pre><code class="language-scheme editable">z2
+</code></pre>
+<p><em><code>((a b) a b)</code></em></p>
+<pre><code class="language-scheme editable">(set-to-wow! z2)
+</code></pre>
+<p><em><code>((wow b) a b)</code></em></p>
+<p>One way to detect sharing in list structures is to use the predicate
+<code>eq?</code>, which we introduced in
+section <a href="book-Z-H-16.html#%_sec_2.3.1">2.3.1</a> as a way to test whether
+two symbols are equal. More generally, <code>(eq? x y)</code> tests whether <code>x</code> and
+<code>y</code> are the same object (that is, whether <code>x</code> and <code>y</code> are equal as
+pointers). Thus, with <code>z1</code> and <code>z2</code> as defined in
+figures <a href="book-Z-H-22.html#%_fig_3.16">3.16</a>
+and <a href="book-Z-H-22.html#%_fig_3.17">3.17</a>, <code>(eq? (car z1) (cdr z1))</code> is
+true and <code>(eq? (car z2) (cdr z2))</code> is false.</p>
+<p>As will be seen in the following sections, we can exploit
+sharing to greatly extend the repertoire of data structures that can be
+represented by pairs. On the other hand, sharing can also be dangerous,
+since modifications made to structures will also affect other structures
+that happen to share the modified parts. The mutation operations
+<code>set-car!</code> and <code>set-cdr!</code> should be used with care; unless we have a
+good understanding of how our data objects are shared, mutation can have
+unanticipated
+results.<a href="book-Z-H-22.html#footnote_Temp_357">^[20]{.small}^</a>{#call_footnote_Temp_357}</p>
+<p><strong>Exercise 3.15.</strong>  Draw box-and-pointer diagrams to
+explain the effect of <code>set-to-wow!</code> on the structures <code>z1</code> and <code>z2</code>
+above.</p>
+<p><strong>Exercise 3.16.</strong>  Ben Bitdiddle decides to write a
+procedure to count the number of pairs in any list structure. <code>It's easy,'' he reasons. </code>The number of pairs in any structure is the
+number in the <code>car</code> plus the number in the <code>cdr</code> plus one more to count
+the current pair.'' So Ben writes the following procedure:</p>
+<pre><code class="language-scheme editable">(define (count-pairs x)
+  (if (not (pair? x))
+      0
+      (+ (count-pairs (car x))
+         (count-pairs (cdr x))
+         1)))
+</code></pre>
+<p>Show that this procedure is not correct. In particular, draw
+box-and-pointer diagrams representing list structures made up of exactly
+three pairs for which Ben's procedure would return 3; return 4; return
+7; never return at all.</p>
+<p><strong>Exercise 3.17.</strong>  Devise a correct version of the
+<code>count-pairs</code> procedure of exercise <a href="book-Z-H-22.html#%_thm_3.16">3.16</a>
+that returns the number of distinct pairs in any structure. (Hint:
+Traverse the structure, maintaining an auxiliary data structure that is
+used to keep track of which pairs have already been counted.)</p>
+<p><strong>Exercise 3.18.</strong>  Write a procedure
+that examines a list and determines whether it contains a cycle, that
+is, whether a program that tried to find the end of the list by taking
+successive <code>cdr</code>s would go into an infinite loop.
+Exercise <a href="book-Z-H-22.html#%_thm_3.13">3.13</a> constructed such lists.</p>
+<p><strong>Exercise 3.19.</strong>  Redo
+exercise <a href="book-Z-H-22.html#%_thm_3.18">3.18</a> using an algorithm that
+takes only a constant amount of space. (This requires a very clever
+idea.)</p>
+<h4 id="mutation-is-just-assignment"><a class="header" href="#mutation-is-just-assignment"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_363">Mutation is just assignment</a></a></h4>
+<p>When we
+introduced compound data, we observed in
+section <a href="book-Z-H-14.html#%_sec_2.1.3">2.1.3</a> that pairs can be
+represented purely in terms of procedures:</p>
+<pre><code class="language-scheme editable">(define (cons x y)
+  (define (dispatch m)
+    (cond ((eq? m 'car) x)
+          ((eq? m 'cdr) y)
+          (else (error "Undefined operation -- CONS" m))))
+  dispatch)
+(define (car z) (z 'car))
+(define (cdr z) (z 'cdr))
+</code></pre>
+<p>The same observation is true for mutable data. We can implement mutable
+data objects as procedures using assignment and local state. For
+instance, we can extend the above pair implementation to handle
+<code>set-car!</code> and <code>set-cdr!</code> in a manner analogous to the way we
+implemented bank accounts using <code>make-account</code> in
+section <a href="book-Z-H-20.html#%_sec_3.1.1">3.1.1</a>:</p>
+<pre><code class="language-scheme editable">(define (cons x y)
+  (define (set-x! v) (set! x v))
+  (define (set-y! v) (set! y v))
+  (define (dispatch m)
+    (cond ((eq? m 'car) x)
+          ((eq? m 'cdr) y)
+          ((eq? m 'set-car!) set-x!)
+          ((eq? m 'set-cdr!) set-y!)
+          (else (error "Undefined operation -- CONS" m))))
+  dispatch)
+(define (car z) (z 'car))
+(define (cdr z) (z 'cdr))
+(define (set-car! z new-value)
+  ((z 'set-car!) new-value)
+  z)
+(define (set-cdr! z new-value)
+  ((z 'set-cdr!) new-value)
+  z)
+</code></pre>
+<p>Assignment is all that is needed, theoretically, to account for the
+behavior of mutable data. As soon as we admit <code>set!</code> to our language, we
+raise all the issues, not only of assignment, but of mutable data in
+general.<a href="book-Z-H-22.html#footnote_Temp_364">^[21]{.small}^</a>{#call_footnote_Temp_364}</p>
+<p><strong>Exercise 3.20.</strong>  Draw environment diagrams to
+illustrate the evaluation of the sequence of expressions</p>
+<pre><code class="language-scheme editable">(define x (cons 1 2))
+(define z (cons x x))
+(set-car! (cdr z) 17)
+(car x)
+</code></pre>
+<p><em><code>17</code></em></p>
+<p>using the procedural implementation of pairs given above. (Compare
+exercise <a href="book-Z-H-21.html#%_thm_3.11">3.11</a>.)</p>
+<h3 id="332--representing-queues"><a class="header" href="#332--representing-queues"><a href="book-Z-H-4.html#%_toc_%_sec_3.3.2">3.3.2  Representing Queues</a></a></h3>
+<p>The mutators <code>set-car!</code> and <code>set-cdr!</code> enable us to use
+pairs to construct data structures that cannot be built with <code>cons</code>,
+<code>car</code>, and <code>cdr</code> alone. This section shows how to use pairs to represent
+a data structure called a queue.
+Section <a href="book-Z-H-22.html#%_sec_3.3.3">3.3.3</a> will show how to represent
+data structures called tables.</p>
+<p>A <em>queue</em> is a sequence in which items are inserted at one end (called
+the <em>rear</em> of the queue) and deleted from the other end
+(the <em>front</em>). Figure <a href="book-Z-H-22.html#%_fig_3.18">3.18</a>
+shows an initially empty queue in which the items <code>a</code> and <code>b</code> are
+inserted. Then <code>a</code> is removed, <code>c</code> and <code>d</code> are inserted, and <code>b</code> is
+removed. Because items are always removed in the order in which they are
+inserted, a queue is sometimes called a <em>FIFO</em> (first in,
+first out) buffer.</p>
+<hr />
+<h2>Operation                   Resulting Queue
+<code>(define q (make-queue))</code><br />
+<code>(insert-queue! q 'a)</code>      <code>a</code>
+<code>(insert-queue! q 'b)</code>      <code>a b</code>
+<code>(delete-queue! q)</code>         <code>b</code>
+<code>(insert-queue! q 'c)</code>      <code>b c</code>
+<code>(insert-queue! q 'd)</code>      <code>b c d</code>
+<code>(delete-queue! q)</code>         <code>c d</code></h2>
+<p><strong>Figure 3.18:</strong>  Queue operations.</p>
+<p>In terms of data abstraction, we can
+regard a queue as defined by the following set of operations:</p>
+<ul>
+<li>a constructor:
+<pre><code class="language-scheme editable">(make-queue)
+</code></pre>
+returns an empty queue (a queue containing no items).</li>
+<li>two selectors:
+<pre><code class="language-scheme editable">(empty-queue? &lt;queue&gt;)
+</code></pre>
+tests if the queue is empty.
+<pre><code class="language-scheme editable">(front-queue &lt;queue&gt;)
+</code></pre>
+returns the object at the front of the queue, signaling an error if
+the queue is empty; it does not modify the queue.</li>
+<li>two mutators:
+<pre><code class="language-scheme editable">(insert-queue! &lt;queue&gt; &lt;item&gt;)
+</code></pre>
+inserts the item at the rear of the queue and returns the modified
+queue as its value.
+<pre><code class="language-scheme editable">(delete-queue! &lt;queue&gt;)
+</code></pre>
+removes the item at the front of the queue and returns the modified
+queue as its value, signaling an error if the queue is empty before
+the deletion.</li>
+</ul>
+<p>Because a queue is a sequence of items, we could certainly represent it
+as an ordinary list; the front of the queue would be the <code>car</code> of the
+list, inserting an item in the queue would amount to appending a new
+element at the end of the list, and deleting an item from the queue
+would just be taking the <code>cdr</code> of the list. However, this representation
+is inefficient, because in order to insert an item we must scan the list
+until we reach the end. Since the only method we have for scanning a
+list is by successive <code>cdr</code> operations, this scanning requires
+<img src="book-Z-G-D-3.gif" alt="" />{border="0"}(<em>n</em>) steps for a list of <em>n</em> items. A
+simple modification to the list representation overcomes this
+disadvantage by allowing the queue operations to be implemented so that
+they require <img src="book-Z-G-D-3.gif" alt="" />{border="0"}(1) steps; that is, so
+that the number of steps needed is independent of the length of the
+queue.</p>
+<p>The difficulty with the list representation arises from the need to scan
+to find the end of the list. The reason we need to scan is that,
+although the standard way of representing a list as a chain of pairs
+readily provides us with a pointer to the beginning of the list, it
+gives us no easily accessible pointer to the end. The modification that
+avoids the drawback is to represent the queue as a list, together with
+an additional pointer that indicates the final pair in the list. That
+way, when we go to insert an item, we can consult the rear pointer and
+so avoid scanning the list.</p>
+<p>A queue is represented, then, as a pair of pointers, <code>front-ptr</code> and
+<code>rear-ptr</code>, which indicate, respectively, the first and last pairs in an
+ordinary list. Since we would like the queue to be an identifiable
+object, we can use <code>cons</code> to combine the two pointers. Thus, the queue
+itself will be the <code>cons</code> of the two pointers.
+Figure <a href="book-Z-H-22.html#%_fig_3.19">3.19</a> illustrates this
+representation.</p>
+<p><img src="ch3-Z-G-19.gif" alt="" />{border="0"}</p>
+<p><strong>Figure 3.19:</strong>  Implementation of a queue as a list with front and
+rear pointers.</p>
+<p>To define the queue operations we use the following procedures, which
+enable us to select and to modify the front and rear pointers of a
+queue:</p>
+<pre><code class="language-scheme editable">(define (front-ptr queue) (car queue))
+(define (rear-ptr queue) (cdr queue))
+(define (set-front-ptr! queue item) (set-car! queue item))
+(define (set-rear-ptr! queue item) (set-cdr! queue item))
+</code></pre>
+<p>Now we can implement the actual queue operations. We will consider a
+queue to be empty if its front pointer is the empty list:</p>
+<pre><code class="language-scheme editable">(define (empty-queue? queue) (null? (front-ptr queue)))
+</code></pre>
+<p>The <code>make-queue</code> constructor returns, as an initially empty queue, a
+pair whose <code>car</code> and <code>cdr</code> are both the empty list:</p>
+<pre><code class="language-scheme editable">(define (make-queue) (cons '() '()))
+</code></pre>
+<p>To select the item at the front of the queue, we return the <code>car</code> of the
+pair indicated by the front pointer:</p>
+<pre><code class="language-scheme editable">(define (front-queue queue)
+  (if (empty-queue? queue)
+      (error "FRONT called with an empty queue" queue)
+      (car (front-ptr queue))))
+</code></pre>
+<p>To insert an item in a queue, we follow the method whose result is
+indicated in figure <a href="book-Z-H-22.html#%_fig_3.20">3.20</a>. We first create
+a new pair whose <code>car</code> is the item to be inserted and whose <code>cdr</code> is the
+empty list. If the queue was initially empty, we set the front and rear
+pointers of the queue to this new pair. Otherwise, we modify the final
+pair in the queue to point to the new pair, and also set the rear
+pointer to the new pair.</p>
+<p><img src="ch3-Z-G-20.gif" alt="" />{border="0"}</p>
+<p><strong>Figure 3.20:</strong>  Result of using <code>(insert-queue! q 'd)</code> on the queue of
+figure <a href="book-Z-H-22.html#%_fig_3.19">3.19</a>.</p>
+<pre><code class="language-scheme editable">(define (insert-queue! queue item)
+  (let ((new-pair (cons item '())))
+    (cond ((empty-queue? queue)
+           (set-front-ptr! queue new-pair)
+           (set-rear-ptr! queue new-pair)
+           queue)
+          (else
+           (set-cdr! (rear-ptr queue) new-pair)
+           (set-rear-ptr! queue new-pair)
+           queue)))) 
+</code></pre>
+<p>To delete the item at the front of the queue, we merely modify the front
+pointer so that it now points at the second item in the queue, which can
+be found by following the <code>cdr</code> pointer of the first item (see
+figure <a href="book-Z-H-22.html#%_fig_3.21">3.21</a>):^[22]{.small}^](book-Z-H-22.html#footnote_Temp_366){#call_footnote_Temp_366}</p>
+<p><img src="ch3-Z-G-21.gif" alt="" />{border="0"}</p>
+<p><strong>Figure 3.21:</strong>  Result of using <code>(delete-queue! q)</code> on the queue of
+figure <a href="book-Z-H-22.html#%_fig_3.20">3.20</a>.</p>
+<pre><code class="language-scheme editable">(define (delete-queue! queue)
+  (cond ((empty-queue? queue)
+         (error "DELETE! called with an empty queue" queue))
+        (else
+         (set-front-ptr! queue (cdr (front-ptr queue)))
+         queue))) 
+</code></pre>
+<p><strong>Exercise 3.21.</strong>  Ben Bitdiddle decides to test the
+queue implementation described above. He types in the procedures to the
+Lisp interpreter and proceeds to try them out:</p>
+<pre><code class="language-scheme editable">(define q1 (make-queue))
+(insert-queue! q1 'a)
+</code></pre>
+<p><em><code>((a) a)</code></em></p>
+<pre><code class="language-scheme editable">(insert-queue! q1 'b)
+</code></pre>
+<p><em><code>((a b) b)</code></em></p>
+<pre><code class="language-scheme editable">(delete-queue! q1)
+</code></pre>
+<p><em><code>((b) b)</code></em></p>
+<pre><code class="language-scheme editable">(delete-queue! q1)
+</code></pre>
+<p><em><code>(() b)</code></em></p>
+<p><code>It's all wrong!'' he complains. </code>The interpreter's response
+shows that the last item is inserted into the queue twice. And when I
+delete both items, the second <code>b</code> is still there, so the queue isn't
+empty, even though it's supposed to be.'' Eva Lu Ator suggests that
+Ben has misunderstood what is happening. <code>It's not that the items are going into the queue twice,'' she explains. </code>It's just that
+the standard Lisp printer doesn't know how to make sense of the queue
+representation. If you want to see the queue printed correctly, you'll
+have to define your own print procedure for queues.'' Explain what Eva
+Lu is talking about. In particular, show why Ben's examples produce the
+printed results that they do. Define a procedure
+<code>print-queue</code> that takes a queue as input and prints the
+sequence of items in the queue.</p>
+<p><strong>Exercise 3.22.</strong>  Instead of
+representing a queue as a pair of pointers, we can build a queue as a
+procedure with local state. The local state will consist of pointers to
+the beginning and the end of an ordinary list. Thus, the <code>make-queue</code>
+procedure will have the form</p>
+<pre><code class="language-scheme editable">(define (make-queue)
+  (let ((front-ptr ...)
+        (rear-ptr ...))
+    &lt;definitions of internal procedures&gt;
+    (define (dispatch m) ...)
+    dispatch))
+</code></pre>
+<p>Complete the definition of <code>make-queue</code> and provide implementations of
+the queue operations using this representation.</p>
+<p><strong>Exercise 3.23.</strong>  A
+<em>deque</em> (``double-ended queue'') is a sequence in which items can be
+inserted and deleted at either the front or the rear. Operations on
+deques are the constructor <code>make-deque</code>, the predicate <code>empty-deque?</code>,
+selectors <code>front-deque</code> and <code>rear-deque</code>, and mutators
+<code>front-insert-deque!</code>, <code>rear-insert-deque!</code>, <code>front-delete-deque!</code>, and
+<code>rear-delete-deque!</code>. Show how to represent deques using pairs, and give
+implementations of the
+operations.<a href="book-Z-H-22.html#footnote_Temp_370">^[23]{.small}^</a>{#call_footnote_Temp_370}
+All operations should be accomplished in
+<img src="book-Z-G-D-3.gif" alt="" />{border="0"}(1) steps.</p>
+<h3 id="333--representing-tables"><a class="header" href="#333--representing-tables"><a href="book-Z-H-4.html#%_toc_%_sec_3.3.3">3.3.3  Representing Tables</a></a></h3>
+<p>When we studied various ways of
+representing sets in chapter 2, we mentioned in
+section <a href="book-Z-H-16.html#%_sec_2.3.3">2.3.3</a> the task of maintaining a
+table of records indexed by identifying keys. In the implementation of
+data-directed programming in
+section <a href="book-Z-H-17.html#%_sec_2.4.3">2.4.3</a>, we made extensive use of
+two-dimensional tables, in which information is stored and retrieved
+using two keys. Here we see how to build tables as mutable list
+structures.</p>
+<p>We first consider a one-dimensional table, in which each
+value is stored under a single key. We implement the table as a list of
+records, each of which is implemented as a pair consisting of a key and
+the associated value. The records are glued together to form a list by
+pairs whose <code>car</code>s point to successive records. These gluing pairs are
+called the <em>backbone</em> of the table. In order to have a
+place that we can change when we add a new record to the table, we build
+the table as a <em>headed list</em>. A headed
+list has a special backbone pair at the beginning, which holds a dummy
+``record'' -- in this case the arbitrarily chosen symbol <code>*table*</code>.
+Figure <a href="book-Z-H-22.html#%_fig_3.22">3.22</a> shows the box-and-pointer
+diagram for the table</p>
+<p><code>a:  1</code>
+<code>b:  2</code>
+<code>c:  3</code></p>
+<p><img src="ch3-Z-G-22.gif" alt="" />{border="0"}</p>
+<p><strong>Figure 3.22:</strong>  A table represented as a headed list.</p>
+<p>To extract information from a table we use the <code>lookup</code> procedure, which
+takes a key as argument and returns the associated value (or false if
+there is no value stored under that key). <code>Lookup</code> is defined in terms
+of the <code>assoc</code> operation, which expects a key and a list of records as
+arguments. Note that <code>assoc</code> never sees the dummy record. <code>Assoc</code>
+returns the record that has the given key as its
+<code>car</code>.<a href="book-Z-H-22.html#footnote_Temp_371">^[24]{.small}^</a>{#call_footnote_Temp_371}
+<code>Lookup</code> then checks to see that the resulting record returned by
+<code>assoc</code> is not false, and returns the value (the <code>cdr</code>) of the record.</p>
+<pre><code class="language-scheme editable">(define (lookup key table)
+  (let ((record (assoc key (cdr table))))
+    (if record
+        (cdr record)
+        false)))
+(define (assoc key records)
+  (cond ((null? records) false)
+        ((equal? key (caar records)) (car records))
+        (else (assoc key (cdr records)))))
+</code></pre>
+<p>To insert a value in a table under a specified key, we first use <code>assoc</code>
+to see if there is already a record in the table with this key. If not,
+we form a new record by <code>cons</code>ing the key with the value, and insert
+this at the head of the table's list of records, after the dummy
+record. If there already is a record with this key, we set the <code>cdr</code> of
+this record to the designated new value. The header of the table
+provides us with a fixed location to modify in order to insert the new
+record.<a href="book-Z-H-22.html#footnote_Temp_372">^[25]{.small}^</a>{#call_footnote_Temp_372}</p>
+<pre><code class="language-scheme editable">(define (insert! key value table)
+  (let ((record (assoc key (cdr table))))
+    (if record
+        (set-cdr! record value)
+        (set-cdr! table
+                  (cons (cons key value) (cdr table)))))
+  'ok)
+</code></pre>
+<p>To construct a new table, we simply create a list containing the symbol
+<code>*table*</code>:</p>
+<pre><code class="language-scheme editable">(define (make-table)
+  (list '*table*))
+</code></pre>
+<h4 id="two-dimensional-tables"><a class="header" href="#two-dimensional-tables"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_373">Two-dimensional tables</a></a></h4>
+<p>In a two-dimensional table, each value is indexed by two
+keys. We can construct such a table as a one-dimensional table in which
+each key identifies a subtable.
+Figure <a href="book-Z-H-22.html#%_fig_3.23">3.23</a> shows the box-and-pointer
+diagram for the table</p>
+<p><code>math:</code>
+<code>  +:</code>  <code>43</code>
+<code>  -:</code>  <code>45</code>
+<code>  *:</code>  <code>42</code>
+<code>letters:</code>
+<code>  a:</code>  <code>97</code>
+<code>  b:</code>  <code>98</code></p>
+<p>which has two subtables. (The subtables don't need a special header
+symbol, since the key that identifies the subtable serves this purpose.)</p>
+<p><img src="ch3-Z-G-23.gif" alt="" />{border="0"}</p>
+<p><strong>Figure 3.23:</strong>  A two-dimensional table.</p>
+<p>When we look up an item, we use the first key to identify the correct
+subtable. Then we use the second key to identify the record within the
+subtable.</p>
+<pre><code class="language-scheme editable">(define (lookup key-1 key-2 table)
+  (let ((subtable (assoc key-1 (cdr table))))
+    (if subtable
+        (let ((record (assoc key-2 (cdr subtable))))
+          (if record
+              (cdr record)
+              false))
+        false)))
+</code></pre>
+<p>To insert a new item under a pair of keys, we use <code>assoc</code> to see if
+there is a subtable stored under the first key. If not, we build a new
+subtable containing the single record (<code>key-2</code>, <code>value</code>) and insert it
+into the table under the first key. If a subtable already exists for the
+first key, we insert the new record into this subtable, using the
+insertion method for one-dimensional tables described above:</p>
+<pre><code class="language-scheme editable">(define (insert! key-1 key-2 value table)
+  (let ((subtable (assoc key-1 (cdr table))))
+    (if subtable
+        (let ((record (assoc key-2 (cdr subtable))))
+          (if record
+              (set-cdr! record value)
+              (set-cdr! subtable
+                        (cons (cons key-2 value)
+                              (cdr subtable)))))
+        (set-cdr! table
+                  (cons (list key-1
+                              (cons key-2 value))
+                        (cdr table)))))
+  'ok)
+</code></pre>
+<h4 id="creating-local-tables"><a class="header" href="#creating-local-tables"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_374">Creating local tables</a></a></h4>
+<p>The <code>lookup</code> and <code>insert!</code> operations defined above take
+the table as an argument. This enables us to use programs that access
+more than one table. Another way to deal with multiple tables is to have
+separate <code>lookup</code> and <code>insert!</code> procedures for each table. We can do
+this by representing a table procedurally, as an object that maintains
+an internal table as part of its local state. When sent an appropriate
+message, this ``table object'' supplies the procedure with which to
+operate on the internal table. Here is a generator for two-dimensional
+tables represented in this fashion:</p>
+<pre><code class="language-scheme editable">(define (make-table)
+  (let ((local-table (list '*table*)))
+    (define (lookup key-1 key-2)
+      (let ((subtable (assoc key-1 (cdr local-table))))
+        (if subtable
+            (let ((record (assoc key-2 (cdr subtable))))
+              (if record
+                  (cdr record)
+                  false))
+            false)))
+    (define (insert! key-1 key-2 value)
+      (let ((subtable (assoc key-1 (cdr local-table))))
+        (if subtable
+            (let ((record (assoc key-2 (cdr subtable))))
+              (if record
+                  (set-cdr! record value)
+                  (set-cdr! subtable
+                            (cons (cons key-2 value)
+                                  (cdr subtable)))))
+            (set-cdr! local-table
+                      (cons (list key-1
+                                  (cons key-2 value))
+                            (cdr local-table)))))
+      'ok)    
+    (define (dispatch m)
+      (cond ((eq? m 'lookup-proc) lookup)
+            ((eq? m 'insert-proc!) insert!)
+            (else (error "Unknown operation -- TABLE" m))))
+    dispatch))
+</code></pre>
+<p>Using <code>make-table</code>, we could implement the <code>get</code> and <code>put</code> operations
+used in section <a href="book-Z-H-17.html#%_sec_2.4.3">2.4.3</a> for data-directed
+programming, as follows:</p>
+<pre><code class="language-scheme editable">(define operation-table (make-table))
+(define get (operation-table 'lookup-proc))
+(define put (operation-table 'insert-proc!))
+</code></pre>
+<p><code>Get</code> takes as arguments two keys, and <code>put</code> takes as arguments two keys
+and a value. Both operations access the same local table, which is
+encapsulated within the object created by the call to <code>make-table</code>.</p>
+<p><strong>Exercise 3.24.</strong>  In the
+table implementations above, the keys are tested for equality using
+<code>equal?</code> (called by <code>assoc</code>). This is not always the appropriate test.
+For instance, we might have a table with numeric keys in which we don't
+need an exact match to the number we're looking up, but only a number
+within some tolerance of it. Design a table constructor <code>make-table</code>
+that takes as an argument a <code>same-key?</code> procedure that will be used to
+test ``equality'' of keys. <code>Make-table</code> should return a <code>dispatch</code>
+procedure that can be used to access appropriate <code>lookup</code> and <code>insert!</code>
+procedures for a local table.</p>
+<p><strong>Exercise 3.25.</strong>  Generalizing one- and
+two-dimensional tables, show how to implement a table in which values
+are stored under an arbitrary number of keys and different values may be
+stored under different numbers of keys. The <code>lookup</code> and <code>insert!</code>
+procedures should take as input a list of keys used to access the table.</p>
+<p><strong>Exercise 3.26.</strong>  To
+search a table as implemented above, one needs to scan through the list
+of records. This is basically the unordered list representation of
+section <a href="book-Z-H-16.html#%_sec_2.3.3">2.3.3</a>. For large tables, it may
+be more efficient to structure the table in a different manner. Describe
+a table implementation where the (key, value) records are organized
+using a binary tree, assuming that keys can be ordered in some way
+(e.g., numerically or alphabetically). (Compare
+exercise <a href="book-Z-H-16.html#%_thm_2.66">2.66</a> of chapter 2.)</p>
+<p><strong>Exercise
+3.27.</strong>  <em>Memoization</em>
+(also called <em>tabulation</em>) is a technique that enables a procedure to
+record, in a local table, values that have previously been computed.
+This technique can make a vast difference in the performance of a
+program. A memoized procedure maintains a table in which values of
+previous calls are stored using as keys the arguments that produced the
+values. When the memoized procedure is asked to compute a value, it
+first checks the table to see if the value is already there and, if so,
+just returns that value. Otherwise, it computes the new value in the
+ordinary way and stores this in the table. As an example of memoization,
+recall from section <a href="book-Z-H-11.html#%_sec_1.2.2">1.2.2</a> the
+exponential process for computing Fibonacci numbers:</p>
+<pre><code class="language-scheme editable">(define (fib n)
+  (cond ((= n 0) 0)
+        ((= n 1) 1)
+        (else (+ (fib (- n 1))
+                 (fib (- n 2))))))
+</code></pre>
+<p>The memoized version of the same procedure is</p>
+<pre><code class="language-scheme editable">(define memo-fib
+  (memoize (lambda (n)
+             (cond ((= n 0) 0)
+                   ((= n 1) 1)
+                   (else (+ (memo-fib (- n 1))
+                            (memo-fib (- n 2))))))))
+</code></pre>
+<p>where the memoizer is defined as</p>
+<pre><code class="language-scheme editable">(define (memoize f)
+  (let ((table (make-table)))
+    (lambda (x)
+      (let ((previously-computed-result (lookup x table)))
+        (or previously-computed-result
+            (let ((result (f x)))
+              (insert! x result table)
+              result))))))
+</code></pre>
+<p>Draw an environment diagram to analyze the computation of
+<code>(memo-fib 3)</code>. Explain why <code>memo-fib</code> computes the <em>n</em>th Fibonacci
+number in a number of steps proportional to <em>n</em>. Would the scheme still
+work if we had simply defined <code>memo-fib</code> to be <code>(memoize fib)</code>?</p>
+<p>...</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="3.2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="3.4.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="3.2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="3.4.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="./highlight.js"></script>
+        <script src="./src/languages/scheme.min.js"></script>
+        <script src="./biwascheme.min.js"></script>
+        <script src="./biwascheme_run_logic.js"></script>
+
+
+    </div>
+    </body>
+</html>

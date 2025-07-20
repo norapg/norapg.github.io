@@ -1,0 +1,1090 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Designing Register Machines - SICP</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="./src/styles/docco.min.css">
+        <link rel="stylesheet" href="./run_button_style.css">
+        <link rel="stylesheet" href="./custom.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">SICP</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="51-designing-register-machines"><a class="header" href="#51-designing-register-machines"><a href="book-Z-H-4.html#%_toc_%_sec_5.1">5.1 Designing Register Machines</a></a></h2>
+<p>To design a register machine, we must design its <em>data paths</em> (registers
+and operations) and the <em>controller</em> that sequences these operations. To
+illustrate the design of a simple register machine, let us examine
+Euclid's Algorithm, which is used to compute the
+greatest common divisor (GCD) of two integers. As we saw in
+section
+<a href="book-Z-H-11.html#%_sec_1.2.5">1.2.5</a>, Euclid's
+Algorithm can be carried out by an iterative process, as specified by
+the following procedure:</p>
+<pre><code class="language-scheme editable">(define (gcd a b)
+  (if (= b 0)
+      a
+      (gcd b (remainder a b))))
+</code></pre>
+<p>A machine to carry out this algorithm must keep track of two numbers,
+<em>a</em> and <em>b</em>, so let us assume that these numbers are stored in two
+registers with those names. The basic operations required are testing
+whether the contents of register <code>b</code> is zero and computing the remainder
+of the contents of register <code>a</code> divided by the contents of register <code>b</code>.
+The remainder operation is a complex process, but assume for the moment
+that we have a primitive device that computes remainders. On each cycle
+of the GCD algorithm, the contents of register <code>a</code> must be replaced by
+the contents of register <code>b</code>, and the contents of <code>b</code> must be replaced
+by the remainder of the old contents of <code>a</code> divided by the old contents
+of <code>b</code>. It would be convenient if these replacements could be done
+simultaneously, but in our model of register machines we will assume
+that only one register can be assigned a new value at each step. To
+accomplish the replacements, our machine will use a third
+''temporary'' register, which we call <code>t</code>. (First the remainder will
+be placed in <code>t</code>, then the contents of <code>b</code> will be placed in <code>a</code>, and
+finally the remainder stored in <code>t</code> will be placed in <code>b</code>.)</p>
+<p>We can illustrate the registers and
+operations required for this machine by using the data-path diagram
+shown in figure
+<a href="book-Z-H-31.html#%_fig_5.1">5.1</a>. In this diagram, the
+registers (<code>a</code>, <code>b</code>, and <code>t</code>) are represented by rectangles. Each way to
+assign a value to a register is indicated by an arrow with an <code>X</code> behind
+the head, pointing from the source of data to the register. We can think
+of the <code>X</code> as a button that, when pushed, allows the value at the source
+to ''flow'' into the designated register. The label next to each
+button is the name we will use to refer to the button. The names are
+arbitrary, and can be chosen to have mnemonic value (for example, <code>a&lt;-b</code>
+denotes pushing the button that assigns the contents of register <code>b</code> to
+register <code>a</code>). The source of data for a register can be another register
+(as in the <code>a&lt;-b</code> assignment), an operation result (as in the <code>t&lt;-r</code>
+assignment), or a constant (a built-in value that cannot be changed,
+represented in a data-path diagram by a triangle containing the
+constant).</p>
+<p>An operation that computes a value from constants and the contents of
+registers is represented in a data-path diagram by a trapezoid
+containing a name for the operation. For example, the box marked <code>rem</code>
+in figure
+<a href="book-Z-H-31.html#%_fig_5.1">5.1</a> represents an operation that
+computes the remainder of the contents of the registers <code>a</code> and <code>b</code> to
+which it is attached. Arrows (without buttons) point from the input
+registers and constants to the box, and arrows connect the operation's
+output value to registers. A test is represented by a circle containing
+a name for the test. For example, our GCD machine has an operation that
+tests whether the contents of register <code>b</code> is zero. A test also has
+arrows from its input registers and
+constants, but it has no output arrows; its value is used by the
+controller rather than by the data paths. Overall, the data-path diagram
+shows the registers and operations that are required for the machine and
+how they must be connected. If we view the arrows as wires and the <code>X</code>
+buttons as switches, the data-path diagram is very like the wiring
+diagram for a machine that could be constructed from electrical
+components.</p>
+<p><img src="ch5-Z-G-1.gif" alt="" /></p>
+<p><strong>Figure 5.1:</strong>
+Data paths for a GCD machine.</p>
+<p>In order for the data paths to actually
+compute GCDs, the buttons must be pushed in the correct sequence. We
+will describe this sequence in terms of a controller diagram, as
+illustrated in figure
+<a href="book-Z-H-31.html#%_fig_5.2">5.2</a>. The elements of
+the controller diagram indicate how the data-path components should be
+operated. The rectangular boxes in the controller diagram identify
+data-path buttons to be pushed, and the arrows describe the sequencing
+from one step to the next. The diamond in the diagram represents a
+decision. One of the two sequencing arrows will be followed, depending
+on the value of the data-path test identified in the diamond. We can
+interpret the controller in terms of a physical analogy: Think of the
+diagram as a maze in which a marble is rolling. When the marble rolls
+into a box, it pushes the data-path button that is named by the box.
+When the marble rolls into a decision node (such as the test for <code>b</code> =
+0), it leaves the node on the path determined by the result of the
+indicated test. Taken together, the data paths and the controller
+completely describe a machine for computing GCDs. We start the
+controller (the rolling marble) at the place marked <code>start</code>, after
+placing numbers in registers <code>a</code> and <code>b</code>. When the controller reaches
+<code>done</code>, we will find the value of the GCD in register <code>a</code>.</p>
+<p><img src="ch5-Z-G-2.gif" alt="" /></p>
+<p><strong>Figure 5.2:</strong>
+Controller for a GCD machine.</p>
+<p><strong>Exercise 5.1.</strong>
+Design a register
+machine to compute factorials using the iterative algorithm specified by
+the following procedure. Draw data-path and controller diagrams for this
+machine.</p>
+<pre><code class="language-scheme editable">(define (factorial n)
+  (define (iter product counter)
+    (if (&gt; counter n)
+        product
+        (iter (* counter product)
+              (+ counter 1))))
+  (iter 1 1))
+</code></pre>
+<h3 id="511"><a class="header" href="#511">[5.1.1</a></h3>
+<p>A Language for Describing Register Machines](book-Z-H-4.html#%<em>toc</em>%_sec_5.1.1)</p>
+<p>Data-path and controller diagrams are adequate for
+representing simple machines such as GCD, but they are unwieldy for
+describing large machines such as a Lisp interpreter. To make it
+possible to deal with complex machines, we will create a language that
+presents, in textual form, all the information given by the data-path
+and controller diagrams. We will start with a notation that directly
+mirrors the diagrams.</p>
+<p>We define the data paths of a machine by describing the registers and
+the operations. To describe a register, we give it a name and specify
+the buttons that control assignment to it. We give each of these buttons
+a name and specify the source of the data that enters the register under
+the button's control. (The source is a register, a constant, or an
+operation.) To describe an operation, we give it a name and specify its
+inputs (registers or constants).</p>
+<p>We define the controller of a machine as a sequence of
+<em>instructions</em> together with
+<em>labels</em> that identify <em>entry points</em> in
+the sequence. An instruction is one of the following:</p>
+<ul>
+<li>
+<p>The name of a data-path button to push to assign a value to a
+register. (This corresponds to a box in the controller diagram.)</p>
+</li>
+<li>
+<p>A <code>test</code> instruction, that performs a specified test.</p>
+</li>
+<li>
+<p>A conditional branch (<code>branch</code> instruction) to a location indicated by
+a controller label, based on the result of the previous test. (The
+test and branch together correspond to a diamond in the controller
+diagram.) If the test is false, the controller should continue with
+the next instruction in the sequence. Otherwise, the controller should
+continue with the instruction after the label.</p>
+</li>
+<li>
+<p>An unconditional branch (<code>goto</code> instruction) naming a controller label
+at which to continue execution.</p>
+</li>
+</ul>
+<p>The machine starts at the beginning of the controller instruction
+sequence and stops when execution reaches the end of the sequence.
+Except when a branch changes the flow of control, instructions are
+executed in the order in which they are listed.</p>
+<pre><code class="language-scheme editable">(data-paths
+ (registers
+  ((name a)
+   (buttons ((name a&lt;-b) (source (register b)))))
+  ((name b)
+   (buttons ((name b&lt;-t) (source (register t)))))
+  ((name t)
+   (buttons ((name t&lt;-r) (source (operation rem))))))
+
+ (operations
+  ((name rem)
+   (inputs (register a) (register b)))
+  ((name =)
+   (inputs (register b) (constant 0)))))
+
+(controller
+ test-b                           `*`; label`*`
+   (test =)                       `*`; test`*`
+   (branch (label gcd-done))      `*`; conditional branch`*`
+   (t&lt;-r)                         `*`; button push`*`
+   (a&lt;-b)                         `*`; button push`*`
+   (b&lt;-t)                         `*`; button push`*`
+   (goto (label test-b))          `*`; unconditional branch`*`
+ gcd-done)                        `*`; label`*`
+</code></pre>
+<p><strong>Figure 5.3:</strong>
+A specification of the GCD machine.</p>
+<p>Figure
+<a href="book-Z-H-31.html#%_fig_5.3">5.3</a> shows the GCD machine described
+in this way. This example only hints at the generality of these
+descriptions, since the GCD machine is a very simple case: Each register
+has only one button, and each button and test is used only once in the
+controller.</p>
+<p>Unfortunately, it is difficult to read such a description. In order to
+understand the controller instructions we must constantly refer back to
+the definitions of the button names and the operation names, and to
+understand what the buttons do we may have to refer to the definitions
+of the operation names. We will thus transform our notation to combine
+the information from the data-path and controller descriptions so that
+we see it all together.</p>
+<p>To obtain this form of description, we will replace the arbitrary button
+and operation names by the definitions of their behavior. That is,
+instead of saying (in the controller) ''Push button <code>t&lt;-r</code>'' and
+separately saying (in the data paths) ''Button <code>t&lt;-r</code> assigns the
+value of the <code>rem</code> operation to register <code>t</code>'' and ''The <code>rem</code>
+operation's inputs are the contents of registers
+<code>a</code>
+and <code>b</code>,'' we will say (in the controller) ''Push the button that
+assigns to register <code>t</code> the value of the <code>rem</code> operation on the contents
+of registers <code>a</code> and <code>b</code>.'' Similarly, instead of saying (in the
+controller) ''Perform the <code>=</code> test'' and separately saying (in the
+data paths) ''The <code>=</code> test operates on the contents of register <code>b</code>
+and the constant 0,'' we will say ''Perform the <code>=</code> test on the
+contents of register <code>b</code> and the constant
+0.'' We will omit the data-path description, leaving only the
+controller sequence. Thus, the GCD machine is described as follows:</p>
+<pre><code class="language-scheme editable">(controller
+  test-b
+    (test (op =) (reg b) (const 0))
+    (branch (label gcd-done))
+    (assign t (op rem) (reg a) (reg b))
+    (assign a (reg b))
+    (assign b (reg t))
+    (goto (label test-b))
+  gcd-done)
+</code></pre>
+<p>This form of description is easier to read than the kind illustrated in
+figure
+<a href="book-Z-H-31.html#%_fig_5.3">5.3</a>, but it also has disadvantages:</p>
+<ul>
+<li></li>
+<li>It is more verbose for large machines, because complete descriptions
+of the data-path elements are repeated whenever the elements are
+mentioned in the controller instruction sequence. (This is not a
+problem in the GCD example, because each operation and button is used
+only once.) Moreover, repeating the data-path descriptions obscures
+the actual data-path structure of the machine; it is not obvious for a
+large machine how many registers, operations, and buttons there are
+and how they are interconnected.</li>
+<li>Because the controller instructions in a machine definition look like
+Lisp expressions, it is easy to forget that they are not arbitrary
+Lisp expressions. They can notate only legal machine operations. For
+example, operations can operate directly only on constants and the
+contents of registers, not on the results of other operations.</li>
+</ul>
+<p>In spite of these disadvantages, we will use this register-machine
+language throughout this chapter, because we will be more concerned with
+understanding controllers than with understanding the elements and
+connections in data paths. We should keep in mind, however, that
+data-path design is crucial in designing real machines.</p>
+<p><strong>Exercise 5.2.</strong>
+Use the
+register-machine language to describe the iterative factorial machine of
+exercise
+<a href="book-Z-H-31.html#%_thm_5.1">5.1</a>.</p>
+<h4 id="actions"><a class="header" href="#actions"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_714">Actions</a></a></h4>
+<p>Let us modify the GCD machine so that we
+can type in the numbers whose GCD we want and get the answer printed at
+our terminal. We will not discuss how to make a machine that can read
+and print, but will assume (as we do when we use <code>read</code> and <code>display</code> in
+Scheme) that they are available as primitive
+operations.<a href="book-Z-H-31.html#footnote_Temp_715">^[1]{.small}^</a></p>
+<p><code>Read</code> is like the operations we have been using in that
+it produces a value that can be stored in a register. But <code>read</code> does
+not take inputs from any registers; its value depends on something that
+happens outside the parts of the machine we are designing. We will allow
+our machine's operations to have such behavior, and thus will draw and
+notate the use of <code>read</code> just as we do any other operation that computes
+a value.</p>
+<p><code>Print</code>, on the other hand, differs from the operations
+we have been using in a fundamental way: It does not produce an output
+value to be stored in a register. Though it has an effect, this effect
+is not on a part of the machine we are designing. We will refer to this
+kind of operation as an <em>action</em>. We will represent an action in a
+data-path diagram just as we represent an operation that computes a
+value -- as a trapezoid that contains the name of the action. Arrows
+point to the action box from any inputs (registers or constants). We
+also associate a button with the action. Pushing the button makes the
+action happen. To make a controller push an action
+button we use a new kind of instruction
+called <code>perform</code>. Thus, the action of printing the contents of register
+<code>a</code> is represented in a controller sequence by the instruction:</p>
+<pre><code class="language-scheme editable">(perform (op print) (reg a))
+</code></pre>
+<p>Figure
+<a href="book-Z-H-31.html#%_fig_5.4">5.4</a> shows the data paths and
+controller for the new GCD machine. Instead of having the machine stop
+after printing the answer, we have made it start over, so that it
+repeatedly reads a pair of numbers, computes their GCD, and prints the
+result. This structure is like the driver loops we used in the
+interpreters of chapter
+4.</p>
+<p><img src="ch5-Z-G-3.gif" alt="" /></p>
+<pre><code class="language-scheme editable"> (controller
+  gcd-loop
+    (assign a (op read))
+    (assign b (op read))
+  test-b
+    (test (op =) (reg b) (const 0))
+    (branch (label gcd-done))
+    (assign t (op rem) (reg a) (reg b))
+    (assign a (reg b))
+    (assign b (reg t))
+    (goto (label test-b))
+  gcd-done
+    (perform (op print) (reg a))
+    (goto (label gcd-loop)))
+</code></pre>
+<p><strong>Figure 5.4:</strong>
+A GCD machine that reads inputs and prints results.</p>
+<h3 id="512"><a class="header" href="#512">[5.1.2</a></h3>
+<p>Abstraction in Machine Design](book-Z-H-4.html#%<em>toc</em>%_sec_5.1.2)</p>
+<p>We will often define a machine to include
+''primitive'' operations that are actually very complex. For
+example, in sections
+<a href="book-Z-H-34.html#%_sec_5.4">5.4</a> and
+<a href="book-Z-H-35.html#%_sec_5.5">5.5</a> we will treat Scheme's environment
+manipulations as primitive. Such abstraction is valuable because it
+allows us to ignore the details of parts of a machine so that we can
+concentrate on other aspects of the design. The fact that we have swept
+a lot of complexity under the rug, however, does not mean that a machine
+design is unrealistic. We can always replace the complex
+''primitives'' by simpler primitive operations.</p>
+<p>Consider the GCD machine. The machine has an instruction that computes
+the remainder of the contents of registers <code>a</code> and <code>b</code> and assigns the
+result to register <code>t</code>. If we want to construct the GCD machine without
+using a primitive remainder operation, we must specify how to compute
+remainders in terms of simpler operations, such as subtraction. Indeed,
+we can write a Scheme procedure that finds remainders in this way:</p>
+<pre><code class="language-scheme editable">(define (remainder n d)
+  (if (&lt; n d)
+      n
+      (remainder (- n d) d)))
+</code></pre>
+<p>We can thus replace the remainder operation in the GCD machine's data
+paths with a subtraction operation and a comparison test.
+Figure
+<a href="book-Z-H-31.html#%_fig_5.5">5.5</a> shows the data paths and
+controller for the elaborated machine. The instruction</p>
+<p><img src="ch5-Z-G-4.gif" alt="" /></p>
+<p><strong>Figure 5.5:</strong>
+Data paths and controller for the elaborated GCD
+machine.</p>
+<pre><code class="language-scheme editable">(assign t (op rem) (reg a) (reg b))
+</code></pre>
+<p>in the GCD controller definition is replaced by a sequence of
+instructions that contains a loop, as shown in
+figure
+<a href="book-Z-H-31.html#%_fig_5.6">5.6</a>.</p>
+<pre><code class="language-scheme editable">
+(controller
+ test-b
+   (test (op =) (reg b) (const 0))
+   (branch (label gcd-done))
+   (assign t (reg a))
+ rem-loop
+   (test (op &lt;) (reg t) (reg b))
+   (branch (label rem-done))
+   (assign t (op -) (reg t) (reg b))
+   (goto (label rem-loop))
+ rem-done
+   (assign a (reg b))
+   (assign b (reg t))
+   (goto (label test-b))
+ gcd-done)
+</code></pre>
+<p><strong>Figure 5.6:</strong>
+Controller instruction sequence for the GCD machine in
+figure
+<a href="book-Z-H-31.html#%_fig_5.5">5.5</a>.</p>
+<p><strong>Exercise 5.3.</strong>
+Design a machine to
+compute square roots using Newton's method, as described in
+section
+<a href="book-Z-H-10.html#%_sec_1.1.7">1.1.7</a>:</p>
+<pre><code class="language-scheme editable">(define (sqrt x)
+  (define (good-enough? guess)
+    (&lt; (abs (- (square guess) x)) 0.001))
+  (define (improve guess)
+    (average guess (/ x guess)))
+  (define (sqrt-iter guess)
+    (if (good-enough? guess)
+        guess
+        (sqrt-iter (improve guess))))
+  (sqrt-iter 1.0))
+</code></pre>
+<p>Begin by assuming that <code>good-enough?</code> and <code>improve</code> operations are
+available as primitives. Then show how to expand these in terms of
+arithmetic operations. Describe each version of the <code>sqrt</code> machine
+design by drawing a data-path diagram and writing a controller
+definition in the register-machine language.</p>
+<h3 id="513"><a class="header" href="#513">[5.1.3</a></h3>
+<p>Subroutines](book-Z-H-4.html#%<em>toc</em>%_sec_5.1.3)</p>
+<p>When designing a machine to perform a
+computation, we would often prefer to arrange for components to be
+shared by different parts of the computation rather than duplicate the
+components. Consider a machine that includes two GCD computations --
+one that finds the GCD of the contents of registers <code>a</code> and <code>b</code> and one
+that finds the GCD of the contents of registers <code>c</code> and <code>d</code>. We might
+start by assuming we have a primitive <code>gcd</code> operation, then expand the
+two instances of <code>gcd</code> in terms of more primitive operations.
+Figure
+<a href="book-Z-H-31.html#%_fig_5.7">5.7</a> shows just the GCD portions of
+the resulting machine's data paths, without showing how they connect to
+the rest of the machine. The figure also shows the corresponding
+portions of the machine's controller sequence.</p>
+<p><img src="ch5-Z-G-5.gif" alt="" /></p>
+<p>gcd-1</p>
+<pre><code class="language-scheme editable"> (test (op =) (reg b) (const 0))
+ (branch (label after-gcd-1))
+ (assign t (op rem) (reg a) (reg b))
+ (assign a (reg b))
+ (assign b (reg t))
+ (goto (label gcd-1))
+</code></pre>
+<p>after-gcd-1
+<code>![](book-Z-G-D-18.gif)</code>
+gcd-2</p>
+<pre><code class="language-scheme editable"> (test (op =) (reg d) (const 0))
+ (branch (label after-gcd-2))
+ (assign s (op rem) (reg c) (reg d))
+ (assign c (reg d))
+ (assign d (reg s))
+ (goto (label gcd-2))
+</code></pre>
+<p>after-gcd-2</p>
+<p><strong>Figure 5.7:</strong>
+Portions of the data paths and controller sequence for
+a machine with two GCD computations.</p>
+<p>This machine has two remainder operation boxes and two boxes for testing
+equality. If the duplicated components are complicated, as is the
+remainder box, this will not be an economical way to build the machine.
+We can avoid duplicating the data-path components by using the same
+components for both GCD computations, provided that doing so will not
+affect the rest of the larger machine's computation. If the values in
+registers <code>a</code> and <code>b</code> are not needed by the time the controller gets to
+<code>gcd-2</code> (or if these values can be moved to other registers for
+safekeeping), we can change the machine so that it uses registers <code>a</code>
+and <code>b</code>, rather than registers <code>c</code> and <code>d</code>, in computing the second GCD
+as well as the first. If we do this, we obtain the controller sequence
+shown in figure
+<a href="book-Z-H-31.html#%_fig_5.8">5.8</a>.</p>
+<p>We have removed the duplicate data-path components (so that the data
+paths are again as in figure
+<a href="book-Z-H-31.html#%_fig_5.1">5.1</a>), but the
+controller now has two GCD sequences that differ only in their
+entry-point labels. It would be better to replace these two sequences by
+branches to a single sequence -- a <code>gcd</code> <em>subroutine</em> -- at the end of
+which we branch back to the correct place in the main instruction
+sequence. We can accomplish this as follows: Before branching to <code>gcd</code>,
+we place a distinguishing value (such as 0 or</p>
+<ol>
+<li>into a special
+register, <code>continue</code>. At the end of the <code>gcd</code> subroutine
+we return either to <code>after-gcd-1</code> or to <code>after-gcd-2</code>, depending on the
+value of the <code>continue</code> register.
+Figure
+<a href="book-Z-H-31.html#%_fig_5.9">5.9</a> shows the relevant portion of
+the resulting controller sequence, which includes only a single copy of
+the <code>gcd</code> instructions.</li>
+</ol>
+<p>gcd-1</p>
+<pre><code class="language-scheme editable"> (test (op =) (reg b) (const 0))
+ (branch (label after-gcd-1))
+ (assign t (op rem) (reg a) (reg b))
+ (assign a (reg b))
+ (assign b (reg t))
+ (goto (label gcd-1))
+</code></pre>
+<p>after-gcd-1<code>   </code><img src="book-Z-G-D-18.gif" alt="" />
+gcd-2</p>
+<pre><code class="language-scheme editable"> (test (op =) (reg b) (const 0))
+ (branch (label after-gcd-2))
+ (assign t (op rem) (reg a) (reg b))
+ (assign a (reg b))
+ (assign b (reg t))
+ (goto (label gcd-2))
+</code></pre>
+<p>after-gcd-2</p>
+<p><strong>Figure 5.8:</strong>
+Portions of the controller sequence for a machine that
+uses the same data-path components for two different GCD computations.</p>
+<p>gcd
+(test (op =) (reg b) (const 0))
+(branch (label gcd-done))
+(assign t (op rem) (reg a) (reg b))
+(assign a (reg b))
+(assign b (reg t))
+(goto (label gcd))
+gcd-done
+(test (op =) (reg continue) (const 0))<br />
+(branch (label after-gcd-1))
+(goto (label after-gcd-2))
+<code>  </code><img src="book-Z-G-D-18.gif" alt="" />
+<em><code>;; Before branching to ``gcd`` from the first place where</code></em>
+<em><code>;; it is needed, we place 0 in the ``continue`` register</code></em>
+(assign continue (const 0))
+(goto (label gcd))
+after-gcd-1
+<code>![](book-Z-G-D-18.gif) *</code>;; Before the second use of <code>gcd</code>, we place 1 in the <code>continue</code> register`*
+(assign continue (const 1))
+(goto (label gcd))
+after-gcd-2</p>
+<p><strong>Figure 5.9:</strong>
+Using a <code>continue</code> register to avoid the duplicate
+controller sequence in figure
+<a href="book-Z-H-31.html#%_fig_5.8">5.8</a>.</p>
+<p>gcd</p>
+<pre><code class="language-scheme editable"> (test (op =) (reg b) (const 0))
+ (branch (label gcd-done))
+ (assign t (op rem) (reg a) (reg b))
+ (assign a (reg b))
+ (assign b (reg t))
+ (goto (label gcd))
+</code></pre>
+<p>gcd-done</p>
+<pre><code class="language-scheme editable"> (goto (reg continue))
+</code></pre>
+<p><code>![](book-Z-G-D-18.gif) *</code>;; Before calling <code>gcd</code>, we assign to <code>continue`* *`;; the label to which </code>gcd`` should return.`*</p>
+<pre><code class="language-scheme editable"> (assign continue (label after-gcd-1))
+ (goto (label gcd))
+</code></pre>
+<p>after-gcd-1
+<code>![](book-Z-G-D-18.gif) *</code>;; Here is the second call to <code>gcd</code>, with a different continuation.`*</p>
+<pre><code class="language-scheme editable"> (assign continue (label after-gcd-2))
+ (goto (label gcd))
+</code></pre>
+<p>after-gcd-2</p>
+<p><strong>Figure 5.10:</strong>
+Assigning labels to the <code>continue</code> register simplifies
+and generalizes the strategy shown in
+figure
+<a href="book-Z-H-31.html#%_fig_5.9">5.9</a>.</p>
+<p>This is a reasonable approach for handling small problems, but it would
+be awkward if there were many instances of GCD computations in the
+controller sequence. To decide where to continue executing after the
+<code>gcd</code> subroutine, we would need tests in the data paths and branch
+instructions in the controller for all the places that use <code>gcd</code>. A more
+powerful method for implementing subroutines is to have the <code>continue</code>
+register hold the label of the entry point in the controller sequence at
+which execution should continue when the subroutine is finished.
+Implementing this strategy requires a new kind of connection between the
+data paths and the controller of a register machine: There must be a way
+to assign to a register a label in the controller sequence in such a way
+that this value can be fetched from the register and used to continue
+execution at the designated entry point.</p>
+<p>To reflect this ability, we will extend
+the <code>assign</code> instruction of the register-machine language to allow a
+register to be assigned as value a label from the controller sequence
+(as a special kind of constant). We will also extend the <code>goto</code>
+instruction to allow execution to continue at the entry point described
+by the contents of a register rather than only at an entry point
+described by a constant label. Using these new constructs we can
+terminate the <code>gcd</code> subroutine with a branch to the location stored in
+the <code>continue</code> register. This leads to the controller sequence shown in
+figure
+<a href="book-Z-H-31.html#%_fig_5.10">5.10</a>.</p>
+<p>A machine with more than one subroutine could use multiple continuation
+registers (e.g., <code>gcd-continue</code>, <code>factorial-continue</code>) or we could have
+all subroutines share a single <code>continue</code> register. Sharing is more
+economical, but we must be careful if we have a subroutine (<code>sub1</code>)
+that calls another subroutine (<code>sub2</code>). Unless <code>sub1</code> saves the contents
+of <code>continue</code> in some other register before setting up <code>continue</code> for the
+call to <code>sub2</code>, <code>sub1</code> will not know where to go when it is finished.
+The mechanism developed in the next section to handle recursion also
+provides a better solution to this problem of nested subroutine calls.</p>
+<h3 id="514"><a class="header" href="#514">[5.1.4</a></h3>
+<p>Using a Stack to Implement Recursion](book-Z-H-4.html#%<em>toc</em>%_sec_5.1.4)</p>
+<p>With the
+ideas illustrated so far, we can implement any iterative process by
+specifying a register machine that has a register corresponding to each
+state variable of the process. The machine repeatedly executes a
+controller loop, changing the contents of the registers, until some
+termination condition is satisfied. At each point in the controller
+sequence, the state of the machine (representing the state of the
+iterative process) is completely determined by the contents of the
+registers (the values of the state variables).</p>
+<p>Implementing recursive
+processes, however, requires an additional mechanism. Consider the
+following recursive method for computing factorials, which we first
+examined in section
+<a href="book-Z-H-11.html#%_sec_1.2.1">1.2.1</a>:</p>
+<pre><code class="language-scheme editable">(define (factorial n)
+  (if (= n 1)
+      1
+      (* (factorial (- n 1)) n)))
+</code></pre>
+<p>As we see from the procedure, computing <em>n</em>! requires computing (<em>n</em> -
+1)!. Our GCD machine, modeled on the procedure</p>
+<pre><code class="language-scheme editable">(define (gcd a b)
+  (if (= b 0)
+      a
+      (gcd b (remainder a b))))
+</code></pre>
+<p>similarly had to compute another GCD. But there is an important
+difference between the <code>gcd</code> procedure, which reduces the original
+computation to a new GCD computation, and <code>factorial</code>, which requires
+computing another factorial as a subproblem. In GCD, the answer to the
+new GCD computation is the answer to the original problem. To compute
+the next GCD, we simply place the new arguments in the input registers
+of the GCD machine and reuse the machine's data paths by executing the
+same controller sequence. When the machine is finished solving the final
+GCD problem, it has completed the entire computation.</p>
+<p>In the case of factorial (or any recursive process) the answer to the
+new factorial subproblem is not the answer to the original problem. The
+value obtained for (<em>n</em> - 1)! must be multiplied by <em>n</em> to get the final
+answer. If we try to imitate the GCD design, and solve the factorial
+subproblem by decrementing the <code>n</code> register and rerunning the factorial
+machine, we will no longer have available the old value of <code>n</code> by which
+to multiply the result. We thus need a second factorial machine to work
+on the subproblem. This second factorial computation itself has a
+factorial subproblem, which requires a third factorial machine, and so
+on. Since each factorial machine contains another factorial machine
+within it, the total machine contains an infinite nest of similar
+machines and hence cannot be constructed from a fixed, finite number of
+parts.</p>
+<p>Nevertheless, we can implement the factorial process as a register
+machine if we can arrange to use the same components for each nested
+instance of the machine. Specifically, the machine that computes <em>n</em>!
+should use the same components to work on the subproblem of computing
+(<em>n</em> - 1)!, on the subproblem for (<em>n</em> - 2)!, and so on. This is
+plausible because, although the factorial process dictates that an
+unbounded number of copies of the same machine are needed to perform a
+computation, only one of these copies needs to be active at any given
+time. When the machine encounters a recursive subproblem, it can suspend
+work on the main problem, reuse the same physical parts to work on the
+subproblem, then continue the suspended computation.</p>
+<p>In the subproblem, the contents of the registers will be different than
+they were in the main problem. (In this case the <code>n</code> register is
+decremented.) In order to be able to continue the suspended computation,
+the machine must save the contents of any registers that will be needed
+after the subproblem is solved so that these can be restored to continue
+the suspended computation. In the case of factorial, we will save the
+old value of <code>n</code>, to be restored when we are finished computing the
+factorial of the decremented <code>n</code>
+register.<a href="book-Z-H-31.html#footnote_Temp_717">^[2]{.small}^</a></p>
+<p>Since there is no <em>a priori</em> limit on the depth of nested recursive
+calls, we may need to save an arbitrary number of register values. These
+values must be restored in the reverse of the order in which they were
+saved, since in a nest of recursions the last subproblem to be entered
+is the first to be finished. This dictates the use of a <em>stack</em>, or
+''last in, first out'' data structure, to save register values. We
+can extend the register-machine language to include a stack by adding
+two kinds of instructions: Values are placed
+on the stack
+using a <code>save</code> instruction and restored from the stack using a <code>restore</code>
+instruction. After a sequence of values has been <code>save</code>d on the stack, a
+sequence of <code>restore</code>s will retrieve these values in reverse
+order.<a href="book-Z-H-31.html#footnote_Temp_718">^[3]{.small}^</a></p>
+<p>With the aid of the stack, we can reuse a single copy of the factorial
+machine's data paths for each factorial subproblem. There is a similar
+design issue in reusing the controller sequence that operates the data
+paths. To reexecute the factorial computation, the controller cannot
+simply loop back to the beginning, as with an iterative process, because
+after solving the (<em>n</em> - 1)! subproblem the machine must still multiply
+the result by <em>n</em>. The controller must suspend its computation of <em>n</em>!,
+solve the (<em>n</em> - 1)! subproblem, then continue its computation of <em>n</em>!.
+This view of the factorial computation suggests the use of the
+subroutine mechanism described in
+section
+<a href="book-Z-H-31.html#%_sec_5.1.3">5.1.3</a>, which has the controller
+use a <code>continue</code> register to transfer to the part of the
+sequence that solves a subproblem and then continue where it left off on
+the main problem. We can thus make a factorial subroutine that returns
+to the entry point stored in the <code>continue</code> register. Around each
+subroutine call, we save and restore <code>continue</code> just as we do the <code>n</code>
+register, since each ''level'' of the factorial computation will use
+the same <code>continue</code> register. That is, the factorial subroutine must put
+a new value in <code>continue</code> when it calls itself for a subproblem, but it
+will need the old value in order to return to the place that called it
+to solve a subproblem.</p>
+<p>Figure
+<a href="book-Z-H-31.html#%_fig_5.11">5.11</a> shows the data paths and
+controller for a machine that implements the recursive <code>factorial</code>
+procedure. The machine has a stack and three registers, called <code>n</code>,
+<code>val</code>, and <code>continue</code>. To simplify the data-path diagram, we have not
+named the register-assignment buttons, only the stack-operation buttons
+(<code>sc</code> and <code>sn</code> to save registers, <code>rc</code> and <code>rn</code> to restore registers).
+To operate the machine, we put in register <code>n</code> the number whose
+factorial we wish to compute and start the machine. When the machine
+reaches <code>fact-done</code>, the computation is finished and the answer will be
+found in the <code>val</code> register. In the controller sequence, <code>n</code> and
+<code>continue</code> are saved before each recursive call and restored upon return
+from the call. Returning from a call is accomplished by branching to the
+location stored in <code>continue</code>. <code>Continue</code> is initialized when the
+machine starts so that the last return will go to <code>fact-done</code>. The <code>val</code>
+register, which holds the result of the factorial computation, is not
+saved before the recursive call, because the old contents of <code>val</code> is
+not useful after the subroutine returns. Only the new value, which is
+the value produced by the subcomputation, is needed. Although in
+principle the factorial computation requires an infinite machine, the
+machine in figure
+<a href="book-Z-H-31.html#%_fig_5.11">5.11</a> is actually finite
+except for the stack, which is potentially unbounded. Any particular
+physical implementation of a stack, however, will be of finite size, and
+this will limit the depth of recursive calls that can be handled by the
+machine. This implementation of factorial illustrates the general
+strategy for realizing recursive algorithms as ordinary register
+machines augmented by stacks. When a recursive subproblem is
+encountered, we save on the stack the registers whose current values
+will be required after the subproblem is solved, solve the recursive
+subproblem, then restore the saved registers and continue execution on
+the main problem. The <code>continue</code> register must always be saved. Whether
+there are other registers that need to be saved depends on the
+particular machine, since not all recursive computations need the
+original values of registers that are modified during solution of the
+subproblem (see exercise
+<a href="book-Z-H-31.html#%_thm_5.4">5.4</a>).</p>
+<h4 id="a-double-recursion"><a class="header" href="#a-double-recursion"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_719">A double recursion</a></a></h4>
+<p>Let us examine a more complex recursive process, the
+tree-recursive computation of the Fibonacci numbers, which we introduced
+in section
+<a href="book-Z-H-11.html#%_sec_1.2.2">1.2.2</a>:</p>
+<pre><code class="language-scheme editable">(define (fib n)
+  (if (&lt; n 2)
+      n
+      (+ (fib (- n 1)) (fib (- n 2)))))
+</code></pre>
+<p>Just as with factorial, we can implement the recursive Fibonacci
+computation as a register machine with registers <code>n</code>, <code>val</code>, and
+<code>continue</code>. The machine is more complex than the one for factorial,
+because there are two places in the controller sequence where we need to
+perform recursive calls -- once to compute Fib(<em>n</em> - 1) and once to
+compute Fib(<em>n</em> - 2). To set up for each of these calls, we save the
+registers whose values will be needed later, set the <code>n</code> register to the
+number whose Fib we need to compute recursively (<em>n</em> - 1 or <em>n</em> - 2),
+and assign to <code>continue</code> the entry point in the main sequence to which
+to return (<code>afterfib-n-1</code> or <code>afterfib-n-2</code>, respectively). We then go
+to <code>fib-loop</code>. When we return from the recursive call, the answer is in
+<code>val</code>.
+Figure
+<a href="book-Z-H-31.html#%_fig_5.12">5.12</a> shows the controller
+sequence for this machine.</p>
+<p><img src="ch5-Z-G-6.gif" alt="" /></p>
+<p>(controller
+(assign continue (label fact-done))     <code>*</code>; set up final return address<code>*  fact-loop    (test (op =) (reg n) (const 1))    (branch (label base-case))    </code><em><code>;; Set up for the recursive call by saving ``n`` and ``continue``.</code></em><code>    </code><em><code>;; Set up ``continue`` so that the computation will continue</code></em>
+<code>*</code>;; at <code>after-fact</code> when the subroutine returns.<code>*    (save continue)    (save n)    (assign n (op -) (reg n) (const 1))    (assign continue (label after-fact))    (goto (label fact-loop))  after-fact    (restore n)    (restore continue)    (assign val (op *) (reg n) (reg val))   </code><em><code>; ``val`` now contains</code></em><code> </code><em><code>n</code></em><code>(</code><em><code>n</code></em><code> - 1)!</code>
+(goto (reg continue))                   <code>*</code>; return to caller<code>*  base-case    (assign val (const 1))                  </code><em><code>; base case:</code></em><code> 1! = 1</code>
+(goto (reg continue))                   <code>*</code>; return to caller`*
+fact-done)</p>
+<p><strong>Figure 5.11:</strong>
+A recursive factorial machine.</p>
+<pre><code class="language-scheme editable">(controller
+   (assign continue (label fib-done))
+</code></pre>
+<p>fib-loop</p>
+<pre><code class="language-scheme editable">   (test (op &lt;) (reg n) (const 2))
+   (branch (label immediate-answer))
+   `*`;; set up to compute `*`Fib`*`(`*`n`*` - 1)`*
+   (save continue)
+   (assign continue (label afterfib-n-1))
+   (save n)                           `*`; save old value of ``n`*
+   (assign n (op -) (reg n) (const 1))`*`; clobber ``n`` to `*`n`*` - 1`*
+   (goto (label fib-loop))
+</code></pre>
+<p>afterfib-n-1                         <code>*</code>; upon return, <code>val</code> contains <code>*</code>Fib<code>*</code>(<code>*</code>n<code>*</code> - 1)`*</p>
+<pre><code class="language-scheme editable">   (restore n)
+   (restore continue)
+   `*`;; set up to compute `*`Fib`*`(`*`n`*` - 2)`*
+   (assign n (op -) (reg n) (const 2))
+   (save continue)
+   (assign continue (label afterfib-n-2))
+   (save val)                         `*`; save `*`Fib`*`(`*`n`*` - 1)`*
+   (goto (label fib-loop))
+</code></pre>
+<p>afterfib-n-2                         <code>*</code>; upon return, <code>val</code> contains <code>*</code>Fib<code>*</code>(<code>*</code>n<code>*</code> - 2)`*</p>
+<pre><code class="language-scheme editable">   (assign n (reg val))               `*`; ``n`` now contains `*`Fib`*`(`*`n`*` - 2)`*
+   (restore val)                      `*`; ``val`` now contains `*`Fib`*`(`*`n`*` - 1)`*
+   (restore continue)
+   (assign val                        `*`;  `*`Fib`*`(`*`n`*` - 1) +  `*`Fib`*`(`*`n`*` - 2)`*
+           (op +) (reg val) (reg n)) 
+   (goto (reg continue))              `*`; return to caller, answer is in ``val`*
+ immediate-answer
+   (assign val (reg n))               `*`; base case:  `*`Fib`*`(`*`n`*`) = `*`n`**`
+   (goto (reg continue))
+ fib-done)
+</code></pre>
+<p><strong>Figure 5.12:</strong>
+Controller for a machine to compute Fibonacci numbers.</p>
+<p><strong>Exercise 5.4.</strong>
+Specify register machines that
+implement each of the following procedures. For each machine, write a
+controller instruction sequence and draw a diagram showing the data
+paths.</p>
+<p>a. Recursive exponentiation:</p>
+<pre><code class="language-scheme editable">(define (expt b n)
+  (if (= n 0)
+      1
+      (* b (expt b (- n 1)))))
+</code></pre>
+<p>b. Iterative exponentiation:</p>
+<pre><code class="language-scheme editable">(define (expt b n)
+  (define (expt-iter counter product)
+    (if (= counter 0)
+        product
+        (expt-iter (- counter 1) (* b product))))
+  (expt-iter n 1))
+</code></pre>
+<p><strong>Exercise 5.5.</strong>
+Hand-simulate the factorial and
+Fibonacci machines, using some nontrivial input (requiring execution of
+at least one recursive call). Show the contents of the stack at each
+significant point in the execution.</p>
+<p><strong>Exercise 5.6.</strong>
+Ben Bitdiddle observes that the
+Fibonacci machine's controller sequence has an extra <code>save</code> and an
+extra <code>restore</code>, which can be removed to make a faster machine. Where
+are these instructions?</p>
+<h3 id="515"><a class="header" href="#515">[5.1.5</a></h3>
+<p>Instruction Summary](book-Z-H-4.html#%<em>toc</em>%_sec_5.1.5)</p>
+<p>A controller instruction
+in our register-machine language has one of the following forms, where
+each &lt;<em>input~<em>i</em>~</em>&gt; is either <code>(reg &lt;</code><em><code>register-name</code></em><code>&gt;)</code> or
+<code>(const &lt;</code><em><code>constant-value</code></em><code>&gt;)</code>.</p>
+<p>These instructions were introduced in
+section
+<a href="book-Z-H-31.html#%_sec_5.1.1">5.1.1</a>:</p>
+<p><code>(assign &lt;</code><em><code>register-name</code></em><code>&gt; (reg &lt;</code><em><code>register-name</code></em><code>&gt;))</code></p>
+<p><code>(assign &lt;</code><em><code>register-name</code></em><code>&gt; (const &lt;</code><em><code>constant-value</code></em><code>&gt;))</code></p>
+<p><code>(assign &lt;</code><em><code>register-name</code></em><code>&gt; (op &lt;</code><em><code>operation-name</code></em><code>&gt;) &lt;</code><em><code>input</code><del><code>1</code></del></em>&gt; ... &lt;<code>*</code>input<code>~*</code>n<code>*</code>&gt;)`</p>
+<p><code>(perform (op &lt;</code><em><code>operation-name</code></em><code>&gt;) &lt;</code><em><code>input</code><del><code>1</code></del></em>&gt; ... &lt;<code>*</code>input<code>~*</code>n<code>*</code>&gt;)`</p>
+<p><code>(test (op &lt;</code><em><code>operation-name</code></em><code>&gt;) &lt;</code><em><code>input</code><del><code>1</code></del></em>&gt; ... &lt;<code>*</code>input<code>~*</code>n<code>*</code>&gt;)`</p>
+<p><code>(branch (label &lt;</code><em><code>label-name</code></em><code>&gt;))</code></p>
+<p><code>(goto (label &lt;</code><em><code>label-name</code></em><code>&gt;))</code></p>
+<p>The use of registers to hold labels was introduced in
+section
+<a href="book-Z-H-31.html#%_sec_5.1.3">5.1.3</a>:</p>
+<p><code>(assign &lt;</code><em><code>register-name</code></em><code>&gt; (label &lt;</code><em><code>label-name</code></em><code>&gt;))</code></p>
+<p><code>(goto (reg &lt;</code><em><code>register-name</code></em><code>&gt;))</code></p>
+<p>Instructions to use the stack were introduced in
+section
+<a href="book-Z-H-31.html#%_sec_5.1.4">5.1.4</a>:</p>
+<p><code>(save &lt;</code><em><code>register-name</code></em><code>&gt;)</code></p>
+<p><code>(restore &lt;</code><em><code>register-name</code></em><code>&gt;)</code></p>
+<p>The only kind of
+&lt;<em>constant-value</em>&gt; we have seen so far is a number, but later we will
+use strings, symbols, and lists. For example, <code>(const "abc")</code> is the
+string <code>"abc"</code>, <code>(const abc)</code> is the symbol <code>abc</code>, <code>(const (a b c))</code> is
+the list <code>(a b c)</code>, and <code>(const ())</code> is the empty list.</p>
+<hr />
+<p>^[1]{.small}^](book-Z-H-31.html#call_footnote_Temp_715)
+This assumption glosses over a great deal of complexity. Usually a large
+portion of the implementation of a Lisp system is dedicated to making
+reading and printing work.</p>
+<p>^[2]{.small}^](book-Z-H-31.html#call_footnote_Temp_717)
+One might argue that we don't need to save the old <code>n</code>; after we
+decrement it and solve the subproblem, we could simply increment it to
+recover the old value. Although this strategy works for factorial, it
+cannot work in general, since the old value of a register cannot always
+be computed from the new one.</p>
+<p>^[3]{.small}^](book-Z-H-31.html#call_footnote_Temp_718)
+In section
+<a href="book-Z-H-33.html#%_sec_5.3">5.3</a> we will see how to
+implement a stack in terms of more primitive operations.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="5.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="5.2.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="5.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="5.2.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="./highlight.js"></script>
+        <script src="./src/languages/scheme.min.js"></script>
+        <script src="./biwascheme.min.js"></script>
+        <script src="./biwascheme_run_logic.js"></script>
+
+
+    </div>
+    </body>
+</html>

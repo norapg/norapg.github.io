@@ -1,0 +1,1371 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Procedures and the Processes They Generate - SICP</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="./src/styles/docco.min.css">
+        <link rel="stylesheet" href="./run_button_style.css">
+        <link rel="stylesheet" href="./custom.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">SICP</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="12--procedures-and-the-processes-they-generate"><a class="header" href="#12--procedures-and-the-processes-they-generate"><a href="book-Z-H-4.html#%_toc_%_sec_1.2">1.2  Procedures and the Processes They Generate</a></a></h2>
+<p>We have now considered the elements of programming: We have used
+primitive arithmetic operations, we have combined these operations, and
+we have abstracted these composite operations by defining them as
+compound procedures. But that is not enough to enable us to say that we
+know how to program. Our situation is analogous to that of someone who
+has learned the rules for how the pieces move in chess but knows nothing
+of typical openings, tactics, or strategy. Like the novice chess player,
+we don't yet know the common patterns of usage in the domain. We lack
+the knowledge of which moves are worth making (which procedures are
+worth defining). We lack the experience to predict the consequences of
+making a move (executing a procedure).</p>
+<p>The ability to visualize the consequences of the actions under
+consideration is crucial to becoming an expert programmer, just as it is
+in any synthetic, creative activity. In becoming an expert photographer,
+for example, one must learn how to look at a scene and know how dark
+each region will appear on a print for each possible choice of exposure
+and development conditions. Only then can one reason backward, planning
+framing, lighting, exposure, and development to obtain the desired
+effects. So it is with programming, where we are planning the course of
+action to be taken by a process and where we control the process by
+means of a program. To become experts, we must learn to visualize the
+processes generated by various types of procedures. Only after we have
+developed such a skill can we learn to reliably construct programs that
+exhibit the desired behavior.</p>
+<p>A procedure is a pattern for
+the <em>local evolution</em> of a computational process. It specifies how each
+stage of the process is built upon the previous stage. We would like to
+be able to make statements about the overall, or <em>global</em>, behavior of a
+process whose local evolution has been specified by a procedure. This is
+very difficult to do in general, but we can at least try to describe
+some typical patterns of process evolution.</p>
+<p>In this section we will examine some common ``shapes'' for processes
+generated by simple procedures. We will also investigate the rates at
+which these processes consume the important computational resources of
+time and space. The procedures we will consider are very simple. Their
+role is like that played by test patterns in photography: as
+oversimplified prototypical patterns, rather than practical examples in
+their own right.</p>
+<h3 id="121--linear-recursion-and-iteration"><a class="header" href="#121--linear-recursion-and-iteration"><a href="book-Z-H-4.html#%_toc_%_sec_1.2.1">1.2.1  Linear Recursion and Iteration</a></a></h3>
+<p><img src="ch1-Z-G-7.gif" alt="" /></p>
+<p><strong>Figure 1.3:</strong>  A linear recursive process for computing 6!.</p>
+<p>We begin by considering the factorial function, defined by</p>
+<p><img src="ch1-Z-G-8.gif" alt="" /></p>
+<p>There are many ways to compute factorials. One way is to make use of the
+observation that <em>n</em>! is equal to <em>n</em> times (<em>n</em> - 1)! for any positive
+integer <em>n</em>:</p>
+<p><img src="ch1-Z-G-9.gif" alt="" /></p>
+<p>Thus, we can compute <em>n</em>! by computing (<em>n</em> - 1)! and multiplying the
+result by <em>n</em>. If we add the stipulation that 1! is equal to 1, this
+observation translates directly into a procedure:</p>
+<pre><code class="language-scheme editable">(define (factorial n)
+  (if (= n 1)
+      1
+      (* n (factorial (- n 1)))))
+</code></pre>
+<p>We can use the substitution model of
+section <a href="book-Z-H-10.html#%_sec_1.1.5">1.1.5</a> to watch this procedure in
+action computing 6!, as shown in
+figure <a href="book-Z-H-11.html#%_fig_1.3">1.3</a>.</p>
+<p>Now let's take a different perspective on computing factorials. We
+could describe a rule for computing <em>n</em>! by specifying that we first
+multiply 1 by 2, then multiply the result by 3, then by 4, and so on
+until we reach <em>n</em>. More formally, we maintain a running product,
+together with a counter that counts from 1 up to <em>n</em>. We can describe
+the computation by saying that the counter and the product
+simultaneously change from one step to the next according to the rule</p>
+<p>product <img src="book-Z-G-D-14.gif" alt="" /> counter · product</p>
+<p>counter <img src="book-Z-G-D-14.gif" alt="" /> counter + 1</p>
+<p>and stipulating that <em>n</em>! is the value of the product when the counter
+exceeds <em>n</em>.</p>
+<p><img src="ch1-Z-G-10.gif" alt="" /></p>
+<p><strong>Figure 1.4:</strong>  A linear iterative process for computing 6!.</p>
+<p>Once again, we can recast our description as a procedure for computing
+factorials:<a href="book-Z-H-11.html#footnote_Temp_46">^[29]{.small}^</a></p>
+<pre><code class="language-scheme editable">(define (factorial n)
+  (fact-iter 1 1 n))
+
+(define (fact-iter product counter max-count)
+  (if (&gt; counter max-count)
+      product
+      (fact-iter (* counter product)
+                 (+ counter 1)
+                 max-count)))
+</code></pre>
+<p>As before, we can use the substitution model to visualize the process of
+computing 6!, as shown in figure <a href="book-Z-H-11.html#%_fig_1.4">1.4</a>.</p>
+<p>Compare the two processes. From one point of view, they seem hardly
+different at all. Both compute the same mathematical function on the
+same domain, and each requires a number of steps proportional to <em>n</em> to
+compute <em>n</em>!. Indeed, both processes even carry out the same sequence of
+multiplications, obtaining the same sequence of partial products. On the
+other hand, when we consider the
+``shapes'' of the two processes, we find
+that they evolve quite differently.</p>
+<p>Consider the first process. The substitution model reveals a shape of
+expansion followed by contraction, indicated by the arrow in
+figure <a href="book-Z-H-11.html#%_fig_1.3">1.3</a>. The expansion occurs as the
+process builds up a chain of <em>deferred operations</em> (in
+this case, a chain of multiplications). The contraction occurs as the
+operations are actually performed. This type of process, characterized
+by a chain of deferred operations, is called a
+<em>recursive process</em>. Carrying out this
+process requires that the interpreter keep track of the operations to be
+performed later on. In the computation of <em>n</em>!, the length of the chain
+of deferred multiplications, and hence the amount of information needed
+to keep track of it, grows linearly with <em>n</em> (is
+proportional to <em>n</em>), just like the number of steps.
+Such a process is called a
+<em>linear recursive process</em>.</p>
+<p>By contrast, the second process does not grow and shrink. At each step,
+all we need to keep track of, for any <em>n</em>, are the current values of the
+variables <code>product</code>, <code>counter</code>, and <code>max-count</code>. We call this an
+<em>iterative process</em>. In general, an
+iterative process is one whose state can be summarized by a fixed number
+of <em>state variables</em>, together with a fixed rule that
+describes how the state variables should be updated as the process moves
+from state to state and an (optional) end test that specifies conditions
+under which the process should terminate. In computing <em>n</em>!, the number
+of steps required grows linearly with <em>n</em>. Such a process is called a
+<em>linear iterative process</em>.</p>
+<p>The contrast between the two processes can be seen in another way. In
+the iterative case, the program variables provide a complete description
+of the state of the process at any point. If we stopped the computation
+between steps, all we would need to do to resume the computation is to
+supply the interpreter with the values of the three program variables.
+Not so with the recursive process. In this case there is some additional
+``hidden'' information, maintained by the interpreter and not
+contained in the program variables, which indicates ``where the
+process is'' in negotiating the chain of deferred operations. The
+longer the chain, the more information must be
+maintained.<a href="book-Z-H-11.html#footnote_Temp_47">^[30]{.small}^</a></p>
+<p>In contrasting iteration and recursion, we must be careful not to
+confuse the notion of a recursive <em>process</em>
+with the notion of a recursive <em>procedure</em>. When we describe a procedure
+as recursive, we are referring to the syntactic fact that the procedure
+definition refers (either directly or indirectly) to the procedure
+itself. But when we describe a process as following a pattern that is,
+say, linearly recursive, we are speaking about how the process evolves,
+not about the syntax of how a procedure is written. It may seem
+disturbing that we refer to a recursive procedure such as <code>fact-iter</code> as
+generating an iterative process. However, the process really is
+iterative: Its state is captured completely by its three state
+variables, and an interpreter need keep track of only three variables in
+order to execute the process.</p>
+<p>One reason that the distinction between process and procedure may be
+confusing is that most implementations of common languages (including
+Ada, Pascal, and C) are
+designed in such a way that the interpretation of any recursive
+procedure consumes an amount of memory that grows with the number of
+procedure calls, even when the process described is, in principle,
+iterative. As a consequence, these languages can describe iterative
+processes only by resorting to special-purpose ``looping
+constructs'' such as <code>do</code>, <code>repeat</code>, <code>until</code>, <code>for</code>, and <code>while</code>. The
+implementation of Scheme we shall consider in chapter 5 does not share
+this defect. It will execute an iterative process in constant space,
+even if the iterative process is described by a recursive procedure. An
+implementation with this property is called
+<em>tail-recursive</em>. With a tail-recursive implementation,
+iteration can be expressed using the ordinary procedure
+call mechanism, so that special iteration constructs are useful only as
+syntactic
+sugar.<a href="book-Z-H-11.html#footnote_Temp_48">^[31]{.small}^</a></p>
+<p><strong>Exercise 1.9.</strong>  Each of the following two procedures
+defines a method for adding two positive integers in terms of the
+procedures <code>inc</code>, which increments its argument by 1, and <code>dec</code>, which
+decrements its argument by 1.</p>
+<pre><code class="language-scheme editable">(define (+ a b)
+  (if (= a 0)
+      b
+      (inc (+ (dec a) b))))
+</code></pre>
+<pre><code class="language-scheme editable">(define (+ a b)
+  (if (= a 0)
+      b
+      (+ (dec a) (inc b))))
+</code></pre>
+<p>Using the substitution model, illustrate the process generated by each
+procedure in evaluating <code>(+ 4 5)</code>. Are these processes iterative or
+recursive?</p>
+<p><strong>Exercise 1.10.</strong>  The
+following procedure computes a mathematical function called Ackermann's
+function.</p>
+<pre><code class="language-scheme editable">(define (A x y)
+  (cond ((= y 0) 0)
+        ((= x 0) (* 2 y))
+        ((= y 1) 2)
+        (else (A (- x 1)
+                 (A x (- y 1))))))
+</code></pre>
+<p>What are the values of the following expressions?</p>
+<pre><code class="language-scheme editable">(A 1 10)
+</code></pre>
+<p>\</p>
+<pre><code class="language-scheme editable">(A 2 4)
+</code></pre>
+<p>\</p>
+<pre><code class="language-scheme editable">(A 3 3)
+</code></pre>
+<p>Consider the following procedures, where <code>A</code> is the procedure defined
+above:</p>
+<pre><code class="language-scheme editable">(define (f n) (A 0 n))
+</code></pre>
+<pre><code class="language-scheme editable">(define (g n) (A 1 n))
+</code></pre>
+<pre><code class="language-scheme editable">(define (h n) (A 2 n))
+</code></pre>
+<pre><code class="language-scheme editable">(define (k n) (* 5 n n))
+</code></pre>
+<p>Give concise mathematical definitions for the functions computed by the
+procedures <code>f</code>, <code>g</code>, and <code>h</code> for positive integer values of <em>n</em>. For
+example, <code>(k n)</code> computes 5<em>n</em>^2^.</p>
+<h3 id="122--tree-recursion"><a class="header" href="#122--tree-recursion"><a href="book-Z-H-4.html#%_toc_%_sec_1.2.2">1.2.2  Tree Recursion</a></a></h3>
+<p>Another common pattern of
+computation is called <em>tree recursion</em>. As an example, consider
+computing the sequence of Fibonacci numbers, in which each
+number is the sum of the preceding two:</p>
+<p><img src="ch1-Z-G-11.gif" alt="" /></p>
+<p>In general, the Fibonacci numbers can be defined by the rule</p>
+<p><img src="ch1-Z-G-12.gif" alt="" /></p>
+<p>We can immediately translate this definition into a recursive procedure
+for computing Fibonacci numbers:</p>
+<pre><code class="language-scheme editable">(define (fib n)
+  (cond ((= n 0) 0)
+        ((= n 1) 1)
+        (else (+ (fib (- n 1))
+                 (fib (- n 2))))))
+</code></pre>
+<p><img src="ch1-Z-G-13.gif" alt="" /></p>
+<p><strong>Figure 1.5:</strong>  The tree-recursive process generated in computing
+<code>(fib 5)</code>.</p>
+<p>Consider the pattern of this computation. To compute <code>(fib 5)</code>, we
+compute <code>(fib 4)</code> and <code>(fib 3)</code>. To compute <code>(fib 4)</code>, we compute
+<code>(fib 3)</code> and <code>(fib 2)</code>. In general, the evolved process looks like a
+tree, as shown in figure <a href="book-Z-H-11.html#%_fig_1.5">1.5</a>. Notice that
+the branches split into two at each level (except at the bottom); this
+reflects the fact that the <code>fib</code> procedure calls itself twice each time
+it is invoked.</p>
+<p>This procedure is instructive as a prototypical tree recursion, but it
+is a terrible way to compute Fibonacci numbers because it does so much
+redundant computation. Notice in
+figure <a href="book-Z-H-11.html#%_fig_1.5">1.5</a> that the entire computation of
+<code>(fib 3)</code> -- almost half the work -- is duplicated. In fact, it is not
+hard to show that the number of times the procedure will compute
+<code>(fib 1)</code> or <code>(fib 0)</code> (the number of leaves in the above tree, in
+general) is precisely <em>Fib</em>(<em>n</em> + 1). To get an idea of how bad this is,
+one can show that the value of <em>Fib</em>(<em>n</em>) grows
+exponentially with <em>n</em>. More precisely (see
+exercise <a href="book-Z-H-11.html#%_thm_1.13">1.13</a>), <em>Fib</em>(<em>n</em>) is the closest
+integer to <img src="book-Z-G-D-11.gif" alt="" />^<em>n</em>^
+/<img src="book-Z-G-D-13.gif" alt="" />5, where</p>
+<p><img src="ch1-Z-G-14.gif" alt="" /></p>
+<p>is the <em>golden ratio</em>, which satisfies the equation</p>
+<p><img src="ch1-Z-G-15.gif" alt="" /></p>
+<p>Thus, the process uses a number of steps that grows exponentially with
+the input. On the other hand, the space required grows only linearly
+with the input, because we need keep track only of which nodes are above
+us in the tree at any point in the computation. In general, the number
+of steps required by a tree-recursive process will be proportional to
+the number of nodes in the tree, while the space required will be
+proportional to the maximum depth of the tree.</p>
+<p>We can also formulate an iterative process for computing the Fibonacci
+numbers. The idea is to use a pair of integers <em>a</em> and <em>b</em>, initialized
+to <em>Fib</em>(1) = 1 and <em>Fib</em>(0) = 0, and to repeatedly apply the
+simultaneous transformations</p>
+<p><img src="ch1-Z-G-16.gif" alt="" /></p>
+<p>It is not hard to show that, after applying this transformation <em>n</em>
+times, <em>a</em> and <em>b</em> will be equal, respectively, to <em>Fib</em>(<em>n</em> + 1) and
+<em>Fib</em>(<em>n</em>). Thus, we can compute Fibonacci numbers iteratively using the
+procedure</p>
+<pre><code class="language-scheme editable">(define (fib n)
+  (fib-iter 1 0 n))
+
+(define (fib-iter a b count)
+  (if (= count 0)
+      b
+      (fib-iter (+ a b) a (- count 1))))
+</code></pre>
+<p>This second method for computing <em>Fib</em>(<em>n</em>) is a linear iteration. The
+difference in number of steps required by the two methods -- one linear
+in <em>n</em>, one growing as fast as <em>Fib</em>(<em>n</em>) itself -- is enormous, even
+for small inputs.</p>
+<p>One should not conclude from this that tree-recursive processes are
+useless. When we consider processes that operate on hierarchically
+structured data rather than numbers, we will find that tree recursion is
+a natural and powerful
+tool.<a href="book-Z-H-11.html#footnote_Temp_51">^[32]{.small}^</a>
+But even in numerical operations, tree-recursive processes can be useful
+in helping us to understand and design programs. For instance, although
+the first <code>fib</code> procedure is much less efficient than the second one, it
+is more straightforward, being little more than a translation into Lisp
+of the definition of the Fibonacci sequence. To formulate the iterative
+algorithm required noticing that the computation could be recast as an
+iteration with three state variables.</p>
+<h4 id="example-counting-change"><a class="header" href="#example-counting-change"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_52">Example: Counting change</a></a></h4>
+<p>It takes only a bit of cleverness to come up with the
+iterative Fibonacci algorithm. In contrast, consider the following
+problem: How many different ways can we make change of $ 1.00, given
+half-dollars, quarters, dimes, nickels, and pennies? More generally, can
+we write a procedure to compute the number of ways to change any given
+amount of money?</p>
+<p>This problem has a simple solution as a recursive procedure. Suppose we
+think of the types of coins available as arranged in some order. Then
+the following relation holds:</p>
+<p>The number of ways to change amount <em>a</em> using <em>n</em> kinds of coins equals</p>
+<ul>
+<li>the number of ways to change amount <em>a</em> using all but the first kind
+of coin, plus</li>
+<li>the number of ways to change amount <em>a</em> - <em>d</em> using all <em>n</em> kinds of
+coins, where <em>d</em> is the denomination of the first kind of coin.</li>
+</ul>
+<p>To see why this is true, observe that the ways to make change can be
+divided into two groups: those that do not use any of the first kind of
+coin, and those that do. Therefore, the total number of ways to make
+change for some amount is equal to the number of ways to make change for
+the amount without using any of the first kind of coin, plus the number
+of ways to make change assuming that we do use the first kind of coin.
+But the latter number is equal to the number of ways to make change for
+the amount that remains after using a coin of the first kind.</p>
+<p>Thus, we can recursively reduce the problem of changing a given amount
+to the problem of changing smaller amounts using fewer kinds of coins.
+Consider this reduction rule carefully, and convince yourself that we
+can use it to describe an algorithm if we specify the following
+degenerate
+cases:<a href="book-Z-H-11.html#footnote_Temp_53">^[33]{.small}^</a></p>
+<ul>
+<li>If <em>a</em> is exactly 0, we should count that as 1 way to make change.</li>
+<li>If <em>a</em> is less than 0, we should count that as 0 ways to make change.</li>
+<li>If <em>n</em> is 0, we should count that as 0 ways to make change.</li>
+</ul>
+<p>We can easily translate this description into a recursive procedure:</p>
+<pre><code class="language-scheme editable">(define (count-change amount)
+  (cc amount 5))
+(define (cc amount kinds-of-coins)
+  (cond ((= amount 0) 1)
+        ((or (&lt; amount 0) (= kinds-of-coins 0)) 0)
+        (else (+ (cc amount
+                     (- kinds-of-coins 1))
+                 (cc (- amount
+                        (first-denomination kinds-of-coins))
+                     kinds-of-coins)))))
+(define (first-denomination kinds-of-coins)
+  (cond ((= kinds-of-coins 1) 1)
+        ((= kinds-of-coins 2) 5)
+        ((= kinds-of-coins 3) 10)
+        ((= kinds-of-coins 4) 25)
+        ((= kinds-of-coins 5) 50)))
+</code></pre>
+<p>(The <code>first-denomination</code> procedure takes as input the number of kinds
+of coins available and returns the denomination of the first kind. Here
+we are thinking of the coins as arranged in order from largest to
+smallest, but any order would do as well.) We can now answer our
+original question about changing a dollar:</p>
+<p><code>(count-change 100)</code><br />
+<em><code>292</code></em>\</p>
+<p><code>Count-change</code> generates a tree-recursive process with redundancies
+similar to those in our first implementation of <code>fib</code>. (It will take
+quite a while for that 292 to be computed.) On the other hand, it is not
+obvious how to design a better algorithm for computing the result, and
+we leave this problem as a challenge. The observation that a
+tree-recursive process may be highly inefficient but often
+easy to specify and understand has led people to propose that one could
+get the best of both worlds by designing a ``smart compiler'' that
+could transform tree-recursive procedures into more efficient procedures
+that compute the same
+result.<a href="book-Z-H-11.html#footnote_Temp_54">^[34]{.small}^</a></p>
+<p><strong>Exercise 1.11.</strong>  A function <em>f</em> is defined by the
+rule that <em>f</em>(<em>n</em>) = <em>n</em> if <em>n</em>&lt;3 and <em>f</em>(<em>n</em>) = <em>f</em>(<em>n</em> - 1) +
+2<em>f</em>(<em>n</em> - 2) + 3<em>f</em>(<em>n</em> - 3) if <em>n</em>[&gt;]{.underline} 3. Write a
+procedure that computes <em>f</em> by means of a recursive process. Write a
+procedure that computes <em>f</em> by means of an iterative process.</p>
+<p><strong>Exercise 1.12.</strong>  The following pattern
+of numbers is called <em>Pascal's triangle</em>.</p>
+<p><img src="ch1-Z-G-17.gif" alt="" /></p>
+<p>The numbers at the edge of the triangle are all 1, and each number
+inside the triangle is the sum of the two numbers above
+it.<a href="book-Z-H-11.html#footnote_Temp_57">^[35]{.small}^</a>
+Write a procedure that computes elements of Pascal's triangle by means
+of a recursive process.</p>
+<p><strong>Exercise 1.13.</strong>  Prove that <em>Fib</em>(<em>n</em>) is the closest
+integer to
+<img src="book-Z-G-D-11.gif" alt="" />5,
+where <img src="book-Z-G-D-11.gif" alt="" /> = (1 +
+<img src="book-Z-G-D-13.gif" alt="" />5)/2. Hint: Let
+<img src="book-Z-G-D-12.gif" alt="" /> = (1 -
+<img src="book-Z-G-D-13.gif" alt="" />5)/2. Use induction and the definition
+of the Fibonacci numbers (see
+section <a href="book-Z-H-11.html#%_sec_1.2.2">1.2.2</a>) to prove that <em>Fib</em>(<em>n</em>)
+= (<img src="book-Z-G-D-11.gif" alt="" />^<em>n</em>^ -
+<img src="book-Z-G-D-12.gif" alt="" />5.</p>
+<h3 id="123--orders-of-growth"><a class="header" href="#123--orders-of-growth"><a href="book-Z-H-4.html#%_toc_%_sec_1.2.3">1.2.3  Orders of Growth</a></a></h3>
+<p>The previous examples illustrate that processes can
+differ considerably in the rates at which they consume computational
+resources. One convenient way to describe this difference is to use the
+notion of <em>order of growth</em> to obtain a gross measure of
+the resources required by a process as the inputs become
+larger.</p>
+<p>Let <em>n</em> be a parameter that measures the size of the problem, and let
+<em>R</em>(<em>n</em>) be the amount of resources the process requires for a problem
+of size <em>n</em>. In our previous examples we took <em>n</em> to be the number for
+which a given function is to be computed, but there are other
+possibilities. For instance, if our goal is to compute an approximation
+to the square root of a number, we might take <em>n</em> to be the number of
+digits accuracy required. For matrix multiplication we might take <em>n</em> to
+be the number of rows in the matrices. In general there are a number of
+properties of the problem with respect to which it will be desirable to
+analyze a given process. Similarly, <em>R</em>(<em>n</em>) might measure the number of
+internal storage registers used, the number of elementary machine
+operations performed, and so on. In computers that do only a fixed
+number of operations at a time, the time required will be proportional
+to the number of elementary machine operations performed.</p>
+<p>We say that <em>R</em>(<em>n</em>) has order of growth
+<img src="book-Z-G-D-3.gif" alt="" />(<em>f</em>(<em>n</em>)), written <em>R</em>(<em>n</em>) =
+<img src="book-Z-G-D-3.gif" alt="" />(<em>f</em>(<em>n</em>)) (pronounced ``theta of
+<em>f</em>(<em>n</em>)''), if there are positive constants <em>k</em><del>1</del> and <em>k</em><del>2</del>
+independent of <em>n</em> such that</p>
+<p><img src="ch1-Z-G-18.gif" alt="" /></p>
+<p>for any sufficiently large value of <em>n</em>. (In other words, for large <em>n</em>,
+the value <em>R</em>(<em>n</em>) is sandwiched between <em>k</em><del>1</del><em>f</em>(<em>n</em>) and
+<em>k</em><del>2</del><em>f</em>(<em>n</em>).)</p>
+<p>For instance, with the linear
+recursive process for computing factorial described in
+section <a href="book-Z-H-11.html#%_sec_1.2.1">1.2.1</a> the number of steps grows
+proportionally to the input <em>n</em>. Thus, the steps required for this
+process grows as <img src="book-Z-G-D-3.gif" alt="" />(<em>n</em>). We also saw
+that the space required grows as <img src="book-Z-G-D-3.gif" alt="" />(<em>n</em>).
+For the iterative factorial,
+the number of steps is still <img src="book-Z-G-D-3.gif" alt="" />(<em>n</em>) but
+the space is <img src="book-Z-G-D-3.gif" alt="" />(1) -- that is,
+constant.<a href="book-Z-H-11.html#footnote_Temp_59">^[36]{.small}^</a>
+The tree-recursive Fibonacci
+computation requires
+<img src="book-Z-G-D-3.gif" alt="" />^<em>n</em>^)
+steps and space <img src="book-Z-G-D-3.gif" alt="" />(<em>n</em>), where
+<img src="book-Z-G-D-11.gif" alt="" /> is the golden ratio described in
+section <a href="book-Z-H-11.html#%_sec_1.2.2">1.2.2</a>.</p>
+<p>Orders of growth provide only a crude description of the behavior of a
+process. For example, a process requiring <em>n</em>^2^ steps and a process
+requiring 1000<em>n</em>^2^ steps and a process requiring 3<em>n</em>^2^ + 10<em>n</em> + 17
+steps all have <img src="book-Z-G-D-3.gif" alt="" />(<em>n</em>^2^) order of
+growth. On the other hand, order of growth provides a useful indication
+of how we may expect the behavior of the process to change as we change
+the size of the problem. For a
+<img src="book-Z-G-D-3.gif" alt="" />(<em>n</em>) (linear) process,
+doubling the size will roughly double the amount of resources used. For
+an exponential process, each increment in problem size
+will multiply the resource utilization by a constant factor. In the
+remainder of section <a href="book-Z-H-11.html#%_sec_1.2">1.2</a> we will examine
+two algorithms whose order of growth is logarithmic, so
+that doubling the problem size increases the resource requirement by a
+constant amount.</p>
+<p><strong>Exercise 1.14.</strong>  Draw the tree illustrating the
+process generated by the <code>count-change</code> procedure of
+section <a href="book-Z-H-11.html#%_sec_1.2.2">1.2.2</a> in making change for 11
+cents. What are the orders of growth of the space and number of steps
+used by this process as the amount to be changed increases?</p>
+<p><strong>Exercise 1.15.</strong>  The sine of an angle
+(specified in radians) can be computed by making use of the
+approximation <code>sin</code> <em>x</em> <img src="book-Z-G-D-20.gif" alt="" /> <em>x</em> if <em>x</em> is
+sufficiently small, and the trigonometric identity</p>
+<p><img src="ch1-Z-G-19.gif" alt="" /></p>
+<p>to reduce the size of the argument of <code>sin</code>. (For purposes of this
+exercise an angle is considered ``sufficiently small'' if its
+magnitude is not greater than 0.1 radians.) These ideas are incorporated
+in the following procedures:</p>
+<pre><code class="language-scheme editable">(define (cube x) (* x x x))
+(define (p x) (- (* 3 x) (* 4 (cube x))))
+(define (sine angle)
+   (if (not (&gt; (abs angle) 0.1))
+       angle
+       (p (sine (/ angle 3.0)))))
+</code></pre>
+<p>a.  How many times is the procedure <code>p</code> applied when <code>(sine 12.15)</code> is
+evaluated?</p>
+<p>b.  What is the order of growth in space and number of steps (as a
+function of <em>a</em>) used by the process generated by the <code>sine</code> procedure
+when <code>(sine a)</code> is evaluated?</p>
+<h3 id="124--exponentiation"><a class="header" href="#124--exponentiation"><a href="book-Z-H-4.html#%_toc_%_sec_1.2.4">1.2.4  Exponentiation</a></a></h3>
+<p>Consider the problem of computing the exponential of a
+given number. We would like a procedure that takes as arguments a base
+<em>b</em> and a positive integer exponent <em>n</em> and computes <em>b</em>^<em>n</em>^. One way
+to do this is via the recursive definition</p>
+<p><img src="ch1-Z-G-20.gif" alt="" /></p>
+<p>which translates readily into the procedure</p>
+<pre><code class="language-scheme editable">(define (expt b n)
+  (if (= n 0)
+      1
+      (* b (expt b (- n 1)))))
+</code></pre>
+<p>This is a linear recursive process, which requires
+<img src="book-Z-G-D-3.gif" alt="" />(<em>n</em>) steps and
+<img src="book-Z-G-D-3.gif" alt="" />(<em>n</em>) space. Just as with factorial, we
+can readily formulate an equivalent linear iteration:</p>
+<pre><code class="language-scheme editable">(define (expt b n)
+  (expt-iter b n 1))
+
+(define (expt-iter b counter product)
+  (if (= counter 0)
+      product
+      (expt-iter b
+                (- counter 1)
+                (* b product)))) 
+</code></pre>
+<p>This version requires <img src="book-Z-G-D-3.gif" alt="" />(<em>n</em>) steps and
+<img src="book-Z-G-D-3.gif" alt="" />(1) space.</p>
+<p>We can compute exponentials in fewer steps by using
+successive squaring. For instance, rather than computing <em>b</em>^8^ as</p>
+<p><img src="ch1-Z-G-21.gif" alt="" /></p>
+<p>we can compute it using three multiplications:</p>
+<p><img src="ch1-Z-G-22.gif" alt="" /></p>
+<p>This method works fine for exponents that are powers of 2. We can also
+take advantage of successive squaring in computing exponentials in
+general if we use the rule</p>
+<p><img src="ch1-Z-G-23.png" alt="" /></p>
+<p>We can express this method as a procedure:</p>
+<pre><code class="language-scheme editable">(define (fast-expt b n)
+  (cond ((= n 0) 1)
+        ((even? n) (square (fast-expt b (/ n 2))))
+        (else (* b (fast-expt b (- n 1))))))
+</code></pre>
+<p>where the predicate to test whether an integer is even is defined in
+terms of the primitive procedure <code>remainder</code>
+by</p>
+<pre><code class="language-scheme editable">(define (even? n)
+  (= (remainder n 2) 0))
+</code></pre>
+<p>The process evolved by <code>fast-expt</code> grows
+logarithmically with <em>n</em> in both space and number of steps. To see this,
+observe that computing <em>b</em>^2<em>n</em>^ using <code>fast-expt</code> requires only one
+more multiplication than computing <em>b</em>^<em>n</em>^. The size of the exponent we
+can compute therefore doubles (approximately) with every new
+multiplication we are allowed. Thus, the number of multiplications
+required for an exponent of <em>n</em> grows about as fast as the logarithm of
+<em>n</em> to the base 2. The process has
+<img src="book-Z-G-D-3.gif" alt="" />(<code>log</code> <em>n</em>)
+growth.<a href="book-Z-H-11.html#footnote_Temp_62">^[37]{.small}^</a></p>
+<p>The difference between <img src="book-Z-G-D-3.gif" alt="" />(<code>log</code> <em>n</em>)
+growth and <img src="book-Z-G-D-3.gif" alt="" />(<em>n</em>) growth becomes
+striking as <em>n</em> becomes large. For example, <code>fast-expt</code> for <em>n</em> = 1000
+requires only 14
+multiplications.<a href="book-Z-H-11.html#footnote_Temp_63">^[38]{.small}^</a>
+It is also possible to use the idea of successive squaring to devise an
+iterative algorithm that computes exponentials with a logarithmic number
+of steps (see exercise <a href="book-Z-H-11.html#%_thm_1.16">1.16</a>), although,
+as is often the case with iterative algorithms, this is not written down
+so straightforwardly as the recursive
+algorithm.<a href="book-Z-H-11.html#footnote_Temp_64">^[39]{.small}^</a></p>
+<p><strong>Exercise 1.16.</strong>  Design a procedure that evolves an
+iterative exponentiation process that uses successive squaring and uses
+a logarithmic number of steps, as does <code>fast-expt</code>. (Hint: Using the
+observation that (<em>b</em>^<em>n</em>/2^)^2^ = (<em>b</em>^2^)^<em>n</em>/2^, keep, along with the
+exponent <em>n</em> and the base <em>b</em>, an additional state variable <em>a</em>, and
+define the state transformation in such a way that the product <em>a</em>
+<em>b</em>^<em>n</em>^ is unchanged from state to state. At the beginning of the
+process <em>a</em> is taken to be 1, and the answer is given by the value of
+<em>a</em> at the end of the process. In general, the technique of defining an
+<em>invariant quantity</em> that remains unchanged from state to
+state is a powerful way to think about the design of
+iterative algorithms.)</p>
+<p><strong>Exercise 1.17.</strong>  The exponentiation algorithms in
+this section are based on performing exponentiation by means of repeated
+multiplication. In a similar way, one can perform integer multiplication
+by means of repeated addition. The following multiplication procedure
+(in which it is assumed that our language can only add, not multiply) is
+analogous to the <code>expt</code> procedure:</p>
+<pre><code class="language-scheme editable">(define (* a b)
+  (if (= b 0)
+      0
+      (+ a (* a (- b 1)))))
+</code></pre>
+<p>This algorithm takes a number of steps that is linear in <code>b</code>. Now
+suppose we include, together with addition, operations <code>double</code>, which
+doubles an integer, and <code>halve</code>, which divides an (even) integer by 2.
+Using these, design a multiplication procedure analogous to <code>fast-expt</code>
+that uses a logarithmic number of steps.</p>
+<p><strong>Exercise 1.18.</strong>  Using the results of
+exercises <a href="book-Z-H-11.html#%_thm_1.16">1.16</a>
+and <a href="book-Z-H-11.html#%_thm_1.17">1.17</a>, devise a procedure that
+generates an iterative process for multiplying two integers in terms of
+adding, doubling, and halving and uses a logarithmic number of
+steps.<a href="book-Z-H-11.html#footnote_Temp_68">^[40]{.small}^</a></p>
+<p><strong>Exercise 1.19.</strong>   There is a clever
+algorithm for computing the Fibonacci numbers in a logarithmic number of
+steps. Recall the transformation of the state variables <em>a</em> and <em>b</em> in
+the <code>fib-iter</code> process of section <a href="book-Z-H-11.html#%_sec_1.2.2">1.2.2</a>:
+<em>a</em> <img src="book-Z-G-D-14.gif" alt="" /> <em>a</em> + <em>b</em> and <em>b</em>
+<img src="book-Z-G-D-14.gif" alt="" /> <em>a</em>. Call this transformation <em>T</em>,
+and observe that applying <em>T</em> over and over again <em>n</em> times, starting
+with 1 and 0, produces the pair <em>Fib</em>(<em>n</em> + 1) and <em>Fib</em>(<em>n</em>). In other
+words, the Fibonacci numbers are produced by applying <em>T</em>^<em>n</em>^, the
+<em>n</em>th power of the transformation <em>T</em>, starting with the pair (1,0). Now
+consider <em>T</em> to be the special case of <em>p</em> = 0 and <em>q</em> = 1 in a family
+of transformations <em>T</em><del><em>pq</em></del>, where <em>T</em><del><em>pq</em></del> transforms the pair
+(<em>a</em>,<em>b</em>) according to <em>a</em> <img src="book-Z-G-D-14.gif" alt="" /> <em>bq</em> +
+<em>aq</em> + <em>ap</em> and <em>b</em> <img src="book-Z-G-D-14.gif" alt="" /> <em>bp</em> + <em>aq</em>. Show
+that if we apply such a transformation <em>T</em><del><em>pq</em></del> twice, the effect is
+the same as using a single transformation <em>T</em><del><em>p</em>'<em>q</em>'</del> of the same
+form, and compute <em>p</em>' and <em>q</em>' in terms of <em>p</em> and <em>q</em>. This gives us
+an explicit way to square these transformations, and thus we can compute
+<em>T</em>^<em>n</em>^ using successive squaring, as in the <code>fast-expt</code> procedure. Put
+this all together to complete the following procedure, which runs in a
+logarithmic number of
+steps:<a href="book-Z-H-11.html#footnote_Temp_70">^[41]{.small}^</a></p>
+<pre><code class="language-scheme editable">(define (fib n)
+  (fib-iter 1 0 0 1 n))
+(define (fib-iter a b p q count)
+  (cond ((= count 0) b)
+        ((even? count)
+         (fib-iter a
+                   b
+                   &lt;`*`??`*`&gt;      `*`; compute `*`p`*`'`
+                   &lt;`*`??`*`&gt;      `*`; compute `*`q`*`'`
+                   (/ count 2)))
+        (else (fib-iter (+ (* b q) (* a q) (* a p))
+                        (+ (* b p) (* a q))
+                        p
+                        q
+                        (- count 1)))))
+</code></pre>
+<h3 id="125--greatest-common-divisors"><a class="header" href="#125--greatest-common-divisors"><a href="book-Z-H-4.html#%_toc_%_sec_1.2.5">1.2.5  Greatest Common Divisors</a></a></h3>
+<p>The greatest common divisor (GCD) of two integers <em>a</em> and
+<em>b</em> is defined to be the largest integer that divides both <em>a</em> and <em>b</em>
+with no remainder. For example, the GCD of 16 and 28 is 4. In chapter 2,
+when we investigate how to implement rational-number arithmetic, we will
+need to be able to compute GCDs in order to reduce rational numbers to
+lowest terms. (To reduce a rational number to lowest terms, we must
+divide both the numerator and the denominator by their GCD. For example,
+16/28 reduces to 4/7.) One way to find the GCD of two integers is to
+factor them and search for common factors, but there is a famous
+algorithm that is much more efficient.</p>
+<p>The idea of the algorithm is based on the observation
+that, if <em>r</em> is the remainder when <em>a</em> is divided by <em>b</em>, then the
+common divisors of <em>a</em> and <em>b</em> are precisely the same as the common
+divisors of <em>b</em> and <em>r</em>. Thus, we can use the equation</p>
+<p><img src="ch1-Z-G-24.gif" alt="" /></p>
+<p>to successively reduce the problem of computing a GCD to the problem of
+computing the GCD of smaller and smaller pairs of integers. For example,</p>
+<p><img src="ch1-Z-G-25.gif" alt="" /></p>
+<p>reduces GCD(206,40) to GCD(2,0), which is 2. It is possible to show that
+starting with any two positive integers and performing repeated
+reductions will always eventually produce a pair where the second number
+is 0. Then the GCD is the other number in the pair. This method for
+computing the GCD is known as <em>Euclid's
+Algorithm</em>.<a href="book-Z-H-11.html#footnote_Temp_71">^[42]{.small}^</a></p>
+<p>It is easy to express Euclid's Algorithm as a procedure:</p>
+<pre><code class="language-scheme editable">(define (gcd a b)
+  (if (= b 0)
+      a
+      (gcd b (remainder a b))))
+</code></pre>
+<p>This generates an iterative process, whose number of steps grows as the
+logarithm of the numbers involved.</p>
+<p>The fact that the number of steps required by Euclid's
+Algorithm has logarithmic growth bears an interesting relation to the
+Fibonacci numbers:</p>
+<p><strong>Lamé's Theorem:</strong> If Euclid's Algorithm
+requires <em>k</em> steps to compute the GCD of some pair, then the smaller
+number in the pair must be greater than or equal to the <em>k</em>th Fibonacci
+number.<a href="book-Z-H-11.html#footnote_Temp_72">^[43]{.small}^</a></p>
+<p>We can use this theorem to get an order-of-growth estimate for Euclid's
+Algorithm. Let <em>n</em> be the smaller of the two inputs to the procedure. If
+the process takes <em>k</em> steps, then we must have <em>n</em>[&gt;]{.underline} <em>Fib</em>
+(<em>k</em>) <img src="book-Z-G-D-20.gif" alt="" />
+<img src="book-Z-G-D-11.gif" alt="" />5.
+Therefore the number of steps <em>k</em> grows as the logarithm (to the base
+<img src="book-Z-G-D-11.gif" alt="" />) of <em>n</em>. Hence, the order of growth
+is <img src="book-Z-G-D-3.gif" alt="" />(<code>log</code> <em>n</em>).</p>
+<p><strong>Exercise 1.20.</strong>  The
+process that a procedure generates is of course dependent on the rules
+used by the interpreter. As an example, consider the iterative <code>gcd</code>
+procedure given above. Suppose we were to interpret this procedure using
+normal-order evaluation, as discussed in
+section <a href="book-Z-H-10.html#%_sec_1.1.5">1.1.5</a>. (The
+normal-order-evaluation rule for <code>if</code> is described in
+exercise <a href="book-Z-H-10.html#%_thm_1.5">1.5</a>.) Using the substitution
+method (for normal order), illustrate the process generated in
+evaluating <code>(gcd 206 40)</code> and indicate the <code>remainder</code> operations that
+are actually performed. How many <code>remainder</code> operations are actually
+performed in the normal-order evaluation of <code>(gcd 206 40)</code>? In the
+applicative-order evaluation?</p>
+<h3 id="126--example-testing-for-primality"><a class="header" href="#126--example-testing-for-primality"><a href="book-Z-H-4.html#%_toc_%_sec_1.2.6">1.2.6  Example: Testing for Primality</a></a></h3>
+<p>This section describes two methods for
+checking the primality of an integer <em>n</em>, one with order of growth
+<img src="book-Z-G-D-3.gif" alt="" /><em>n</em>),
+and a ``probabilistic'' algorithm with order of growth
+<img src="book-Z-G-D-3.gif" alt="" />(<code>log</code> <em>n</em>). The exercises at the end
+of this section suggest programming projects based on these algorithms.</p>
+<h4 id="searching-for-divisors"><a class="header" href="#searching-for-divisors"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_74">Searching for divisors</a></a></h4>
+<p>Since ancient times, mathematicians have been fascinated by problems
+concerning prime numbers, and many people have worked on the problem of
+determining ways to test if numbers are prime. One way to test if a
+number is prime is to find the number's divisors. The following program
+finds the smallest integral divisor (greater than 1) of a given
+number <em>n</em>. It does this in a straightforward way, by testing <em>n</em> for
+divisibility by successive integers starting with 2.</p>
+<pre><code class="language-scheme editable">(define (smallest-divisor n)
+  (find-divisor n 2))
+</code></pre>
+<pre><code class="language-scheme editable">(define (find-divisor n test-divisor)
+  (cond ((&gt; (square test-divisor) n) n)
+        ((divides? test-divisor n) test-divisor)
+        (else (find-divisor n (+ test-divisor 1)))))
+</code></pre>
+<pre><code class="language-scheme editable">(define (divides? a b)
+  (= (remainder b a) 0))
+</code></pre>
+<p>We can test whether a number is prime as follows: <em>n</em> is prime if and
+only if <em>n</em> is its own smallest divisor.</p>
+<p>(define (prime? n)
+(= n (smallest-divisor n)))</p>
+<p>The end test for <code>find-divisor</code> is based on the fact that if <em>n</em> is not
+prime it must have a divisor less than or equal to
+<img src="book-Z-G-D-13.gif" alt="" />
+This means that the algorithm need only test divisors between 1 and
+<img src="book-Z-G-D-13.gif" alt="" /><em>n</em>. Consequently, the number of steps
+required to identify <em>n</em> as prime will have order of growth
+<img src="book-Z-G-D-3.gif" alt="" /><em>n</em>).</p>
+<h4 id="the-fermat-test"><a class="header" href="#the-fermat-test"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_76">The Fermat test</a></a></h4>
+<p>The <img src="book-Z-G-D-3.gif" alt="" />(<code>log</code>
+<em>n</em>) primality test is based on a result from number theory known as
+Fermat's Little
+Theorem.<a href="book-Z-H-11.html#footnote_Temp_77">^[45]{.small}^</a></p>
+<p><strong>Fermat's Little Theorem:</strong> If <em>n</em> is a prime number and
+<em>a</em> is any positive integer less than <em>n</em>, then <em>a</em> raised to the <em>n</em>th
+power is congruent to <em>a</em> modulo <em>n</em>.</p>
+<p>(Two numbers are said to be <em>congruent modulo</em> <em>n</em> if they
+both have the same remainder when divided by <em>n</em>. The remainder of a
+number <em>a</em> when divided by <em>n</em> is also referred to as the
+<em>remainder of</em> <em>a</em> <em>modulo</em> <em>n</em>, or simply
+as <em>a</em> <em>modulo</em> <em>n</em>.)</p>
+<p>If <em>n</em> is not prime, then, in general, most of the numbers <em>a</em>&lt; <em>n</em>
+will not satisfy the above relation. This leads to the following
+algorithm for testing primality: Given a number <em>n</em>, pick a
+random number <em>a</em> &lt; <em>n</em> and compute the remainder of
+<em>a</em>^<em>n</em>^ modulo <em>n</em>. If the result is not equal to <em>a</em>, then <em>n</em> is
+certainly not prime. If it is <em>a</em>, then chances are good that <em>n</em> is
+prime. Now pick another random number <em>a</em> and test it with the same
+method. If it also satisfies the equation, then we can be even more
+confident that <em>n</em> is prime. By trying more and more values of <em>a</em>, we
+can increase our confidence in the result. This algorithm is known as
+the Fermat test.</p>
+<p>To implement the Fermat test, we need a procedure that
+computes the exponential of a number modulo another number:</p>
+<pre><code class="language-scheme editable">(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (square (expmod base (/ exp 2) m))
+                    m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))        
+</code></pre>
+<p>This is very similar to the <code>fast-expt</code> procedure of
+section <a href="book-Z-H-11.html#%_sec_1.2.4">1.2.4</a>. It uses successive
+squaring, so that the number of steps grows logarithmically with the
+exponent.<a href="book-Z-H-11.html#footnote_Temp_78">^[46]{.small}^</a></p>
+<p>The Fermat test is performed by choosing at random a number <em>a</em> between
+1 and <em>n</em> - 1 inclusive and checking whether the remainder modulo <em>n</em> of
+the <em>n</em>th power of <em>a</em> is equal to <em>a</em>. The random number <em>a</em> is chosen
+using the procedure <code>random</code>, which we
+assume is included as a primitive in Scheme. <code>Random</code> returns a
+nonnegative integer less than its integer input. Hence, to obtain a
+random number between 1 and <em>n</em> - 1, we call <code>random</code> with an input of
+<em>n</em> - 1 and add 1 to the result:</p>
+<pre><code class="language-scheme editable">(define (fermat-test n)
+  (define (try-it a)
+    (= (expmod a n n) a))
+  (try-it (+ 1 (random (- n 1)))))
+</code></pre>
+<p>The following procedure runs the test a given number of times, as
+specified by a parameter. Its value is true if the test succeeds every
+time, and false otherwise.</p>
+<pre><code class="language-scheme editable">(define (fast-prime? n times)
+  (cond ((= times 0) true)
+        ((fermat-test n) (fast-prime? n (- times 1)))
+        (else false)))
+</code></pre>
+<h4 id="probabilistic-methods"><a class="header" href="#probabilistic-methods"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_79">Probabilistic methods</a></a></h4>
+<p>The Fermat test differs in character from
+most familiar algorithms, in which one computes an answer that is
+guaranteed to be correct. Here, the answer obtained is only probably
+correct. More precisely, if <em>n</em> ever fails the Fermat test, we can be
+certain that <em>n</em> is not prime. But the fact that <em>n</em> passes the test,
+while an extremely strong indication, is still not a guarantee that <em>n</em>
+is prime. What we would like to say is that for any number <em>n</em>, if we
+perform the test enough times and find that <em>n</em> always passes the test,
+then the probability of error in our primality test can be made as small
+as we like.</p>
+<p>Unfortunately, this assertion is not quite correct. There do exist
+numbers that fool the Fermat test: numbers <em>n</em> that are not prime and
+yet have the property that <em>a</em>^<em>n</em>^ is congruent to <em>a</em> modulo <em>n</em> for
+all integers <em>a</em> &lt; <em>n</em>. Such numbers are extremely rare, so the Fermat
+test is quite reliable in
+practice.<a href="book-Z-H-11.html#footnote_Temp_80">^[47]{.small}^</a>
+There are variations of the Fermat test that cannot be fooled. In these
+tests, as with the Fermat method, one tests the primality of an integer
+<em>n</em> by choosing a random integer <em>a</em>&lt;<em>n</em> and checking some condition
+that depends upon <em>n</em> and <em>a</em>. (See
+exercise <a href="book-Z-H-11.html#%_thm_1.28">1.28</a> for an example of such a
+test.) On the other hand, in contrast to the Fermat test, one can prove
+that, for any <em>n</em>, the condition does not hold for most of the integers
+<em>a</em>&lt;<em>n</em> unless <em>n</em> is prime. Thus, if <em>n</em> passes the test for some
+random choice of <em>a</em>, the chances are better than even that <em>n</em> is
+prime. If <em>n</em> passes the test for two random choices of <em>a</em>, the chances
+are better than 3 out of 4 that <em>n</em> is prime. By running the test with
+more and more randomly chosen values of <em>a</em> we can make the probability
+of error as small as we like.</p>
+<p>The existence of tests for which one can prove that the chance of error
+becomes arbitrarily small has sparked interest in algorithms of this
+type, which have come to be known as <em>probabilistic algorithms</em>. There
+is a great deal of research activity in this area, and probabilistic
+algorithms have been fruitfully applied to many
+fields.<a href="book-Z-H-11.html#footnote_Temp_81">^[48]{.small}^</a></p>
+<p><strong>Exercise 1.21.</strong>  Use the <code>smallest-divisor</code> procedure
+to find the smallest divisor of each of the following numbers: 199,
+1999, 19999.</p>
+<p><strong>Exercise 1.22.</strong>  Most
+Lisp implementations include a primitive called <code>runtime</code> that returns
+an integer that specifies the amount of time the system has been running
+(measured, for example, in microseconds). The following
+<code>timed-prime-test</code> procedure, when called with an integer <em>n</em>, prints
+<em>n</em> and checks to see if <em>n</em> is prime. If <em>n</em> is prime, the procedure
+prints three asterisks followed by the amount of time used in performing
+the test.</p>
+<pre><code class="language-scheme editable">(define (timed-prime-test n)
+  (newline)
+  (display n)
+  (start-prime-test n (runtime)))
+(define (start-prime-test n start-time)
+  (if (prime? n)
+      (report-prime (- (runtime) start-time))))
+(define (report-prime elapsed-time)
+  (display " *** ")
+  (display elapsed-time))
+</code></pre>
+<p>Using this procedure, write a procedure <code>search-for-primes</code> that checks
+the primality of consecutive odd integers in a specified range. Use your
+procedure to find the three smallest primes larger than 1000; larger
+than 10,000; larger than 100,000; larger than 1,000,000. Note the time
+needed to test each prime. Since the testing algorithm has order of
+growth of
+<img src="book-Z-G-D-3.gif" alt="" /><em>n</em>),
+you should expect that testing for primes around 10,000 should take
+about <img src="book-Z-G-D-13.gif" alt="" />10 times as long as testing for
+primes around 1000. Do your timing data bear this out? How well do the
+data for 100,000 and 1,000,000 support the
+<img src="book-Z-G-D-13.gif" alt="" /><em>n</em> prediction? Is your result
+compatible with the notion that programs on your machine run in time
+proportional to the number of steps required for the computation?</p>
+<p><strong>Exercise 1.23.</strong>  The <code>smallest-divisor</code>
+procedure shown at the start of this section does lots of needless
+testing: After it checks to see if the number is divisible by 2 there is
+no point in checking to see if it is divisible by any larger even
+numbers. This suggests that the values used for <code>test-divisor</code> should
+not be 2, 3, 4, 5, 6, <code>...</code>, but rather 2, 3, 5, 7, 9, <code>...</code>. To
+implement this change, define a procedure <code>next</code> that returns 3 if its
+input is equal to 2 and otherwise returns its input plus 2. Modify the
+<code>smallest-divisor</code> procedure to use <code>(next test-divisor)</code> instead of
+<code>(+ test-divisor 1)</code>. With <code>timed-prime-test</code> incorporating this
+modified version of <code>smallest-divisor</code>, run the test for each of the 12
+primes found in exercise <a href="book-Z-H-11.html#%_thm_1.22">1.22</a>. Since this
+modification halves the number of test steps, you should expect it to
+run about twice as fast. Is this expectation confirmed? If not, what is
+the observed ratio of the speeds of the two algorithms, and how do you
+explain the fact that it is different from 2?</p>
+<p><strong>Exercise 1.24.</strong>  Modify the <code>timed-prime-test</code>
+procedure of exercise <a href="book-Z-H-11.html#%_thm_1.22">1.22</a> to use
+<code>fast-prime?</code> (the Fermat method), and test each of the 12 primes you
+found in that exercise. Since the Fermat test has
+<img src="book-Z-G-D-3.gif" alt="" />(<code>log</code> <em>n</em>) growth, how would you
+expect the time to test primes near 1,000,000 to compare with the time
+needed to test primes near 1000? Do your data bear this out? Can you
+explain any discrepancy you find?</p>
+<p><strong>Exercise 1.25.</strong>  Alyssa P. Hacker complains that we
+went to a lot of extra work in writing <code>expmod</code>. After all, she says,
+since we already know how to compute exponentials, we could have simply
+written</p>
+<pre><code class="language-scheme editable">(define (expmod base exp m)
+  (remainder (fast-expt base exp) m))
+</code></pre>
+<p>Is she correct? Would this procedure serve as well for our fast prime
+tester? Explain.</p>
+<p><strong>Exercise 1.26.</strong>  Louis Reasoner is having great
+difficulty doing exercise <a href="book-Z-H-11.html#%_thm_1.24">1.24</a>. His
+<code>fast-prime?</code> test seems to run more slowly than his <code>prime?</code> test.
+Louis calls his friend Eva Lu Ator over to help. When they examine
+Louis's code, they find that he has rewritten the <code>expmod</code> procedure to
+use an explicit multiplication, rather than calling <code>square</code>:</p>
+<pre><code class="language-scheme editable">(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (* (expmod base (/ exp 2) m)
+                       (expmod base (/ exp 2) m))
+                    m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))
+</code></pre>
+<p>``I don't see what difference that could make,'' says Louis. ``I
+do.'' says Eva. ``By writing the procedure like that, you have
+transformed the <img src="book-Z-G-D-3.gif" alt="" />(<code>log</code> <em>n</em>) process
+into a <img src="book-Z-G-D-3.gif" alt="" />(<em>n</em>) process.'' Explain.</p>
+<p><strong>Exercise 1.27.</strong>  Demonstrate that the
+Carmichael numbers listed in
+footnote <a href="book-Z-H-11.html#footnote_Temp_80">47</a> really do fool the
+Fermat test. That is, write a procedure that takes an integer <em>n</em> and
+tests whether <em>a</em>^<em>n</em>^ is congruent to <em>a</em> modulo <em>n</em> for every
+<em>a</em>&lt;<em>n</em>, and try your procedure on the given Carmichael numbers.</p>
+<p><strong>Exercise
+1.28.</strong>  One
+variant of the Fermat test that cannot be fooled is called the
+<em>Miller-Rabin test</em> (Miller 1976; Rabin 1980). This starts from
+an alternate form of Fermat's Little Theorem, which
+states that if <em>n</em> is a prime number and <em>a</em> is any positive integer
+less than <em>n</em>, then <em>a</em> raised to the (<em>n</em> - 1)st power is congruent to
+1 modulo <em>n</em>. To test the primality of a number <em>n</em> by the Miller-Rabin
+test, we pick a random number <em>a</em>&lt;<em>n</em> and raise <em>a</em> to the (<em>n</em> - 1)st
+power modulo <em>n</em> using the <code>expmod</code> procedure. However, whenever we
+perform the squaring step in <code>expmod</code>, we check to see if we have
+discovered a ``nontrivial square root of 1 modulo <em>n</em>,'' that is, a
+number not equal to 1 or <em>n</em> - 1 whose square is equal to 1 modulo <em>n</em>.
+It is possible to prove that if such a nontrivial square root of 1
+exists, then <em>n</em> is not prime. It is also possible to prove that if <em>n</em>
+is an odd number that is not prime, then, for at least half the numbers
+<em>a</em>&lt;<em>n</em>, computing <em>a</em>^<em>n</em>-1^ in this way will reveal a nontrivial
+square root of 1 modulo <em>n</em>. (This is why the Miller-Rabin test cannot
+be fooled.) Modify the <code>expmod</code> procedure to signal if it discovers a
+nontrivial square root of 1, and use this to implement the Miller-Rabin
+test with a procedure analogous to <code>fermat-test</code>. Check your procedure
+by testing various known primes and non-primes. Hint: One convenient way
+to make <code>expmod</code> signal is to have it return 0.</p>
+<hr />
+<p><a href="book-Z-H-11.html#call_footnote_Temp_46">^[29]{.small}^</a>
+In a real program we would probably use the block structure introduced
+in the last section to hide the definition of <code>fact-iter</code>:</p>
+<pre><code class="language-scheme editable">(define (factorial n)
+  (define (iter product counter)
+    (if (&gt; counter n)
+        product
+        (iter (* counter product)
+              (+ counter 1))))
+  (iter 1 1))
+</code></pre>
+<p>We avoided doing this here so as to minimize the number of things to
+think about at once.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_47">^[30]{.small}^</a>
+When we discuss the implementation of procedures on register machines in
+chapter 5, we will see that any iterative process can be realized ``in
+hardware'' as a machine that has a fixed set of registers and no
+auxiliary memory. In contrast, realizing a recursive process requires a
+machine that uses an auxiliary data structure known as a
+<em>stack</em>.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_48">^[31]{.small}^</a>
+Tail recursion has long been
+known as a compiler
+optimization trick. A coherent semantic basis for tail recursion was
+provided by Carl Hewitt (1977), who explained it in terms
+of the ``message-passing'' model of computation that we shall
+discuss in chapter 3. Inspired by this, Gerald Jay Sussman and Guy Lewis
+Steele Jr. (see Steele 1975) constructed a tail-recursive interpreter
+for Scheme. Steele later showed how tail recursion is a consequence of
+the natural way to compile procedure calls (Steele 1977). The IEEE
+standard for Scheme requires that Scheme implementations
+be tail-recursive.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_51">^[32]{.small}^</a>
+An example of this was hinted at in
+section <a href="book-Z-H-10.html#%_sec_1.1.3">1.1.3</a>: The interpreter itself
+evaluates expressions using a tree-recursive process.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_53">^[33]{.small}^</a>
+For example, work through in detail how the reduction rule applies to
+the problem of making change for 10 cents using pennies and nickels.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_54">^[34]{.small}^</a>
+One approach to coping with redundant computations is to arrange matters
+so that we automatically construct a table of values as they are
+computed. Each time we are asked to apply the procedure to some
+argument, we first look to see if the value is already stored in the
+table, in which case we avoid performing the redundant computation. This
+strategy, known as <em>tabulation</em> or
+<em>memoization</em>, can be implemented in a straightforward way. Tabulation
+can sometimes be used to transform processes that require an exponential
+number of steps (such as <code>count-change</code>) into processes whose space and
+time requirements grow linearly with the input. See
+exercise <a href="book-Z-H-22.html#%_thm_3.27">3.27</a>.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_57">^[35]{.small}^</a>
+The elements of Pascal's triangle are called the <em>binomial
+coefficients</em>, because the <em>n</em>th row consists of the
+coefficients of the terms in the expansion of (<em>x</em> + <em>y</em>)^<em>n</em>^. This
+pattern for computing the coefficients appeared in Blaise
+Pascal's 1653 seminal work on probability theory, <em>Traité du triangle
+arithmétique</em>. According to Knuth (1973), the same pattern
+appears in the <em>Szu-yuen Yü-chien</em> (``The Precious Mirror of the Four
+Elements''), published by
+the Chinese mathematician Chu Shih-chieh in 1303, in the works of the
+twelfth-century Persian poet and mathematician Omar Khayyam, and in the
+works of the twelfth-century Hindu mathematician Bháscara Áchárya.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_59">^[36]{.small}^</a>
+These statements mask a great deal of oversimplification. For instance,
+if we count process steps as ``machine operations'' we are making
+the assumption that the number of machine operations needed to perform,
+say, a multiplication is independent of the size of the numbers to be
+multiplied, which is false if the numbers are sufficiently large.
+Similar remarks hold for the estimates of space. Like the design and
+description of a process, the analysis of a process can be carried out
+at various levels of abstraction.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_62">^[37]{.small}^</a>
+More precisely, the number of multiplications required is equal to 1
+less than the log base 2 of <em>n</em> plus the number of ones in the binary
+representation of <em>n</em>. This total is always less than twice the log base
+2 of <em>n</em>. The arbitrary constants <em>k</em><del>1</del> and <em>k</em><del>2</del> in the definition of
+order notation imply that, for a logarithmic process, the base to which
+logarithms are taken does not matter, so all such processes are
+described as <img src="book-Z-G-D-3.gif" alt="" />(<code>log</code> <em>n</em>).</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_63">^[38]{.small}^</a>
+You may wonder why anyone would care about raising numbers to the 1000th
+power. See section <a href="book-Z-H-11.html#%_sec_1.2.6">1.2.6</a>.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_64">^[39]{.small}^</a>
+This iterative algorithm is ancient. It appears in the <em>Chandah-sutra</em>
+by Áchárya Pingala, written
+before 200 B.C. See Knuth 1981, section 4.6.3, for a full discussion and
+analysis of this and other methods of exponentiation.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_68">^[40]{.small}^</a>
+This algorithm, which is sometimes known as
+the ``Russian peasant method'' of multiplication, is ancient.
+Examples of its use are found in the Rhind Papyrus, one of
+the two oldest mathematical documents in existence, written about 1700
+B.C. (and copied from an even older document) by an
+Egyptian scribe named A'h-mose.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_70">^[41]{.small}^</a>
+This exercise was suggested to us by Joe
+Stoy, based on an example in Kaldewaij 1990.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_71">^[42]{.small}^</a>
+Euclid's Algorithm is so called because it appears in
+Euclid's <em>Elements</em> (Book 7, ca. 300 B.C.). According to Knuth (1973),
+it can be considered the oldest known nontrivial
+algorithm. The ancient Egyptian method of multiplication
+(exercise <a href="book-Z-H-11.html#%_thm_1.18">1.18</a>) is surely older, but, as
+Knuth explains, Euclid's algorithm is the oldest known to have been
+presented as a general algorithm, rather than as a set of illustrative
+examples.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_72">^[43]{.small}^</a>
+This theorem was proved in 1845 by Gabriel Lamé, a French
+mathematician and engineer known chiefly for his contributions to
+mathematical physics. To prove the theorem, we consider pairs (<em>a</em><del><em>k</em></del>
+,<em>b</em><del><em>k</em></del>), where <em>a</em><del><em>k</em></del>[&gt;]{.underline} <em>b</em><del><em>k</em></del>, for which Euclid's
+Algorithm terminates in <em>k</em> steps. The proof is based on the claim that,
+if (<em>a</em><del><em>k</em>+1</del>, <em>b</em><del><em>k</em>+1</del>) <img src="book-Z-G-D-15.gif" alt="" />
+(<em>a</em><del><em>k</em></del>, <em>b</em><del><em>k</em></del>) <img src="book-Z-G-D-15.gif" alt="" /> (<em>a</em><del><em>k</em>-1</del>,
+<em>b</em><del><em>k</em>-1</del>) are three successive pairs in the reduction process, then we
+must have <em>b</em><del><em>k</em>+1</del>[&gt;]{.underline} <em>b</em><del><em>k</em></del> + <em>b</em><del><em>k</em>-1</del>. To verify
+the claim, consider that a reduction step is defined by applying the
+transformation <em>a</em><del><em>k</em>-1</del> = <em>b</em><del><em>k</em></del>, <em>b</em><del><em>k</em>-1</del> = remainder of <em>a</em><del><em>k</em></del>
+divided by <em>b</em><del><em>k</em></del>. The second equation means that <em>a</em><del><em>k</em></del> =
+<em>qb</em><del><em>k</em></del> + <em>b</em><del><em>k</em>-1</del> for some positive integer <em>q</em>. And since <em>q</em> must
+be at least 1 we have <em>a</em><del><em>k</em></del> = <em>qb</em><del><em>k</em></del> + <em>b</em><del><em>k</em>-1</del> [&gt;]{.underline}
+<em>b</em><del><em>k</em></del> + <em>b</em><del><em>k</em>-1</del>. But in the previous reduction step we have
+<em>b</em><del><em>k</em>+1</del> = <em>a</em><del><em>k</em></del>. Therefore, <em>b</em><del><em>k</em>+1</del> = <em>a</em><del><em>k</em></del>[&gt;]{.underline}
+<em>b</em><del><em>k</em></del> + <em>b</em><del><em>k</em>-1</del>. This verifies the claim. Now we can prove the
+theorem by induction on <em>k</em>, the number of steps that the algorithm
+requires to terminate. The result is true for <em>k</em> = 1, since this merely
+requires that <em>b</em> be at least as large as <em>Fib</em>(1) = 1. Now, assume that
+the result is true for all integers less than or equal to <em>k</em> and
+establish the result for <em>k</em> + 1. Let (<em>a</em><del><em>k</em>+1</del>, <em>b</em><del><em>k</em>+1</del>)
+<img src="book-Z-G-D-15.gif" alt="" /> (<em>a</em><del><em>k</em></del>, <em>b</em><del><em>k</em></del>)
+<img src="book-Z-G-D-15.gif" alt="" /> (<em>a</em><del><em>k</em>-1</del>, <em>b</em><del><em>k</em>-1</del>) be
+successive pairs in the reduction process. By our induction hypotheses,
+we have <em>b</em><del><em>k</em>-1</del>[&gt;]{.underline} <em>Fib</em>(<em>k</em> - 1) and
+<em>b</em><del><em>k</em></del>[&gt;]{.underline} <em>Fib</em>(<em>k</em>). Thus, applying the claim we just
+proved together with the definition of the Fibonacci numbers gives
+<em>b</em><del><em>k</em>+1</del> [&gt;]{.underline} <em>b</em><del><em>k</em></del> + <em>b</em><del><em>k</em>-1</del>[&gt;]{.underline}
+<em>Fib</em>(<em>k</em>) + <em>Fib</em>(<em>k</em> - 1) = <em>Fib</em>(<em>k</em> + 1), which completes the proof
+of Lamé's Theorem.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_75">^[44]{.small}^</a>
+If <em>d</em> is a divisor of <em>n</em>, then so is <em>n</em>/<em>d</em>. But <em>d</em> and <em>n</em>/<em>d</em>
+cannot both be greater than <img src="book-Z-G-D-13.gif" alt="" /><em>n</em>.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_77">^[45]{.small}^</a>
+Pierre de Fermat (1601-1665) is considered to be the founder of
+modern number theory. He obtained many
+important number-theoretic results, but he usually announced just the
+results, without providing his proofs. Fermat's Little
+Theorem was stated in a letter he wrote in 1640. The first published
+proof was given by Euler in 1736 (and an
+earlier, identical proof was discovered in the unpublished
+manuscripts of Leibniz). The most famous of Fermat's results -- known
+as Fermat's Last Theorem -- was jotted down in 1637 in his copy of the
+book <em>Arithmetic</em> (by the third-century Greek mathematician
+Diophantus) with the remark ``I have discovered a truly
+remarkable proof, but this margin is too small to contain it.''
+Finding a proof of Fermat's Last Theorem became one of the most famous
+challenges in number theory. A complete solution was
+finally given in 1995 by Andrew Wiles of Princeton University.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_78">^[46]{.small}^</a>
+The reduction steps in the cases where the exponent <em>e</em> is greater than
+1 are based on the fact that, for any integers <em>x</em>, <em>y</em>, and <em>m</em>, we can
+find the remainder of <em>x</em> times <em>y</em> modulo <em>m</em> by computing separately
+the remainders of <em>x</em> modulo <em>m</em> and <em>y</em> modulo <em>m</em>, multiplying these,
+and then taking the remainder of the result modulo <em>m</em>. For instance, in
+the case where <em>e</em> is even, we compute the remainder of <em>b</em>^<em>e</em>/2^
+modulo <em>m</em>, square this, and take the remainder modulo <em>m</em>. This
+technique is useful because it means we can perform our computation
+without ever having to deal with numbers much larger than <em>m</em>. (Compare
+exercise <a href="book-Z-H-11.html#%_thm_1.25">1.25</a>.)</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_80">^[47]{.small}^</a>
+Numbers that fool the Fermat test are called <em>Carmichael
+numbers</em>, and little is known about them other than that they are
+extremely rare. There are 255 Carmichael numbers below 100,000,000. The
+smallest few are 561, 1105, 1729, 2465, 2821, and 6601. In testing
+primality of very large numbers chosen at random, the chance of
+stumbling upon a value that fools the Fermat test is less than the
+chance that cosmic radiation will cause the computer to
+make an error in carrying out a ``correct'' algorithm. Considering
+an algorithm to be inadequate for the first reason but not for the
+second illustrates the difference between
+mathematics and engineering.</p>
+<p><a href="book-Z-H-11.html#call_footnote_Temp_81">^[48]{.small}^</a>
+One of the most striking applications of probabilistic
+prime testing has been to the field of cryptography. Although it is now
+computationally infeasible to factor an arbitrary 200-digit number, the
+primality of such a number can be checked in a few seconds with the
+Fermat test. This fact forms the basis of a technique for constructing
+``unbreakable codes'' suggested by Rivest,
+Shamir, and Adleman (1977). The resulting
+<em>RSA algorithm</em> has become a widely used technique for
+enhancing the security of electronic communications. Because of this and
+related developments, the study of prime numbers, once
+considered the epitome of a topic in ``pure'' mathematics to be
+studied only for its own sake, now turns out to have important practical
+applications to cryptography, electronic funds transfer, and information
+retrieval.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="1.1.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="1.3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="1.1.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="1.3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="./highlight.js"></script>
+        <script src="./src/languages/scheme.min.js"></script>
+        <script src="./biwascheme.min.js"></script>
+        <script src="./biwascheme_run_logic.js"></script>
+
+
+    </div>
+    </body>
+</html>

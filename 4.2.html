@@ -1,0 +1,863 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Variations on a Scheme -- Lazy Evaluation - SICP</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="./src/styles/docco.min.css">
+        <link rel="stylesheet" href="./run_button_style.css">
+        <link rel="stylesheet" href="./custom.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">SICP</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="42--variations-on-a-scheme----lazy-evaluation"><a class="header" href="#42--variations-on-a-scheme----lazy-evaluation"><a href="book-Z-H-4.html#%_toc_%_sec_4.2">4.2  Variations on a Scheme -- Lazy Evaluation</a></a></h2>
+<p>Now that we
+have an evaluator expressed as a Lisp program, we can experiment with
+alternative choices in language design simply by modifying the
+evaluator. Indeed, new languages are often invented by first writing an
+evaluator that embeds the new language within an existing high-level
+language. For example, if we wish to discuss some aspect of a proposed
+modification to Lisp with another member of the Lisp community, we can
+supply an evaluator that embodies the change. The recipient can then
+experiment with the new evaluator and send back comments as further
+modifications. Not only does the high-level implementation base make it
+easier to test and debug the evaluator; in addition, the embedding
+enables the designer to
+snarf<a href="book-Z-H-27.html#footnote_Temp_575">^[31]{.small}^</a>
+features from the underlying language, just as our embedded Lisp
+evaluator uses primitives and control structure from the underlying
+Lisp. Only later (if ever) need the designer go to the trouble of
+building a complete implementation in a low-level language or in
+hardware. In this section and the next we explore some variations on
+Scheme that provide significant additional expressive power.</p>
+<h3 id="421--normal-order-and-applicative-order"><a class="header" href="#421--normal-order-and-applicative-order"><a href="book-Z-H-4.html#%_toc_%_sec_4.2.1">4.2.1  Normal Order and Applicative Order</a></a></h3>
+<p>In
+section <a href="book-Z-H-10.html#%_sec_1.1">1.1</a>, where we began our discussion
+of models of evaluation, we noted that Scheme is an <em>applicative-order</em>
+language, namely, that all the arguments to Scheme procedures are
+evaluated when the procedure is applied. In contrast, <em>normal-order</em>
+languages delay evaluation of procedure arguments until the actual
+argument values are needed. Delaying evaluation of procedure arguments
+until the last possible moment (e.g., until they are required by a
+primitive operation) is called <em>lazy
+evaluation</em>.<a href="book-Z-H-27.html#footnote_Temp_576">^[32]{.small}^</a>
+Consider the procedure</p>
+<pre><code class="language-scheme editable">(define (try a b)
+  (if (= a 0) 1 b))
+</code></pre>
+<p>Evaluating <code>(try 0 (/ 1 0))</code> generates an error in Scheme. With lazy
+evaluation, there would be no error. Evaluating the expression would
+return 1, because the argument <code>(/ 1 0)</code> would never be evaluated.</p>
+<p>An example that exploits lazy evaluation is the definition of a
+procedure <code>unless</code></p>
+<pre><code class="language-scheme editable">(define (unless condition usual-value exceptional-value)
+  (if condition exceptional-value usual-value))
+</code></pre>
+<p>that can be used in expressions such as</p>
+<pre><code class="language-scheme editable">(unless (= b 0)
+        (/ a b)
+        (begin (display "exception: returning 0")
+               0))
+</code></pre>
+<p>This won't work in an applicative-order language because both the usual
+value and the exceptional value will be evaluated before <code>unless</code> is
+called (compare exercise <a href="book-Z-H-10.html#%_thm_1.6">1.6</a>). An
+advantage of lazy evaluation is that some procedures, such as <code>unless</code>,
+can do useful computation even if evaluation of some of their arguments
+would produce errors or would not terminate.</p>
+<p>If the body of a procedure is entered before an argument has been
+evaluated we say that the procedure is <em>non-strict</em> in
+that argument. If the argument is evaluated before the body of the
+procedure is entered we say that the procedure is
+<em>strict</em> in that
+argument.<a href="book-Z-H-27.html#footnote_Temp_577">^[33]{.small}^</a>
+In a purely applicative-order language, all procedures are strict in
+each argument. In a purely normal-order language, all compound
+procedures are non-strict in each argument, and primitive procedures may
+be either strict or non-strict. There are also languages (see
+exercise <a href="book-Z-H-27.html#%_thm_4.31">4.31</a>) that give programmers
+detailed control over the strictness of the procedures they define.</p>
+<p>A striking example of a procedure that can usefully be made non-strict
+is <code>cons</code> (or, in general, almost any constructor for data structures).
+One can do useful computation, combining elements to form data
+structures and operating on the resulting data structures, even if the
+values of the elements are not known. It makes perfect sense, for
+instance, to compute the length of a list without knowing the values of
+the individual elements in the list. We will exploit this idea in
+section <a href="book-Z-H-27.html#%_sec_4.2.3">4.2.3</a> to implement the streams
+of chapter 3 as lists formed of non-strict <code>cons</code> pairs.</p>
+<p><strong>Exercise 4.25.</strong>  Suppose that (in ordinary
+applicative-order Scheme) we define <code>unless</code> as shown above and then
+define <code>factorial</code> in terms of <code>unless</code> as</p>
+<pre><code class="language-scheme editable">(define (factorial n)
+  (unless (= n 1)
+          (* n (factorial (- n 1)))
+          1))
+</code></pre>
+<p>What happens if we attempt to evaluate <code>(factorial 5)</code>? Will our
+definitions work in a normal-order language?</p>
+<p><strong>Exercise 4.26.</strong>  Ben
+Bitdiddle and Alyssa P. Hacker disagree over the importance of lazy
+evaluation for implementing things such as <code>unless</code>. Ben points out that
+it's possible to implement <code>unless</code> in applicative order as a special
+form. Alyssa counters that, if one did that, <code>unless</code> would be merely
+syntax, not a procedure that could be used in conjunction with
+higher-order procedures. Fill in the details on both sides of the
+argument. Show how to implement <code>unless</code> as a derived expression (like
+<code>cond</code> or <code>let</code>), and give an example of a situation where it might be
+useful to have <code>unless</code> available as a procedure, rather than as a
+special form.</p>
+<h3 id="422--an-interpreter-with-lazy-evaluation"><a class="header" href="#422--an-interpreter-with-lazy-evaluation"><a href="book-Z-H-4.html#%_toc_%_sec_4.2.2">4.2.2  An Interpreter with Lazy Evaluation</a></a></h3>
+<p>In this section we will implement a normal-order language that is the
+same as Scheme except that compound procedures are non-strict in each
+argument. Primitive procedures will still be strict. It is not difficult
+to modify the evaluator of section <a href="book-Z-H-26.html#%_sec_4.1.1">4.1.1</a>
+so that the language it interprets behaves this way. Almost all the
+required changes center around procedure application.</p>
+<p>The basic idea is that, when applying a procedure, the interpreter must
+determine which arguments are to be evaluated and which are to be
+delayed. The delayed arguments are not evaluated; instead, they are
+transformed into objects called
+<em>thunk</em>s.<a href="book-Z-H-27.html#footnote_Temp_580">^[34]{.small}^</a>
+The thunk must contain the information required to produce the value of
+the argument when it is needed, as if it had been evaluated at the time
+of the application. Thus, the thunk must contain the argument expression
+and the environment in which the procedure application is being
+evaluated.</p>
+<p>The process of evaluating the expression
+in a thunk is called
+<em>forcing</em>.<a href="book-Z-H-27.html#footnote_Temp_581">^[35]{.small}^</a>
+In general, a thunk will be forced only when its value is needed: when
+it is passed to a primitive procedure that will use the value of the
+thunk; when it is the value of a predicate of a conditional; and when it
+is the value of an operator that is about to be applied as a procedure.
+One design choice we have available is whether or not to
+<em>memoize</em> thunks, as we did with delayed objects in
+section <a href="book-Z-H-24.html#%_sec_3.5.1">3.5.1</a>. With memoization, the
+first time a thunk is forced, it stores the value that is computed.
+Subsequent forcings simply return the stored value without repeating the
+computation. We'll make our interpreter memoize, because this is more
+efficient for many applications. There are tricky considerations here,
+however.<a href="book-Z-H-27.html#footnote_Temp_582">^[36]{.small}^</a></p>
+<h4 id="modifying-the-evaluator"><a class="header" href="#modifying-the-evaluator"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_583">Modifying the evaluator</a></a></h4>
+<p>The main difference between the lazy evaluator and the one in
+section <a href="book-Z-H-26.html#%_sec_4.1">4.1</a> is in the handling of
+procedure applications in <code>eval</code> and <code>apply</code>.</p>
+<p>The <code>application?</code> clause of <code>eval</code> becomes</p>
+<pre><code class="language-scheme editable">((application? exp)
+ (apply (actual-value (operator exp) env)
+        (operands exp)
+        env))
+</code></pre>
+<p>This is almost the same as the <code>application?</code> clause of <code>eval</code> in
+section <a href="book-Z-H-26.html#%_sec_4.1.1">4.1.1</a>. For lazy evaluation,
+however, we call <code>apply</code> with the operand expressions, rather than the
+arguments produced by evaluating them. Since we will need the
+environment to construct thunks if the arguments are to be delayed, we
+must pass this as well. We still evaluate the operator, because <code>apply</code>
+needs the actual procedure to be applied in order to dispatch on its
+type (primitive versus compound) and apply it.</p>
+<p>Whenever we need the actual value of an expression, we use</p>
+<pre><code class="language-scheme editable">(define (actual-value exp env)
+  (force-it (eval exp env)))
+</code></pre>
+<p>instead of just <code>eval</code>, so that if the expression's value is a thunk,
+it will be forced.</p>
+<p>Our new version of <code>apply</code> is also almost the same as the version in
+section <a href="book-Z-H-26.html#%_sec_4.1.1">4.1.1</a>. The difference is that
+<code>eval</code> has passed in unevaluated operand expressions: For primitive
+procedures (which are strict), we evaluate all the arguments before
+applying the primitive; for compound procedures (which are non-strict)
+we delay all the arguments before applying the procedure.</p>
+<pre><code class="language-scheme editable">(define (apply procedure arguments env)
+  (cond ((primitive-procedure? procedure)
+         (apply-primitive-procedure
+          procedure
+          (list-of-arg-values arguments env)))  ; changed
+        ((compound-procedure? procedure)
+         (eval-sequence
+          (procedure-body procedure)
+          (extend-environment
+           (procedure-parameters procedure)
+           (list-of-delayed-args arguments env) ; changed
+           (procedure-environment procedure))))
+        (else
+         (error
+          "Unknown procedure type -- APPLY" procedure))))
+</code></pre>
+<p>The procedures that process the arguments are just like <code>list-of-values</code>
+from section <a href="book-Z-H-26.html#%_sec_4.1.1">4.1.1</a>, except that
+<code>list-of-delayed-args</code> delays the arguments instead of evaluating them,
+and <code>list-of-arg-values</code> uses <code>actual-value</code> instead of <code>eval</code>:</p>
+<pre><code class="language-scheme editable">(define (list-of-arg-values exps env)
+  (if (no-operands? exps)
+      '()
+      (cons (actual-value (first-operand exps) env)
+            (list-of-arg-values (rest-operands exps)
+                                env))))
+(define (list-of-delayed-args exps env)
+  (if (no-operands? exps)
+      '()
+      (cons (delay-it (first-operand exps) env)
+            (list-of-delayed-args (rest-operands exps)
+                                  env))))
+</code></pre>
+<p>The other place we must change the evaluator is in the handling of <code>if</code>,
+where we must use <code>actual-value</code> instead of <code>eval</code> to get the value of
+the predicate expression before testing whether it is true or false:</p>
+<pre><code class="language-scheme editable">(define (eval-if exp env)
+  (if (true? (actual-value (if-predicate exp) env))
+      (eval (if-consequent exp) env)
+      (eval (if-alternative exp) env)))
+</code></pre>
+<p>Finally, we must change the <code>driver-loop</code> procedure
+(section <a href="book-Z-H-26.html#%_sec_4.1.4">4.1.4</a>) to use <code>actual-value</code>
+instead of <code>eval</code>, so that if a delayed value is propagated back to the
+read-eval-print loop, it will be forced before being printed. We also
+change the prompts to indicate that this is the lazy evaluator:</p>
+<pre><code class="language-scheme editable">(define input-prompt ";;; L-Eval input:")
+(define output-prompt ";;; L-Eval value:")
+(define (driver-loop)
+  (prompt-for-input input-prompt)
+  (let ((input (read)))
+    (let ((output
+           (actual-value input the-global-environment)))
+      (announce-output output-prompt)
+      (user-print output)))
+  (driver-loop))
+</code></pre>
+<p>With these changes made, we can start the evaluator and test it. The
+successful evaluation of the <code>try</code> expression discussed in
+section <a href="book-Z-H-27.html#%_sec_4.2.1">4.2.1</a> indicates that the
+interpreter is performing lazy evaluation:</p>
+<pre><code class="language-scheme editable">(define the-global-environment (setup-environment))
+(driver-loop)
+</code></pre>
+<p><em><code>;;; L-Eval input:</code></em></p>
+<pre><code class="language-scheme editable">(define (try a b)
+  (if (= a 0) 1 b))
+</code></pre>
+<p><em><code>;;; L-Eval value:</code></em>
+<em><code>ok</code></em>
+<em><code>;;; L-Eval input:</code></em></p>
+<pre><code class="language-scheme editable">(try 0 (/ 1 0))
+</code></pre>
+<p><em><code>;;; L-Eval value:</code></em>
+<em><code>1</code></em></p>
+<h4 id="representing-thunks"><a class="header" href="#representing-thunks"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_584">Representing thunks</a></a></h4>
+<p>Our evaluator must arrange to create thunks when
+procedures are applied to arguments and to force these thunks later. A
+thunk must package an expression together with the environment, so that
+the argument can be produced later. To force the thunk, we simply
+extract the expression and environment from the thunk and evaluate the
+expression in the environment. We use <code>actual-value</code> rather than <code>eval</code>
+so that in case the value of the expression is itself a thunk, we will
+force that, and so on, until we reach something that is not a thunk:</p>
+<pre><code class="language-scheme editable">(define (force-it obj)
+  (if (thunk? obj)
+      (actual-value (thunk-exp obj) (thunk-env obj))
+      obj))
+</code></pre>
+<p>One easy way to package an expression with an environment is to make a
+list containing the expression and the environment. Thus, we create a
+thunk as follows:</p>
+<pre><code class="language-scheme editable">(define (delay-it exp env)
+  (list 'thunk exp env))
+
+(define (thunk? obj)
+  (tagged-list? obj 'thunk))
+
+(define (thunk-exp thunk) (cadr thunk))
+
+(define (thunk-env thunk) (caddr thunk))
+</code></pre>
+<p>Actually, what we want for our interpreter is not quite this, but rather
+thunks that have been memoized. When a thunk is forced, we will turn it
+into an evaluated thunk by replacing the stored expression with its
+value and changing the <code>thunk</code> tag so that it can be recognized as
+already
+evaluated.<a href="book-Z-H-27.html#footnote_Temp_585">^[37]{.small}^</a></p>
+<pre><code class="language-scheme editable">(define (evaluated-thunk? obj)
+  (tagged-list? obj 'evaluated-thunk))
+
+(define (thunk-value evaluated-thunk) (cadr evaluated-thunk))
+(define (force-it obj)
+  (cond ((thunk? obj)
+         (let ((result (actual-value
+                        (thunk-exp obj)
+                        (thunk-env obj))))
+           (set-car! obj 'evaluated-thunk)
+           (set-car! (cdr obj) result)  ; replace exp with its value
+           (set-cdr! (cdr obj) '())     ; forget unneeded env
+           result))
+        ((evaluated-thunk? obj)
+         (thunk-value obj))
+        (else obj)))
+</code></pre>
+<p>Notice that the same <code>delay-it</code> procedure works both with and without
+memoization.</p>
+<p><strong>Exercise 4.27.</strong>  Suppose we type in the following
+definitions to the lazy evaluator:</p>
+<pre><code class="language-scheme editable">(define count 0)
+(define (id x)
+  (set! count (+ count 1))
+  x)
+</code></pre>
+<p>Give the missing values in the following sequence of interactions, and
+explain your
+answers.<a href="book-Z-H-27.html#footnote_Temp_587">^[38]{.small}^</a></p>
+<pre><code class="language-scheme editable">(define w (id (id 10)))
+</code></pre>
+<p><em><code>;;; L-Eval input:</code></em></p>
+<pre><code class="language-scheme editable">count
+</code></pre>
+<p><em><code>;;; L-Eval value:</code></em>
+<code>&lt;</code><em><code>response</code></em><code>&gt;</code>
+<em><code>;;; L-Eval input:</code></em></p>
+<pre><code class="language-scheme editable">w
+</code></pre>
+<p><em><code>;;; L-Eval value:</code></em>
+<code>&lt;</code><em><code>response</code></em><code>&gt;</code>
+<em><code>;;; L-Eval input:</code></em></p>
+<pre><code class="language-scheme editable">count
+</code></pre>
+<p><em><code>;;; L-Eval value:</code></em>
+<code>&lt;</code><em><code>response</code></em><code>&gt;</code></p>
+<p><strong>Exercise 4.28.</strong>  <code>Eval</code> uses <code>actual-value</code> rather
+than <code>eval</code> to evaluate the operator before passing it to <code>apply</code>, in
+order to force the value of the operator. Give an example that
+demonstrates the need for this forcing.</p>
+<p><strong>Exercise 4.29.</strong>  Exhibit a program that you would
+expect to run much more slowly without memoization than with
+memoization. Also, consider the following interaction, where the <code>id</code>
+procedure is defined as in exercise <a href="book-Z-H-27.html#%_thm_4.27">4.27</a>
+and <code>count</code> starts at 0:</p>
+<pre><code class="language-scheme editable">(define (square x)
+  (* x x))
+</code></pre>
+<p><em><code>;;; L-Eval input:</code></em></p>
+<pre><code class="language-scheme editable">(square (id 10))
+</code></pre>
+<p><em><code>;;; L-Eval value:</code></em>
+<code>&lt;</code><em><code>response</code></em><code>&gt;</code>
+<em><code>;;; L-Eval input:</code></em></p>
+<pre><code class="language-scheme editable">count
+</code></pre>
+<p><em><code>;;; L-Eval value:</code></em>
+<code>&lt;</code><em><code>response</code></em><code>&gt;</code></p>
+<p>Give the responses both when the evaluator memoizes and when it does
+not.</p>
+<p><strong>Exercise 4.30.</strong>  Cy D. Fect, a reformed C programmer,
+is worried that some side effects may never take place, because the lazy
+evaluator doesn't force the expressions in a sequence. Since the value
+of an expression in a sequence other than the last one is not used (the
+expression is there only for its effect, such as assigning to a variable
+or printing), there can be no subsequent use of this value (e.g., as an
+argument to a primitive procedure) that will cause it to be forced. Cy
+thus thinks that when evaluating sequences, we must force all
+expressions in the sequence except the final one. He proposes to modify
+<code>eval-sequence</code> from section <a href="book-Z-H-26.html#%_sec_4.1.1">4.1.1</a> to
+use <code>actual-value</code> rather than <code>eval</code>:</p>
+<pre><code class="language-scheme editable">(define (eval-sequence exps env)
+  (cond ((last-exp? exps) (eval (first-exp exps) env))
+        (else (actual-value (first-exp exps) env)
+              (eval-sequence (rest-exps exps) env))))
+</code></pre>
+<p>a. Ben Bitdiddle thinks Cy is wrong. He shows Cy the <code>for-each</code>
+procedure described in exercise <a href="book-Z-H-15.html#%_thm_2.23">2.23</a>,
+which gives an important example of a sequence with side effects:</p>
+<pre><code class="language-scheme editable">(define (for-each proc items)
+  (if (null? items)
+      'done
+      (begin (proc (car items))
+             (for-each proc (cdr items)))))
+</code></pre>
+<p>He claims that the evaluator in the text (with the original
+<code>eval-sequence</code>) handles this correctly:</p>
+<p><em><code>;;; L-Eval input:</code></em></p>
+<pre><code class="language-scheme editable">(for-each (lambda (x) (newline) (display x))
+          (list 57 321 88))
+</code></pre>
+<p><em><code>57</code></em>
+<em><code>321</code></em>
+<em><code>88</code></em>
+<em><code>;;; L-Eval value:</code></em>
+<em><code>done</code></em></p>
+<p>Explain why Ben is right about the behavior of <code>for-each</code>.</p>
+<p>b. Cy agrees that Ben is right about the <code>for-each</code> example, but says
+that that's not the kind of program he was thinking about when he
+proposed his change to <code>eval-sequence</code>. He defines the following two
+procedures in the lazy evaluator:</p>
+<pre><code class="language-scheme editable">(define (p1 x)
+  (set! x (cons x '(2)))
+  x)
+
+(define (p2 x)
+  (define (p e)
+    e
+    x)
+  (p (set! x (cons x '(2)))))
+</code></pre>
+<p>What are the values of <code>(p1 1)</code> and <code>(p2 1)</code> with the original
+<code>eval-sequence</code>? What would the values be with Cy's proposed change to
+<code>eval-sequence</code>?</p>
+<p>c. Cy also points out that changing <code>eval-sequence</code> as he proposes does
+not affect the behavior of the example in part a. Explain why this is
+true.</p>
+<p>d. How do you think sequences ought to be treated in the lazy
+evaluator? Do you like Cy's approach, the approach in the text, or some
+other approach?</p>
+<p><strong>Exercise 4.31.</strong>  The approach taken in
+this section is somewhat unpleasant, because it makes an incompatible
+change to Scheme. It might be nicer to implement lazy evaluation as an
+<em>upward-compatible extension</em>, that is, so that ordinary Scheme programs
+will work as before. We can do this by extending the syntax of procedure
+declarations to let the user control whether or not arguments are to be
+delayed. While we're at it, we may as well also give the user the
+choice between delaying with and without memoization. For example, the
+definition</p>
+<pre><code class="language-scheme editable">(define (f a (b lazy) c (d lazy-memo))
+  ...)
+</code></pre>
+<p>would define <code>f</code> to be a procedure of four arguments, where the first
+and third arguments are evaluated when the procedure is called, the
+second argument is delayed, and the fourth argument is both delayed and
+memoized. Thus, ordinary procedure definitions will produce the same
+behavior as ordinary Scheme, while adding the <code>lazy-memo</code> declaration to
+each parameter of every compound procedure will produce the behavior of
+the lazy evaluator defined in this section. Design and implement the
+changes required to produce such an extension to Scheme. You will have
+to implement new syntax procedures to handle the new syntax for
+<code>define</code>. You must also arrange for <code>eval</code> or <code>apply</code> to determine when
+arguments are to be delayed, and to force or delay arguments
+accordingly, and you must arrange for forcing to memoize or not, as
+appropriate.</p>
+<h3 id="423--streams-as-lazy-lists"><a class="header" href="#423--streams-as-lazy-lists"><a href="book-Z-H-4.html#%_toc_%_sec_4.2.3">4.2.3  Streams as Lazy Lists</a></a></h3>
+<p>In
+section <a href="book-Z-H-24.html#%_sec_3.5.1">3.5.1</a>, we showed how to
+implement streams as delayed lists. We introduced special forms <code>delay</code>
+and <code>cons-stream</code>, which allowed us to construct a ''promise'' to
+compute the <code>cdr</code> of a stream, without actually fulfilling that promise
+until later. We could use this general technique of introducing special
+forms whenever we need more control over the evaluation process, but
+this is awkward. For one thing, a special form is not a first-class
+object like a procedure, so we cannot use it together with higher-order
+procedures.<a href="book-Z-H-27.html#footnote_Temp_592">^[39]{.small}^</a>
+Additionally, we were forced to create streams as a new kind of data
+object similar but not identical to lists, and this required us to
+reimplement many ordinary list operations (<code>map</code>, <code>append</code>, and so on)
+for use with streams.</p>
+<p>With lazy evaluation, streams and lists can be identical, so there is no
+need for special forms or for separate list and stream operations. All
+we need to do is to arrange matters so that <code>cons</code> is non-strict. One
+way to accomplish this is to extend the lazy evaluator to allow for
+non-strict primitives, and to implement <code>cons</code> as one of these. An
+easier way is to recall (section <a href="book-Z-H-14.html#%_sec_2.1.3">2.1.3</a>)
+that there is no fundamental need to implement <code>cons</code> as a primitive at
+all. Instead, we can represent pairs as
+procedures:<a href="book-Z-H-27.html#footnote_Temp_593">^[40]{.small}^</a></p>
+<pre><code class="language-scheme editable">(define (cons x y)
+  (lambda (m) (m x y)))
+(define (car z)
+  (z (lambda (p q) p)))
+(define (cdr z)
+  (z (lambda (p q) q)))
+</code></pre>
+<p>In terms of these basic operations, the standard definitions of the list
+operations will work with infinite lists (streams) as well as finite
+ones, and the stream operations can be implemented as list operations.
+Here are some examples:</p>
+<pre><code class="language-scheme editable">(define (list-ref items n)
+  (if (= n 0)
+      (car items)
+      (list-ref (cdr items) (- n 1))))
+(define (map proc items)
+  (if (null? items)
+      '()
+      (cons (proc (car items))
+            (map proc (cdr items)))))
+(define (scale-list items factor)
+  (map (lambda (x) (* x factor))
+       items))
+(define (add-lists list1 list2)
+  (cond ((null? list1) list2)
+        ((null? list2) list1)
+        (else (cons (+ (car list1) (car list2))
+                    (add-lists (cdr list1) (cdr list2))))))
+(define ones (cons 1 ones))
+(define integers (cons 1 (add-lists ones integers)))
+</code></pre>
+<p><em><code>;;; L-Eval input:</code></em></p>
+<pre><code class="language-scheme editable">(list-ref integers 17)
+</code></pre>
+<p><em><code>;;; L-Eval value:</code></em>
+<em><code>18</code></em></p>
+<p>Note that these lazy lists are even lazier than the streams of
+chapter 3: The <code>car</code> of the list, as well as the <code>cdr</code>, is
+delayed.<a href="book-Z-H-27.html#footnote_Temp_594">^[41]{.small}^</a>
+In fact, even accessing the <code>car</code> or <code>cdr</code> of a lazy pair need not force
+the value of a list element. The value will be forced only when it is
+really needed -- e.g., for use as the argument of a primitive, or to be
+printed as an answer.</p>
+<p>Lazy pairs also help with the problem that arose with streams in
+section <a href="book-Z-H-24.html#%_sec_3.5.4">3.5.4</a>, where we found that
+formulating stream models of systems with loops may require us to
+sprinkle our programs with explicit
+<code>delay</code> operations, beyond the ones supplied by <code>cons-stream</code>. With lazy
+evaluation, all arguments to procedures are delayed uniformly. For
+instance, we can implement procedures to integrate lists and solve
+differential equations as we originally intended in
+section <a href="book-Z-H-24.html#%_sec_3.5.4">3.5.4</a>:</p>
+<pre><code class="language-scheme editable">(define (integral integrand initial-value dt)
+  (define int
+    (cons initial-value
+          (add-lists (scale-list integrand dt)
+                     int)))
+  int)
+(define (solve f y0 dt)
+  (define y (integral dy y0 dt))
+  (define dy (map f y))
+  y)
+</code></pre>
+<p><em><code>;;; L-Eval input:</code></em></p>
+<pre><code class="language-scheme editable">(list-ref (solve (lambda (x) x) 1 0.001) 1000)
+</code></pre>
+<p><em><code>;;; L-Eval value:</code></em>
+<em><code>2.716924</code></em></p>
+<p><strong>Exercise 4.32.</strong>  Give some examples that illustrate
+the difference between the streams of chapter 3 and the ''lazier''
+lazy lists described in this section. How can you take advantage of this
+extra laziness?</p>
+<p><strong>Exercise 4.33.</strong>  Ben Bitdiddle tests the lazy list
+implementation given above by evaluating the expression</p>
+<pre><code class="language-scheme editable">(car '(a b c))
+</code></pre>
+<p>To his surprise, this produces an error. After some thought, he realizes
+that the ''lists'' obtained by reading in quoted expressions are
+different from the lists manipulated by the new definitions of <code>cons</code>,
+<code>car</code>, and <code>cdr</code>. Modify the evaluator's treatment of quoted
+expressions so that quoted lists typed at the driver loop will produce
+true lazy lists.</p>
+<p><strong>Exercise 4.34.</strong>  Modify the driver loop for the
+evaluator so that lazy pairs and lists will print in some reasonable
+way. (What are you going to do about infinite lists?) You may also need
+to modify the representation of lazy pairs so that the evaluator can
+identify them in order to print them.</p>
+<hr />
+<p>^[31]{.small}^](book-Z-H-27.html#call_footnote_Temp_575)
+Snarf: ''To grab, especially a large document or
+file for the purpose of
+using it either with or without the owner's permission.'' Snarf down:
+''To snarf, sometimes with the connotation of absorbing, processing,
+or understanding.'' (These definitions were snarfed from Steele et al.
+1983. See also Raymond 1993.)</p>
+<p>^[32]{.small}^](book-Z-H-27.html#call_footnote_Temp_576)
+The difference between the ''lazy'' terminology and the
+''normal-order'' terminology is somewhat fuzzy. Generally,
+''lazy'' refers to the mechanisms of particular evaluators, while
+''normal-order'' refers to the semantics of languages, independent
+of any particular evaluation strategy. But this is not a hard-and-fast
+distinction, and the two terminologies are often used interchangeably.</p>
+<p>^[33]{.small}^](book-Z-H-27.html#call_footnote_Temp_577)
+The ''strict'' versus ''non-strict'' terminology means
+essentially the same thing as ''applicative-order'' versus
+''normal-order,'' except that it refers to individual procedures and
+arguments rather than to the language as a whole. At a conference on
+programming languages you might hear someone say, ''The normal-order
+language Hassle has certain strict primitives. Other
+procedures take their arguments by lazy evaluation.''</p>
+<p>^[34]{.small}^](book-Z-H-27.html#call_footnote_Temp_580)
+The word <em>thunk</em> was invented by an informal
+working group that was
+discussing the implementation of call-by-name in Algol 60. They observed
+that most of the analysis of (''thinking about'') the expression
+could be done at compile time; thus, at run time, the expression would
+already have been ''thunk'' about (Ingerman et al. 1960).</p>
+<p>^[35]{.small}^](book-Z-H-27.html#call_footnote_Temp_581)
+This is analogous to the use of <code>force</code> on the delayed
+objects that were introduced in chapter 3 to represent streams. The
+critical difference between what we are doing here and what we did in
+chapter 3 is that we are building delaying and forcing into the
+evaluator, and thus making this uniform and automatic throughout the
+language.</p>
+<p>^[36]{.small}^](book-Z-H-27.html#call_footnote_Temp_582)
+Lazy evaluation combined with memoization is sometimes
+referred to as <em>call-by-need</em> argument passing, in
+contrast to <em>call-by-name</em> argument passing.
+(Call-by-name, introduced in Algol 60, is
+similar to non-memoized lazy evaluation.) As language designers, we can
+build our evaluator to memoize, not to memoize, or leave this an option
+for programmers (exercise <a href="book-Z-H-27.html#%_thm_4.31">4.31</a>). As you
+might expect from chapter 3, these choices raise issues that become both
+subtle and confusing in the presence of assignments. (See
+exercises <a href="book-Z-H-27.html#%_thm_4.27">4.27</a>
+and <a href="book-Z-H-27.html#%_thm_4.29">4.29</a>.) An excellent
+article by Clinger (1982) attempts to clarify the multiple dimensions of
+confusion that arise here.</p>
+<p>^[37]{.small}^](book-Z-H-27.html#call_footnote_Temp_585)
+Notice that we also erase the <code>env</code> from the thunk once the
+expression's value has been computed. This makes no difference in the
+values returned by the interpreter. It does help save space, however,
+because removing the reference from the thunk to the <code>env</code> once it is no
+longer needed allows this structure to be
+<em>garbage-collected</em> and its space
+recycled, as we will discuss in
+section <a href="book-Z-H-33.html#%_sec_5.3">5.3</a>.</p>
+<p>Similarly, we could have allowed unneeded environments in the memoized
+delayed objects of section <a href="book-Z-H-24.html#%_sec_3.5.1">3.5.1</a> to be
+garbage-collected, by having <code>memo-proc</code> do something like
+<code>(set! proc '())</code> to discard the procedure <code>proc</code> (which includes the
+environment in which the <code>delay</code> was evaluated) after storing its value.</p>
+<p>^[38]{.small}^](book-Z-H-27.html#call_footnote_Temp_587)
+This exercise demonstrates that the interaction between lazy evaluation
+and side effects can be very confusing. This is just what you might
+expect from the discussion in chapter 3.</p>
+<p>^[39]{.small}^](book-Z-H-27.html#call_footnote_Temp_592)
+This is precisely the issue with the <code>unless</code> procedure, as in
+exercise <a href="book-Z-H-27.html#%_thm_4.26">4.26</a>.</p>
+<p>^[40]{.small}^](book-Z-H-27.html#call_footnote_Temp_593)
+This is the procedural representation described in
+exercise <a href="book-Z-H-14.html#%_thm_2.4">2.4</a>. Essentially any procedural
+representation (e.g., a message-passing implementation) would do as
+well. Notice that we can install these definitions in the lazy evaluator
+simply by typing them at the driver loop. If we had originally included
+<code>cons</code>, <code>car</code>, and <code>cdr</code> as primitives in the global environment, they
+will be redefined. (Also see
+exercises <a href="book-Z-H-27.html#%_thm_4.33">4.33</a>
+and <a href="book-Z-H-27.html#%_thm_4.34">4.34</a>.)</p>
+<p>^[41]{.small}^](book-Z-H-27.html#call_footnote_Temp_594)
+This permits us to create delayed versions of more general kinds of
+list structures, not just sequences. Hughes 1990
+discusses some applications of ''lazy
+trees.''</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="4.1.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="4.3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="4.1.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="4.3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="./highlight.js"></script>
+        <script src="./src/languages/scheme.min.js"></script>
+        <script src="./biwascheme.min.js"></script>
+        <script src="./biwascheme_run_logic.js"></script>
+
+
+    </div>
+    </body>
+</html>

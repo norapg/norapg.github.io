@@ -1,0 +1,2131 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Streams - SICP</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="./src/styles/docco.min.css">
+        <link rel="stylesheet" href="./run_button_style.css">
+        <link rel="stylesheet" href="./custom.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">SICP</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="35-streams"><a class="header" href="#35-streams"><a href="book-Z-H-4.html#%_toc_%_sec_3.5">3.5 Streams</a></a></h2>
+<p>We've gained a good understanding of assignment as a
+tool in modeling, as well as an appreciation of the complex problems
+that assignment raises. It is time to ask whether we could have gone
+about things in a different way, so as to avoid some of these problems.
+In this section, we explore an alternative approach to modeling state,
+based on data structures called <em>streams</em>. As we shall see, streams can
+mitigate some of the complexity of modeling state.</p>
+<p>Let's step back and review where this complexity comes from. In an
+attempt to model real-world phenomena, we made some apparently
+reasonable decisions: We modeled real-world objects with local state by
+computational objects with local variables. We identified time variation
+in the real world with time variation in the computer. We implemented
+the time variation of the states of the model objects in the computer
+with assignments to the local variables of the model objects.</p>
+<p>Is there another approach? Can we avoid identifying time in the computer
+with time in the modeled world? Must we make the model change with time
+in order to model phenomena in a changing world? Think about the issue
+in terms of mathematical functions. We can describe the time-varying
+behavior of a quantity <em>x</em> as a function of time <em>x</em>(<em>t</em>). If we
+concentrate on <em>x</em> instant by instant, we think of it as a changing
+quantity. Yet if we concentrate on the entire time history of values, we
+do not emphasize change -- the function itself does not
+change.<a href="book-Z-H-24.html#footnote_Temp_442">^[52]{.small}^</a></p>
+<p>If time is measured in discrete steps, then we can model a time function
+as a (possibly infinite) sequence. In this section, we will see how to
+model change in terms of sequences that represent the time histories of
+of the systems being modeled. To accomplish this, we introduce new data
+structures called <em>streams</em>. From an abstract point of view, a stream is
+simply a sequence. However, we will find that the straightforward
+implementation of streams as lists (as in
+section
+<a href="book-Z-H-15.html#%_sec_2.2.1">2.2.1</a>) doesn't fully reveal the
+power of stream processing. As an alternative, we introduce the
+technique of <em>delayed evaluation</em>, which enables us to
+represent very large (even infinite) sequences as streams.</p>
+<p>Stream processing lets us model systems that have state without ever
+using assignment or mutable data. This has important implications, both
+theoretical and practical, because we can build models that avoid the
+drawbacks inherent in introducing assignment. On the other hand, the
+stream framework raises difficulties of its own, and the question of
+which modeling technique leads to more modular and more easily
+maintained systems remains open.</p>
+<h3 id="351"><a class="header" href="#351">[3.5.1</a></h3>
+<p>Streams Are Delayed Lists](book-Z-H-4.html#%<em>toc</em>%_sec_3.5.1)</p>
+<p>As we saw in
+section
+<a href="book-Z-H-15.html#%_sec_2.2.3">2.2.3</a>, sequences can serve as
+standard interfaces for combining program modules. We formulated
+powerful abstractions for manipulating sequences, such as <code>map</code>,
+<code>filter</code>, and <code>accumulate</code>, that capture a wide variety of operations in
+a manner that is both succinct and elegant.</p>
+<p>Unfortunately, if we represent sequences as lists, this elegance is
+bought at the price of severe inefficiency with respect to both the time
+and space required by our computations. When we represent manipulations
+on sequences as transformations of lists, our programs must construct
+and copy data structures (which may be huge) at every step of a process.</p>
+<p>To see why this is true, let us compare two programs for computing the
+sum of all the prime numbers in an interval. The first program is
+written in standard iterative
+style:<a href="book-Z-H-24.html#footnote_Temp_443">^[53]{.small}^</a></p>
+<pre><code class="language-scheme editable">(define (sum-primes a b)
+  (define (iter count accum)
+    (cond ((&gt; count b) accum)
+          ((prime? count) (iter (+ count 1) (+ count accum)))
+          (else (iter (+ count 1) accum))))
+  (iter a 0))
+</code></pre>
+<p>The second program performs the same computation using the sequence
+operations of section
+<a href="book-Z-H-15.html#%_sec_2.2.3">2.2.3</a>:</p>
+<pre><code class="language-scheme editable">(define (sum-primes a b)
+  (accumulate +
+              0
+              (filter prime? (enumerate-interval a b))))
+</code></pre>
+<p>In carrying out the computation, the first program needs to store only
+the sum being accumulated. In contrast, the filter in the second program
+cannot do any testing until <code>enumerate-interval</code> has constructed a
+complete list of the numbers in the interval. The filter generates
+another list, which in turn is passed to <code>accumulate</code> before being
+collapsed to form a sum. Such large intermediate storage is not needed
+by the first program, which we can think of as enumerating the interval
+incrementally, adding each prime to the sum as it is generated.</p>
+<p>The inefficiency in using lists becomes painfully apparent if we use the
+sequence paradigm to compute the second prime in the interval from
+10,000 to 1,000,000 by evaluating the expression</p>
+<pre><code class="language-scheme editable">(car (cdr (filter prime?
+                   (enumerate-interval 10000 1000000))))
+</code></pre>
+<p>This expression does find the second prime, but the computational
+overhead is outrageous. We construct a list of almost a million
+integers, filter this list by testing each element for primality, and
+then ignore almost all of the result. In a more traditional programming
+style, we would interleave the enumeration and the filtering, and stop
+when we reached the second prime.</p>
+<p>Streams are a clever idea that allows one to use sequence manipulations
+without incurring the costs of manipulating sequences as lists. With
+streams we can achieve the best of both worlds: We can formulate
+programs elegantly as sequence manipulations, while attaining the
+efficiency of incremental computation. The basic idea is to arrange to
+construct a stream only partially, and to pass the partial construction
+to the program that consumes the stream. If the consumer attempts to
+access a part of the stream that has not yet been constructed, the
+stream will automatically construct just enough more of itself to
+produce the required part, thus preserving the illusion that the entire
+stream exists. In other words, although we will write programs as if we
+were processing complete sequences, we design our stream implementation
+to automatically and transparently interleave the construction of the
+stream with its use.</p>
+<p>On the surface, streams are just lists with different names for the
+procedures that manipulate them. There is a constructor,
+<code>cons-stream</code>, and two selectors,
+<code>stream-car</code> and <code>stream-cdr</code>, which
+satisfy the constraints</p>
+<p><img src="ch3-Z-G-34.gif" alt="" /></p>
+<p>There is a distinguishable object,
+<code>the-empty-stream</code>, which
+cannot be the result of any <code>cons-stream</code> operation, and which can be
+identified with the predicate
+<code>stream-null?</code>.<a href="book-Z-H-24.html#footnote_Temp_444">^[54]{.small}^</a>
+Thus we can make and use streams, in just the same way as we can make
+and use lists, to represent aggregate data arranged in a sequence. In
+particular, we can build stream analogs of the list operations from
+chapter
+2, such as <code>list-ref</code>, <code>map</code>, and
+<code>for-each</code>:<a href="book-Z-H-24.html#footnote_Temp_445">^[55]{.small}^</a></p>
+<pre><code class="language-scheme editable">(define (stream-ref s n)
+  (if (= n 0)
+      (stream-car s)
+      (stream-ref (stream-cdr s) (- n 1))))
+(define (stream-map proc s)
+  (if (stream-null? s)
+      the-empty-stream
+      (cons-stream (proc (stream-car s))
+                   (stream-map proc (stream-cdr s)))))
+(define (stream-for-each proc s)
+  (if (stream-null? s)
+      'done
+      (begin (proc (stream-car s))
+             (stream-for-each proc (stream-cdr s)))))
+</code></pre>
+<p><code>Stream-for-each</code> is useful for viewing streams:</p>
+<pre><code class="language-scheme editable">(define (display-stream s)
+  (stream-for-each display-line s))
+
+(define (display-line x)
+  (newline)
+  (display x))
+</code></pre>
+<p>To make the stream implementation automatically and transparently
+interleave the construction of a stream with its use, we will arrange
+for the <code>cdr</code> of a stream to be evaluated when it is accessed by the
+<code>stream-cdr</code> procedure rather than when the stream is constructed by
+<code>cons-stream</code>. This implementation choice is reminiscent of our
+discussion of rational numbers in
+section
+<a href="book-Z-H-14.html#%_sec_2.1.2">2.1.2</a>, where we saw that we can
+choose to implement rational numbers so that the reduction of numerator
+and denominator to lowest terms is performed either at construction time
+or at selection time. The two rational-number implementations produce
+the same data abstraction, but the choice has an effect on efficiency.
+There is a similar relationship between streams and ordinary lists. As a
+data abstraction, streams are the same as lists. The difference is the
+time at which the elements are evaluated. With ordinary lists, both the
+<code>car</code> and the <code>cdr</code> are evaluated at construction time. With streams,
+the <code>cdr</code> is evaluated at selection time.</p>
+<p>Our implementation of streams will be
+based on a special form called <code>delay</code>. Evaluating <code>(delay &lt;</code><em><code>exp</code></em><code>&gt;)</code>
+does not evaluate the expression &lt;<em>exp</em>&gt;, but rather returns a
+so-called <em>delayed object</em>, which we can think of as a
+``promise'' to evaluate &lt;<em>exp</em>&gt; at some future time. As a
+companion to <code>delay</code>, there is a procedure called <code>force</code>
+that takes a delayed object as argument and performs the evaluation --
+in effect, forcing the <code>delay</code> to fulfill its promise. We will see below
+how <code>delay</code> and <code>force</code> can be implemented, but first let us use these
+to construct streams.</p>
+<p><code>Cons-stream</code> is a special form defined so
+that</p>
+<pre><code class="language-scheme editable">(cons-stream &lt;a&gt; &lt;b&gt;)
+</code></pre>
+<p>is equivalent to</p>
+<pre><code class="language-scheme editable">(cons &lt;a&gt; (delay &lt;b&gt;))
+</code></pre>
+<p>What this means is that we will construct streams using pairs. However,
+rather than placing the value of the rest of the stream into the <code>cdr</code>
+of the pair we will put there a promise to compute the rest if it is
+ever requested. <code>Stream-car</code> and <code>stream-cdr</code> can now be defined as
+procedures:</p>
+<pre><code class="language-scheme editable">(define (stream-car stream) (car stream))
+
+(define (stream-cdr stream) (force (cdr stream)))
+</code></pre>
+<p><code>Stream-car</code> selects the <code>car</code> of the pair; <code>stream-cdr</code> selects the
+<code>cdr</code> of the pair and evaluates the delayed expression found there to
+obtain the rest of the
+stream.<a href="book-Z-H-24.html#footnote_Temp_446">^[56]{.small}^</a></p>
+<h4 id="the-stream-implementation-in-action"><a class="header" href="#the-stream-implementation-in-action"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_447">The stream implementation in action</a></a></h4>
+<p>To see how this implementation behaves, let us analyze the
+``outrageous'' prime computation we saw above, reformulated in terms of
+streams:</p>
+<pre><code class="language-scheme editable">(stream-car
+ (stream-cdr
+  (stream-filter prime?
+                 (stream-enumerate-interval 10000 1000000))))
+</code></pre>
+<p>We will see that it does indeed work efficiently.</p>
+<p>We begin by calling <code>stream-enumerate-interval</code> with the arguments
+10,000 and 1,000,000. <code>Stream-enumerate-interval</code> is the stream analog
+of <code>enumerate-interval</code> (section
+<a href="book-Z-H-15.html#%_sec_2.2.3">2.2.3</a>):</p>
+<pre><code class="language-scheme editable">(define (stream-enumerate-interval low high)
+  (if (&gt; low high)
+      the-empty-stream
+      (cons-stream
+       low
+       (stream-enumerate-interval (+ low 1) high))))
+</code></pre>
+<p>and thus the result returned by <code>stream-enumerate-interval</code>, formed by
+the <code>cons-stream</code>,
+is^[57]{.small}^](book-Z-H-24.html#footnote_Temp_448)</p>
+<pre><code class="language-scheme editable">(cons 10000
+      (delay (stream-enumerate-interval 10001 1000000)))
+</code></pre>
+<p>That is, <code>stream-enumerate-interval</code> returns a stream represented as a
+pair whose <code>car</code> is 10,000 and whose <code>cdr</code> is a promise to enumerate
+more of the interval if so requested. This stream is now filtered for
+primes, using the stream analog of the <code>filter</code> procedure
+(section
+<a href="book-Z-H-15.html#%_sec_2.2.3">2.2.3</a>):</p>
+<pre><code class="language-scheme editable">(define (stream-filter pred stream)
+  (cond ((stream-null? stream) the-empty-stream)
+        ((pred (stream-car stream))
+         (cons-stream (stream-car stream)
+                      (stream-filter pred
+                                     (stream-cdr stream))))
+        (else (stream-filter pred (stream-cdr stream)))))
+</code></pre>
+<p><code>Stream-filter</code> tests the <code>stream-car</code> of the stream (the <code>car</code> of the
+pair, which is 10,000). Since this is not prime, <code>stream-filter</code>
+examines the <code>stream-cdr</code> of its input stream. The call to <code>stream-cdr</code>
+forces evaluation of the delayed <code>stream-enumerate-interval</code>, which now
+returns</p>
+<pre><code class="language-scheme editable">(cons 10001
+      (delay (stream-enumerate-interval 10002 1000000)))
+</code></pre>
+<p><code>Stream-filter</code> now looks at the <code>stream-car</code> of this stream, 10,001,
+sees that this is not prime either, forces another <code>stream-cdr</code>, and so
+on, until <code>stream-enumerate-interval</code> yields the prime 10,007, whereupon
+<code>stream-filter</code>, according to its definition, returns</p>
+<pre><code class="language-scheme editable">(cons-stream (stream-car stream)
+             (stream-filter pred (stream-cdr stream)))
+</code></pre>
+<p>which in this case is</p>
+<pre><code class="language-scheme editable">(cons 10007
+      (delay
+        (stream-filter
+         prime?
+         (cons 10008
+               (delay
+                 (stream-enumerate-interval 10009
+                                            1000000))))))
+</code></pre>
+<p>This result is now passed to <code>stream-cdr</code> in our original expression.
+This forces the delayed <code>stream-filter</code>, which in turn keeps forcing the
+delayed <code>stream-enumerate-interval</code> until it finds the next prime, which
+is 10,009. Finally, the result passed to <code>stream-car</code> in our original
+expression is</p>
+<pre><code class="language-scheme editable">(cons 10009
+      (delay
+        (stream-filter
+         prime?
+         (cons 10010
+               (delay
+                 (stream-enumerate-interval 10011
+                                            1000000))))))
+</code></pre>
+<p><code>Stream-car</code> returns 10,009, and the computation is complete. Only as
+many integers were tested for primality as were necessary to find the
+second prime, and the interval was enumerated only as far as was
+necessary to feed the prime filter.</p>
+<p>In general, we can think of delayed evaluation as
+<code>demand-driven\'\' programming, whereby each stage in the stream process is activated only enough to satisfy the next stage. What we have done is to decouple the actual order of events in the computation from the apparent structure of our procedures. We write procedures as if the streams existed </code>all at once'' when,
+in reality, the computation is performed incrementally, as in
+traditional programming styles.</p>
+<h4 id="implementing-delay-and-force"><a class="header" href="#implementing-delay-and-force"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_449">Implementing <code>delay</code> and <code>force</code></a></a></h4>
+<p>Although <code>delay</code> and <code>force</code> may seem like mysterious
+operations, their implementation is really quite straightforward.
+<code>Delay</code> must package an expression so that it can be evaluated later on
+demand, and we can accomplish this simply by treating the expression as
+the body of a procedure. <code>Delay</code> can be a special form such that</p>
+<pre><code class="language-scheme editable">(delay &lt;exp&gt;)
+</code></pre>
+<p>is syntactic sugar for</p>
+<pre><code class="language-scheme editable">(lambda () &lt;exp&gt;)
+</code></pre>
+<p><code>Force</code> simply calls the procedure (of no arguments) produced by
+<code>delay</code>, so we can implement <code>force</code> as a procedure:</p>
+<pre><code class="language-scheme editable">(define (force delayed-object)
+  (delayed-object))
+</code></pre>
+<p>This implementation suffices for <code>delay</code>
+and <code>force</code> to work as advertised, but there is an important
+optimization that we can include. In many applications, we end up
+forcing the same delayed object many times. This can lead to serious
+inefficiency in recursive programs involving streams. (See
+exercise
+<a href="book-Z-H-24.html#%_thm_3.57">3.57</a>.) The solution is to build
+delayed objects so that the first time they are forced, they store the
+value that is computed. Subsequent forcings will simply return the
+stored value without repeating the computation. In other words, we
+implement <code>delay</code> as a special-purpose memoized procedure similar to the
+one described in exercise
+<a href="book-Z-H-22.html#%_thm_3.27">3.27</a>. One way
+to accomplish this is to use the following procedure, which takes as
+argument a procedure (of no arguments) and returns a memoized version of
+the procedure. The first time the memoized procedure is run, it saves
+the computed result. On subsequent evaluations, it simply returns the
+result.</p>
+<pre><code class="language-scheme editable">(define (memo-proc proc)
+  (let ((already-run? false) (result false))
+    (lambda ()
+      (if (not already-run?)
+          (begin (set! result (proc))
+                 (set! already-run? true)
+                 result)
+          result))))
+</code></pre>
+<p><code>Delay</code> is then defined so that <code>(delay &lt;</code><em><code>exp</code></em><code>&gt;)</code> is equivalent to</p>
+<pre><code class="language-scheme editable">(memo-proc (lambda () &lt;exp&gt;))
+</code></pre>
+<p>and <code>force</code> is as defined
+previously.<a href="book-Z-H-24.html#footnote_Temp_450">^[58]{.small}^</a></p>
+<p><strong>Exercise 3.50.</strong>
+Complete the following definition,
+which generalizes <code>stream-map</code> to allow procedures that take multiple
+arguments, analogous to <code>map</code> in
+section
+<a href="book-Z-H-15.html#%_sec_2.2.3">2.2.3</a>,
+footnote
+<a href="book-Z-H-15.html#footnote_Temp_166">12</a>.</p>
+<pre><code class="language-scheme editable">(define (stream-map proc . argstreams)
+  (if (&lt;*??*&gt;) (car argstreams))
+      the-empty-stream
+      (&lt;*??*&gt;
+       (apply proc (map &lt;*??*&gt; argstreams))
+       (apply stream-map
+              (cons proc (map &lt;*??*&gt; argstreams))))))
+</code></pre>
+<p><strong>Exercise 3.51.</strong>
+In order to take a
+closer look at delayed evaluation, we will use the following procedure,
+which simply returns its argument after printing it:</p>
+<pre><code class="language-scheme editable">(define (show x)
+  (display-line x)
+  x)
+</code></pre>
+<p>What does the interpreter print in response to evaluating each
+expression in the following
+sequence?<a href="book-Z-H-24.html#footnote_Temp_453">^[59]{.small}^</a></p>
+<pre><code class="language-scheme editable">(define x (stream-map show (stream-enumerate-interval 0 10)))
+(stream-ref x 5)
+(stream-ref x 7)
+</code></pre>
+<p><strong>Exercise 3.52.</strong>
+Consider the sequence
+of expressions</p>
+<pre><code class="language-scheme editable">(define sum 0)
+(define (accum x)
+  (set! sum (+ x sum))
+  sum)
+(define seq (stream-map accum (stream-enumerate-interval 1 20)))
+(define y (stream-filter even? seq))
+(define z (stream-filter (lambda (x) (= (remainder x 5) 0))
+                         seq))
+(stream-ref y 7)
+(display-stream z)
+</code></pre>
+<p>What is the value of <code>sum</code> after each of the above expressions is
+evaluated? What is the printed response to evaluating the <code>stream-ref</code>
+and <code>display-stream</code> expressions? Would these responses differ if we had
+implemented <code>(delay &lt;</code><em><code>exp</code></em><code>&gt;)</code> simply as <code>(lambda () &lt;</code><em><code>exp</code></em><code>&gt;)</code>
+without using the optimization provided by <code>memo-proc</code> ? Explain.</p>
+<h3 id="352"><a class="header" href="#352">[3.5.2</a></h3>
+<p>Infinite Streams](book-Z-H-4.html#%<em>toc</em>%_sec_3.5.2)</p>
+<p>We have seen how to support the illusion of manipulating
+streams as complete entities even though, in actuality, we compute only
+as much of the stream as we need to access. We can exploit this
+technique to represent sequences efficiently as streams, even if the
+sequences are very long. What is more striking, we can use streams to
+represent sequences that are infinitely long. For instance, consider the
+following definition of the stream of positive integers:</p>
+<pre><code class="language-scheme editable">(define (integers-starting-from n)
+  (cons-stream n (integers-starting-from (+ n 1))))
+
+(define integers (integers-starting-from 1))
+</code></pre>
+<p>This makes sense because <code>integers</code> will be a pair whose <code>car</code> is 1 and
+whose <code>cdr</code> is a promise to produce the integers beginning with 2. This
+is an infinitely long stream, but in any given time we can examine only
+a finite portion of it. Thus, our programs will never know that the
+entire infinite stream is not there.</p>
+<p>Using <code>integers</code> we can define other infinite streams, such as the
+stream of integers that are not divisible by 7:</p>
+<pre><code class="language-scheme editable">(define (divisible? x y) (= (remainder x y) 0))
+(define no-sevens
+  (stream-filter (lambda (x) (not (divisible? x 7)))
+                 integers))
+</code></pre>
+<p>Then we can find integers not divisible by 7 simply by accessing
+elements of this stream:</p>
+<pre><code class="language-scheme editable">(stream-ref no-sevens 100)
+</code></pre>
+<p><em><code>117</code></em></p>
+<p>In analogy with <code>integers</code>, we can define the infinite stream of
+Fibonacci numbers:</p>
+<pre><code class="language-scheme editable">(define (fibgen a b)
+  (cons-stream a (fibgen b (+ a b))))
+(define fibs (fibgen 0 1))
+</code></pre>
+<p><code>Fibs</code> is a pair whose <code>car</code> is 0 and whose <code>cdr</code> is a promise to
+evaluate <code>(fibgen 1 1)</code>. When we evaluate this delayed <code>(fibgen 1 1)</code>,
+it will produce a pair whose <code>car</code> is 1 and whose <code>cdr</code> is a promise to
+evaluate <code>(fibgen 1 2)</code>, and so on.</p>
+<p>For a look at a more exciting infinite stream, we can
+generalize the <code>no-sevens</code> example to construct the infinite stream of
+prime numbers, using a method known as the <em>sieve of
+Eratosthenes</em>.<a href="book-Z-H-24.html#footnote_Temp_455">^[60]{.small}^</a>
+We start with the integers beginning with 2, which is the first prime.
+To get the rest of the primes, we start by filtering the multiples of 2
+from the rest of the integers. This leaves a stream beginning with 3,
+which is the next prime. Now we filter the multiples of 3 from the rest
+of this stream. This leaves a stream beginning with 5, which is the next
+prime, and so on. In other words, we construct the primes by a sieving
+process, described as follows: To sieve a stream <code>S</code>, form a stream
+whose first element is the first element of <code>S</code> and the rest of which is
+obtained by filtering all multiples of the first element of <code>S</code> out of
+the rest of <code>S</code> and sieving the result. This process is readily
+described in terms of stream operations:</p>
+<pre><code class="language-scheme editable">(define (sieve stream)
+  (cons-stream
+   (stream-car stream)
+   (sieve (stream-filter
+           (lambda (x)
+             (not (divisible? x (stream-car stream))))
+           (stream-cdr stream)))))
+
+(define primes (sieve (integers-starting-from 2)))
+</code></pre>
+<p>Now to find a particular prime we need only ask for it:</p>
+<pre><code class="language-scheme editable">(stream-ref primes 50)
+</code></pre>
+<p><em><code>233</code></em></p>
+<p>It is interesting to contemplate the signal-processing system set up by
+<code>sieve</code>, shown in the <code>Henderson diagram\'\' in figure [3.31](book-Z-H-24.html#%_fig_3.31).[^[61]{.small}^](book-Z-H-24.html#footnote_Temp_456) The input stream feeds into an </code>un<code>cons</code>er'' that separates the
+first element of the stream from the rest of the stream. The first
+element is used to construct a divisibility filter, through which the
+rest is passed, and the output of the filter is fed to another sieve
+box. Then the original first element is <code>cons</code>ed onto the output of the
+internal sieve to form the output stream. Thus, not only is the stream
+infinite, but the signal processor is also infinite, because the sieve
+contains a sieve within it.</p>
+<p><img src="ch3-Z-G-35.gif" alt="" /></p>
+<p><strong>Figure 3.31:</strong>
+The prime sieve viewed as a signal-processing system.</p>
+<h4 id="defining-streams-implicitly"><a class="header" href="#defining-streams-implicitly"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_457">Defining streams implicitly</a></a></h4>
+<p>The <code>integers</code> and <code>fibs</code> streams above were defined by
+specifying ``generating'' procedures that explicitly compute the
+stream elements one by one. An alternative way to specify streams is to
+take advantage of delayed evaluation to define streams implicitly. For
+example, the following expression defines the stream <code>ones</code> to be an
+infinite stream of ones:</p>
+<pre><code class="language-scheme editable">(define ones (cons-stream 1 ones))
+</code></pre>
+<p>This works much like the definition of a recursive procedure: <code>ones</code> is
+a pair whose <code>car</code> is 1 and whose <code>cdr</code> is a promise to evaluate <code>ones</code>.
+Evaluating the <code>cdr</code> gives us again a 1 and a promise to evaluate
+<code>ones</code>, and so on.</p>
+<p>We can do more interesting things by manipulating streams with
+operations such as <code>add-streams</code>, which produces the elementwise sum of
+two given
+streams:<a href="book-Z-H-24.html#footnote_Temp_458">^[62]{.small}^</a></p>
+<pre><code class="language-scheme editable">(define (add-streams s1 s2)
+  (stream-map + s1 s2))
+</code></pre>
+<p>Now we can define the integers as follows:</p>
+<pre><code class="language-scheme editable">(define integers (cons-stream 1 (add-streams ones integers)))
+</code></pre>
+<p>This defines <code>integers</code> to be a stream whose first element is 1 and the
+rest of which is the sum of <code>ones</code> and <code>integers</code>. Thus, the second
+element of <code>integers</code> is 1 plus the first element of <code>integers</code>, or 2;
+the third element of <code>integers</code> is 1 plus the second element of
+<code>integers</code>, or 3; and so on. This definition works because, at any
+point, enough of the <code>integers</code> stream has been generated so that we can
+feed it back into the definition to produce the next integer.</p>
+<p>We can define the Fibonacci numbers in the same style:</p>
+<pre><code class="language-scheme editable">(define fibs
+  (cons-stream 0
+               (cons-stream 1
+                            (add-streams (stream-cdr fibs)
+                                         fibs))))
+</code></pre>
+<p>This definition says that <code>fibs</code> is a stream beginning with 0 and 1,
+such that the rest of the stream can be generated by adding <code>fibs</code> to
+itself shifted by one place:</p>
+<hr />
+<hr />
+<hr />
+<ul>
+<li></li>
+</ul>
+<p>1
+1
+2
+3
+5
+8
+13
+21
+<code>...</code> = <code>(stream-cdr fibs)</code></p>
+<p>0
+1
+1
+2
+3
+5
+8
+13
+<code>...</code> = <code>fibs</code></p>
+<p>0
+1
+1
+2
+3
+5
+8
+13
+21
+34
+<code>...</code> = <code>fibs</code></p>
+<hr />
+<p><code>Scale-stream</code> is another useful procedure in formulating such stream
+definitions. This multiplies each item in a stream by a given constant:</p>
+<pre><code class="language-scheme editable">(define (scale-stream stream factor)
+  (stream-map (lambda (x) (* x factor)) stream))
+</code></pre>
+<p>For example,</p>
+<pre><code class="language-scheme editable">(define double (cons-stream 1 (scale-stream double 2)))
+</code></pre>
+<p>produces the stream of powers of 2: 1, 2, 4, 8, 16, 32, <code>...</code>.</p>
+<p>An alternate definition of the stream of primes can be given by starting
+with the integers and filtering them by testing for primality. We will
+need the first prime, 2, to get started:</p>
+<pre><code class="language-scheme editable">(define primes
+  (cons-stream
+   2
+   (stream-filter prime? (integers-starting-from 3))))
+</code></pre>
+<p>This definition is not so straightforward as it appears, because we will
+test whether a number <em>n</em> is prime by checking whether <em>n</em> is divisible
+by a prime (not by just any integer) less than or equal to
+<img src="book-Z-G-D-13.gif" alt="" /><em>n</em>:</p>
+<pre><code class="language-scheme editable">(define (prime? n)
+  (define (iter ps)
+    (cond ((&gt; (square (stream-car ps)) n) true)
+          ((divisible? n (stream-car ps)) false)
+          (else (iter (stream-cdr ps)))))
+  (iter primes))
+</code></pre>
+<p>This is a recursive definition, since <code>primes</code> is defined in terms of
+the <code>prime?</code> predicate, which itself uses the <code>primes</code> stream. The
+reason this procedure works is that, at any point, enough of the
+<code>primes</code> stream has been generated to test the primality of the numbers
+we need to check next. That is, for every <em>n</em> we test for primality,
+either <em>n</em> is not prime (in which case there is a prime already
+generated that divides it) or <em>n</em> is prime (in which case there is a
+prime already generated -- i.e., a prime less than <em>n</em> -- that is
+greater than
+<img src="book-Z-G-D-13.gif" alt="" /></p>
+<p><strong>Exercise 3.53.</strong>
+Without running the program,
+describe the elements of the stream defined by</p>
+<pre><code class="language-scheme editable">(define s (cons-stream 1 (add-streams s s)))
+</code></pre>
+<p><strong>Exercise 3.54.</strong>
+Define a procedure
+<code>mul-streams</code>, analogous to
+<code>add-streams</code>, that produces the elementwise product of its two input
+streams. Use this together with the stream of <code>integers</code> to complete the
+following definition of the stream whose <em>n</em>th element (counting from 0)
+is <em>n</em> + 1 factorial:</p>
+<pre><code class="language-scheme editable">(define factorials (cons-stream 1 (mul-streams &lt;*??*&gt; &lt;*??*&gt;)))
+</code></pre>
+<p><strong>Exercise 3.55.</strong>
+Define a procedure
+<code>partial-sums</code> that takes as argument a stream <em>S</em> and
+returns the stream whose elements are <em>S</em><del>0</del>, <em>S</em><del>0</del> + <em>S</em><del>1</del>, <em>S</em><del>0</del> +
+<em>S</em><del>1</del> + <em>S</em><del>2</del>, <code>...</code>. For example, <code>(partial-sums integers)</code> should be
+the stream 1, 3, 6, 10, 15, <code>...</code>.</p>
+<p><strong>Exercise 3.56.</strong>
+A famous problem, first raised by
+R. Hamming, is to enumerate, in ascending order with no
+repetitions, all positive integers with no prime factors other than 2,
+3, or 5. One obvious way to do this is to simply test each integer in
+turn to see whether it has any factors other than 2, 3, and 5. But this
+is very inefficient, since, as the integers get larger, fewer and fewer
+of them fit the requirement. As an alternative, let us call the required
+stream of numbers <code>S</code> and notice the following facts about it.</p>
+<ul>
+<li><code>S</code> begins with 1.</li>
+<li>The elements of <code>(scale-stream S 2)</code> are also elements of <code>S</code>.</li>
+<li>The same is true for <code>(scale-stream S 3)</code> and <code>(scale-stream 5 S)</code>.</li>
+<li>These are all the elements of <code>S</code>.</li>
+</ul>
+<p>Now all we have to do is combine elements from these
+sources. For this we define a procedure <code>merge</code> that combines two
+ordered streams into one ordered result stream, eliminating repetitions:</p>
+<pre><code class="language-scheme editable">(define (merge s1 s2)
+  (cond ((stream-null? s1) s2)
+        ((stream-null? s2) s1)
+        (else
+         (let ((s1car (stream-car s1))
+               (s2car (stream-car s2)))
+           (cond ((&lt; s1car s2car)
+                  (cons-stream s1car (merge (stream-cdr s1) s2)))
+                 ((&gt; s1car s2car)
+                  (cons-stream s2car (merge s1 (stream-cdr s2))))
+                 (else
+                  (cons-stream s1car
+                               (merge (stream-cdr s1)
+                                      (stream-cdr s2)))))))))
+</code></pre>
+<p>Then the required stream may be constructed with <code>merge</code>, as follows:</p>
+<pre><code class="language-scheme editable">(define S (cons-stream 1 (merge &lt;*??*&gt; &lt;*??*&gt;)))
+</code></pre>
+<p>Fill in the missing expressions in the places marked &lt;<em>??</em>&gt; above.</p>
+<p><strong>Exercise 3.57.</strong>
+How many additions
+are performed when we compute the <em>n</em>th Fibonacci number using the
+definition of <code>fibs</code> based on the <code>add-streams</code> procedure? Show that the
+number of additions would be exponentially greater if we had implemented
+<code>(delay &lt;</code><em><code>exp</code></em><code>&gt;)</code> simply as <code>(lambda () &lt;</code><em><code>exp</code></em><code>&gt;)</code>, without using
+the optimization provided by the <code>memo-proc</code> procedure described in
+section
+<a href="book-Z-H-24.html#%_sec_3.5.1">3.5.1</a>.<a href="book-Z-H-24.html#footnote_Temp_465">^[64]{.small}^</a></p>
+<p><strong>Exercise 3.58.</strong>
+Give an interpretation of the stream
+computed by the following procedure:</p>
+<pre><code class="language-scheme editable">(define (expand num den radix)
+  (cons-stream
+   (quotient (* num radix) den)
+   (expand (remainder (* num radix) den) den radix)))
+</code></pre>
+<p>(<code>Quotient</code> is a primitive that returns
+the integer quotient of two integers.) What are the successive elements
+produced by <code>(expand 1 7 10)</code> ? What is produced by <code>(expand 3 8 10)</code> ?</p>
+<p><strong>Exercise 3.59.</strong>
+In
+section
+<a href="book-Z-H-18.html#%_sec_2.5.3">2.5.3</a> we saw how to implement a
+polynomial arithmetic system representing polynomials as lists of terms.
+In a similar way, we can work with <em>power series</em>, such as</p>
+<p><img src="ch3-Z-G-36.gif" alt="" /></p>
+<p><img src="ch3-Z-G-37.gif" alt="" /></p>
+<p><img src="ch3-Z-G-38.gif" alt="" /></p>
+<p>represented as infinite streams. We will represent the series <em>a</em><del>0</del> +
+<em>a</em><del>1</del> <em>x</em> + <em>a</em><del>2</del> <em>x</em>^2^ + <em>a</em><del>3</del> <em>x</em>^3^ + <code> </code> as the stream whose
+elements are the coefficients <em>a</em><del>0</del>, <em>a</em><del>1</del>, <em>a</em><del>2</del>, <em>a</em><del>3</del>, <code>...</code>.</p>
+<p>a. The integral of the series <em>a</em><del>0</del> +
+<em>a</em><del>1</del> <em>x</em> + <em>a</em><del>2</del> <em>x</em>^2^ + <em>a</em><del>3</del> <em>x</em>^3^ + <code> </code> is the series</p>
+<p><img src="ch3-Z-G-39.gif" alt="" /></p>
+<p>where <em>c</em> is any constant. Define a procedure
+<code>integrate-series</code> that takes as input a stream <em>a</em><del>0</del>,
+<em>a</em><del>1</del>, <em>a</em><del>2</del>, <code> </code> representing a power series and returns the stream
+<em>a</em><del>0</del>, (1/2)<em>a</em><del>1</del>, (1/3)<em>a</em><del>2</del>, <code> </code> of coefficients of the
+non-constant terms of the integral of the series. (Since the result has
+no constant term, it doesn't represent a power series; when we use
+<code>integrate-series</code>, we will <code>cons</code> on the appropriate constant.)</p>
+<p>b. The function <em>x</em>
+<img src="book-Z-G-D-17.gif" alt="" /> <em>e</em>^<em>x</em>^ is its
+own derivative. This implies that <em>e</em>^<em>x</em>^ and the integral of <em>e</em>^<em>x</em>^
+are the same series, except for the constant term, which is <em>e</em>^0^ = 1.
+Accordingly, we can generate the series for <em>e</em>^<em>x</em>^ as</p>
+<pre><code class="language-scheme editable">(define exp-series
+  (cons-stream 1 (integrate-series exp-series)))
+</code></pre>
+<p>Show how to generate the series for sine and cosine, starting from the
+facts that the derivative of sine is cosine and the derivative of cosine
+is the negative of sine:</p>
+<pre><code class="language-scheme editable">(define cosine-series
+  (cons-stream 1 &lt;*??*&gt;))
+(define sine-series
+  (cons-stream 0 &lt;*??*&gt;))
+</code></pre>
+<p><strong>Exercise
+3.60.</strong>
+With
+power series represented as streams of coefficients as in
+exercise
+<a href="book-Z-H-24.html#%_thm_3.59">3.59</a>, adding series is
+implemented by <code>add-streams</code>. Complete the definition of the following
+procedure for multiplying series:</p>
+<pre><code class="language-scheme editable">(define (mul-series s1 s2)
+  (cons-stream &lt;*??*&gt; (add-streams &lt;*??*&gt; &lt;*??*&gt;)))
+</code></pre>
+<p>You can test your procedure by verifying that <em>sin</em>^2^ <em>x</em> + <em>cos</em>^2^
+<em>x</em> = 1, using the series from
+exercise
+<a href="book-Z-H-24.html#%_thm_3.59">3.59</a>.</p>
+<p><strong>Exercise 3.61.</strong>
+Let <em>S</em> be a power series
+(exercise
+<a href="book-Z-H-24.html#%_thm_3.59">3.59</a>) whose constant term is 1.
+Suppose we want to find the power series 1/<em>S</em>, that is, the series <em>X</em>
+such that <em>S</em> · <em>X</em> = 1. Write <em>S</em> = 1 + <em>S</em><del><em>R</em></del> where <em>S</em><del><em>R</em></del> is the
+part of <em>S</em> after the constant term. Then we can solve for <em>X</em> as
+follows:</p>
+<p><img src="ch3-Z-G-40.gif" alt="" /></p>
+<p>In other words, <em>X</em> is the power series whose constant term is 1 and
+whose higher-order terms are given by the negative of <em>S</em><del><em>R</em></del> times
+<em>X</em>. Use this idea to write a procedure <code>invert-unit-series</code> that
+computes 1/<em>S</em> for a power series <em>S</em> with constant term 1. You will
+need to use <code>mul-series</code> from
+exercise
+<a href="book-Z-H-24.html#%_thm_3.60">3.60</a>.</p>
+<p><strong>Exercise
+3.62.</strong>
+Use the results of
+exercises
+<a href="book-Z-H-24.html#%_thm_3.60">3.60</a>
+and
+<a href="book-Z-H-24.html#%_thm_3.61">3.61</a> to define a procedure
+<code>div-series</code> that divides two power series. <code>Div-series</code> should work for
+any two series, provided that the denominator series begins with a
+nonzero constant term. (If the denominator has a zero constant term,
+then <code>div-series</code> should signal an error.) Show how to use <code>div-series</code>
+together with the result of exercise
+<a href="book-Z-H-24.html#%_thm_3.59">3.59</a>
+to generate the power series for tangent.</p>
+<h3 id="353"><a class="header" href="#353">[3.5.3</a></h3>
+<p>Exploiting the Stream Paradigm](book-Z-H-4.html#%<em>toc</em>%_sec_3.5.3)</p>
+<p>Streams with delayed evaluation can be a powerful modeling tool,
+providing many of the benefits of local state and assignment. Moreover,
+they avoid some of the theoretical tangles that accompany the
+introduction of assignment into a programming language.</p>
+<p>The stream approach can be illuminating because it allows
+us to build systems with different module boundaries than systems
+organized around assignment to state variables. For example, we can
+think of an entire time series (or signal) as a focus of interest,
+rather than the values of the state variables at individual moments.
+This makes it convenient to combine and compare components of state from
+different moments.</p>
+<h4 id="formulating-iterations-as-stream-processes"><a class="header" href="#formulating-iterations-as-stream-processes"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_471">Formulating iterations as stream processes</a></a></h4>
+<p>In section
+<a href="book-Z-H-11.html#%_sec_1.2.1">1.2.1</a>, we
+introduced iterative processes, which proceed by updating state
+variables. We know now that we can represent state as a ``timeless''
+stream of values rather than as a set of variables to be updated. Let's
+adopt this perspective in revisiting the square-root procedure from
+section
+<a href="book-Z-H-10.html#%_sec_1.1.7">1.1.7</a>. Recall that the idea is
+to generate a sequence of better and better guesses for the square root
+of <em>x</em> by applying over and over again the procedure that improves
+guesses:</p>
+<pre><code class="language-scheme editable">(define (sqrt-improve guess x)
+  (average guess (/ x guess)))
+</code></pre>
+<p>In our original <code>sqrt</code> procedure, we made these guesses
+be the successive values of a state variable. Instead we can generate
+the infinite stream of guesses, starting with an initial guess of
+1:<a href="book-Z-H-24.html#footnote_Temp_472">^[65]{.small}^</a></p>
+<pre><code class="language-scheme editable">(define (sqrt-stream x)
+  (define guesses
+    (cons-stream 1.0
+                 (stream-map (lambda (guess)
+                               (sqrt-improve guess x))
+                             guesses)))
+  guesses)
+(display-stream (sqrt-stream 2))
+</code></pre>
+<p><em><code>1.</code></em>
+<em><code>1.5</code></em>
+<em><code>1.4166666666666665</code></em>
+<em><code>1.4142156862745097</code></em>
+<em><code>1.4142135623746899</code></em>
+<code>...</code></p>
+<p>We can generate more and more terms of the stream to get better and
+better guesses. If we like, we can write a procedure that keeps
+generating terms until the answer is good enough. (See
+exercise
+<a href="book-Z-H-24.html#%_thm_3.64">3.64</a>.)</p>
+<p>Another
+iteration that we can treat in the same way is to generate an
+approximation to <img src="book-Z-G-D-9.gif" alt="" />, based upon the
+alternating series that we saw in
+section
+<a href="book-Z-H-12.html#%_sec_1.3.1">1.3.1</a>:</p>
+<p><img src="ch3-Z-G-41.gif" alt="" /></p>
+<p>We first generate the stream of summands of the series (the reciprocals
+of the odd integers, with alternating signs). Then we take the stream of
+sums of more and more terms (using the <code>partial-sums</code> procedure of
+exercise
+<a href="book-Z-H-24.html#%_thm_3.55">3.55</a>) and scale the result by 4:</p>
+<pre><code class="language-scheme editable">(define (pi-summands n)
+  (cons-stream (/ 1.0 n)
+               (stream-map - (pi-summands (+ n 2)))))
+(define pi-stream
+  (scale-stream (partial-sums (pi-summands 1)) 4))
+(display-stream pi-stream)
+</code></pre>
+<p><em><code>4.</code></em>
+<em><code>2.666666666666667</code></em>
+<em><code>3.466666666666667</code></em>
+<em><code>2.8952380952380956</code></em>
+<em><code>3.3396825396825403</code></em>
+<em><code>2.9760461760461765</code></em>
+<em><code>3.2837384837384844</code></em>
+<em><code>3.017071817071818</code></em>
+<code>...</code></p>
+<p>This gives us a stream of better and better approximations to
+<img src="book-Z-G-D-9.gif" alt="" />, although the approximations converge
+rather slowly. Eight terms of the sequence bound the value of
+<img src="book-Z-G-D-9.gif" alt="" /> between 3.284 and 3.017.</p>
+<p>So far, our use of the stream of states approach is not
+much different from updating state variables. But streams give us an
+opportunity to do some interesting tricks. For example, we can transform
+a stream with a <em>sequence accelerator</em> that converts a
+sequence of approximations to a new sequence that converges to the same
+value as the original, only faster.</p>
+<p>One such accelerator, due to the eighteenth-century Swiss mathematician
+Leonhard Euler, works well with sequences that are
+partial sums of alternating series (series of terms with alternating
+signs). In Euler's technique, if <em>S</em><del><em>n</em></del> is the <em>n</em>th term of the
+original sum sequence, then the accelerated sequence has terms</p>
+<p><img src="ch3-Z-G-42.gif" alt="" /></p>
+<p>Thus, if the original sequence is represented as a stream of values, the
+transformed sequence is given by</p>
+<pre><code class="language-scheme editable">(define (euler-transform s)
+  (let ((s0 (stream-ref s 0))         ; *S*~*n*-1~*
+        (s1 (stream-ref s 1))         ; *S*~*n*~*
+        (s2 (stream-ref s 2)))         ; *S*~*n*+1~*
+    (cons-stream (- s2 (/ (square (- s2 s1))
+                          (+ s0 (* -2 s1) s2)))
+                 (euler-transform (stream-cdr s)))))
+</code></pre>
+<p>We can demonstrate Euler acceleration with our sequence of
+approximations to <img src="book-Z-G-D-9.gif" alt="" />:</p>
+<pre><code class="language-scheme editable">(display-stream (euler-transform pi-stream))
+</code></pre>
+<p><em><code>3.166666666666667</code></em>
+<em><code>3.1333333333333337</code></em>
+<em><code>3.1452380952380956</code></em>
+<em><code>3.13968253968254</code></em>
+<em><code>3.1427128427128435</code></em>
+<em><code>3.1408813408813416</code></em>
+<em><code>3.142071817071818</code></em>
+<em><code>3.1412548236077655</code></em>
+<code>...</code></p>
+<p>Even better, we can accelerate the accelerated sequence, and recursively
+accelerate that, and so on. Namely, we create a stream of streams (a
+structure we'll call a <em>tableau</em>) in which each stream
+is the transform of the preceding one:</p>
+<pre><code class="language-scheme editable">(define (make-tableau transform s)
+  (cons-stream s
+               (make-tableau transform
+                             (transform s))))
+</code></pre>
+<p>The tableau has the form</p>
+<p><img src="ch3-Z-G-43.gif" alt="" /></p>
+<p>Finally, we form a sequence by taking the first term in each row of the
+tableau:</p>
+<pre><code class="language-scheme editable">(define (accelerated-sequence transform s)
+  (stream-map stream-car
+              (make-tableau transform s)))
+</code></pre>
+<p>We can demonstrate this kind of ``super-acceleration'' of the
+<img src="book-Z-G-D-9.gif" alt="" /> sequence:</p>
+<pre><code class="language-scheme editable">(display-stream (accelerated-sequence euler-transform
+                                      pi-stream))
+</code></pre>
+<p><em><code>4.</code></em>
+<em><code>3.166666666666667</code></em>
+<em><code>3.142105263157895</code></em>
+<em><code>3.141599357319005</code></em>
+<em><code>3.1415927140337785</code></em>
+<em><code>3.1415926539752927</code></em>
+<em><code>3.1415926535911765</code></em>
+<em><code>3.141592653589778</code></em>
+<code>...</code></p>
+<p>The result is impressive. Taking eight terms of the sequence yields the
+correct value of <img src="book-Z-G-D-9.gif" alt="" /> to 14 decimal places.
+If we had used only the original <img src="book-Z-G-D-9.gif" alt="" />
+sequence, we would need to compute on the order of 10^13^ terms (i.e.,
+expanding the series far enough so that the individual terms are less
+then 10^-13^) to get that much accuracy! We could have implemented these
+acceleration techniques without using streams. But the stream
+formulation is particularly elegant and convenient because the entire
+sequence of states is available to us as a data structure that can be
+manipulated with a uniform set of operations.</p>
+<p><strong>Exercise 3.63.</strong>
+Louis Reasoner asks why the
+<code>sqrt-stream</code> procedure was not written in the following more
+straightforward way, without the local variable <code>guesses</code>:</p>
+<pre><code class="language-scheme editable">(define (sqrt-stream x)
+  (cons-stream 1.0
+               (stream-map (lambda (guess)
+                             (sqrt-improve guess x))
+                           (sqrt-stream x))))
+</code></pre>
+<p>Alyssa P. Hacker replies that this version of the procedure is
+considerably less efficient because it performs redundant computation.
+Explain Alyssa's answer. Would the two versions still differ in
+efficiency if our implementation of <code>delay</code> used only
+<code>(lambda () &lt;</code><em><code>exp</code></em><code>&gt;)</code> without using the optimization provided by
+<code>memo-proc</code> (section
+<a href="book-Z-H-24.html#%_sec_3.5.1">3.5.1</a>)?</p>
+<p><strong>Exercise 3.64.</strong>
+Write a procedure
+<code>stream-limit</code> that takes as arguments a stream and a
+number (the tolerance). It should examine the stream until it finds two
+successive elements that differ in absolute value by less than the
+tolerance, and return the second of the two elements. Using this, we
+could compute square roots up to a given tolerance by</p>
+<pre><code class="language-scheme editable">(define (sqrt x tolerance)
+  (stream-limit (sqrt-stream x) tolerance))
+</code></pre>
+<p><strong>Exercise 3.65.</strong>
+Use the series</p>
+<p><img src="ch3-Z-G-44.gif" alt="" /></p>
+<p>to compute three sequences of approximations to the natural logarithm of
+2, in the same way we did above for <img src="book-Z-G-D-9.gif" alt="" />.
+How rapidly do these sequences converge?</p>
+<h4 id="infinite-streams-of-pairs"><a class="header" href="#infinite-streams-of-pairs"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_476">Infinite streams of pairs</a></a></h4>
+<p>In
+section
+<a href="book-Z-H-15.html#%_sec_2.2.3">2.2.3</a>, we saw how the sequence
+paradigm handles traditional nested loops as processes defined on
+sequences of pairs. If we generalize this technique to infinite streams,
+then we can write programs that are not easily represented as loops,
+because the ``looping'' must range over an infinite set.</p>
+<p>For example, suppose we want to generalize the
+<code>prime-sum-pairs</code> procedure of
+section
+<a href="book-Z-H-15.html#%_sec_2.2.3">2.2.3</a> to produce the stream of
+pairs of <em>all</em> integers (<em>i</em>,<em>j</em>) with <em>i</em>
+[&lt;]{.underline} <em>j</em> such
+that <em>i</em> + <em>j</em> is prime. If <code>int-pairs</code> is the sequence of all pairs of
+integers (<em>i</em>,<em>j</em>) with <em>i</em>
+[&lt;]{.underline} <em>j</em>, then our required
+stream is
+simply^[66]{.small}^](book-Z-H-24.html#footnote_Temp_477)</p>
+<pre><code class="language-scheme editable">(stream-filter (lambda (pair)
+                 (prime? (+ (car pair) (cadr pair))))
+               int-pairs)
+</code></pre>
+<p>Our problem, then, is to produce the stream <code>int-pairs</code>. More generally,
+suppose we have two streams <em>S</em> = (<em>S</em><del><em>i</em></del>) and <em>T</em> = (<em>T</em><del><em>j</em></del>), and
+imagine the infinite rectangular array</p>
+<p><img src="ch3-Z-G-45.gif" alt="" /></p>
+<p>We wish to generate a stream that contains all the pairs in the array
+that lie on or above the diagonal, i.e., the pairs</p>
+<p><img src="ch3-Z-G-46.gif" alt="" /></p>
+<p>(If we take both <em>S</em> and <em>T</em> to be the stream of integers, then this
+will be our desired stream <code>int-pairs</code>.)</p>
+<p>Call the general stream of pairs <code>(pairs S T)</code>, and consider it to be
+composed of three parts: the pair (<em>S</em><del>0</del>,<em>T</em><del>0</del>), the rest of the pairs
+in the first row, and the remaining
+pairs:<a href="book-Z-H-24.html#footnote_Temp_478">^[67]{.small}^</a></p>
+<p><img src="ch3-Z-G-47.gif" alt="" /></p>
+<p>Observe that the third piece in this decomposition (pairs that are not
+in the first row) is (recursively) the pairs formed from
+<code>(stream-cdr S)</code> and <code>(stream-cdr T)</code>. Also note that the second piece
+(the rest of the first row) is</p>
+<pre><code class="language-scheme editable">(stream-map (lambda (x) (list (stream-car s) x))
+            (stream-cdr t))
+</code></pre>
+<p>Thus we can form our stream of pairs as follows:</p>
+<pre><code class="language-scheme editable">(define (pairs s t)
+  (cons-stream
+   (list (stream-car s) (stream-car t))
+   (&lt;*combine-in-some-way*&gt;
+    (stream-map (lambda (x) (list (stream-car s) x))
+                (stream-cdr t))
+    (pairs (stream-cdr s) (stream-cdr t)))))
+</code></pre>
+<p>In order to complete the procedure, we must choose some
+way to combine the two inner streams. One idea is to use the stream
+analog of the <code>append</code> procedure from
+section
+<a href="book-Z-H-15.html#%_sec_2.2.1">2.2.1</a>:</p>
+<pre><code class="language-scheme editable">(define (stream-append s1 s2)
+  (if (stream-null? s1)
+      s2
+      (cons-stream (stream-car s1)
+                   (stream-append (stream-cdr s1) s2))))
+</code></pre>
+<p>This is unsuitable for infinite streams, however, because it takes all
+the elements from the first stream before incorporating the second
+stream. In particular, if we try to generate all pairs of positive
+integers using</p>
+<pre><code class="language-scheme editable">(pairs integers integers)
+</code></pre>
+<p>our stream of results will first try to run through all pairs with the
+first integer equal to 1, and hence will never produce pairs with any
+other value of the first integer.</p>
+<p>To handle infinite streams, we need to devise an order of combination
+that ensures that every element will eventually be reached if we let our
+program run long enough. An elegant way to accomplish this is with the
+following <code>interleave</code>
+procedure:<a href="book-Z-H-24.html#footnote_Temp_479">^[68]{.small}^</a></p>
+<pre><code class="language-scheme editable">(define (interleave s1 s2)
+  (if (stream-null? s1)
+      s2
+      (cons-stream (stream-car s1)
+                   (interleave s2 (stream-cdr s1)))))
+</code></pre>
+<p>Since <code>interleave</code> takes elements alternately from the two streams,
+every element of the second stream will eventually find its way into the
+interleaved stream, even if the first stream is infinite.</p>
+<p>We can thus generate the required stream of pairs as</p>
+<pre><code class="language-scheme editable">(define (pairs s t)
+  (cons-stream
+   (list (stream-car s) (stream-car t))
+   (interleave
+    (stream-map (lambda (x) (list (stream-car s) x))
+                (stream-cdr t))
+    (pairs (stream-cdr s) (stream-cdr t)))))
+</code></pre>
+<p><strong>Exercise 3.66.</strong>
+Examine the stream
+<code>(pairs integers integers)</code>. Can you make any general comments about the
+order in which the pairs are placed into the stream? For example, about
+how many pairs precede the pair (1,100)? the pair (99,100)? the pair
+(100,100)? (If you can make precise mathematical statements here, all
+the better. But feel free to give more qualitative answers if you find
+yourself getting bogged down.)</p>
+<p><strong>Exercise 3.67.</strong>
+Modify the <code>pairs</code> procedure so that
+<code>(pairs integers integers)</code> will produce the stream of <em>all</em> pairs of
+integers (<em>i</em>,<em>j</em>) (without the condition <em>i</em>
+[&lt;]{.underline} <em>j</em>).
+Hint: You will need to mix in an additional stream.</p>
+<p><strong>Exercise 3.68.</strong>
+Louis Reasoner thinks that building
+a stream of pairs from three parts is unnecessarily complicated. Instead
+of separating the pair (<em>S</em><del>0</del>,<em>T</em><del>0</del>) from the rest of the pairs in the
+first row, he proposes to work with the whole first row, as follows:</p>
+<pre><code class="language-scheme editable">(define (pairs s t)
+  (interleave
+   (stream-map (lambda (x) (list (stream-car s) x))
+               t)
+   (pairs (stream-cdr s) (stream-cdr t))))
+</code></pre>
+<p>Does this work? Consider what happens if we evaluate
+<code>(pairs integers integers)</code> using Louis's definition of <code>pairs</code>.</p>
+<p><strong>Exercise 3.69.</strong>
+Write a procedure <code>triples</code> that
+takes three infinite streams, <em>S</em>, <em>T</em>, and <em>U</em>, and produces the stream
+of triples (<em>S</em><del><em>i</em></del>,<em>T</em><del><em>j</em></del>,<em>U</em><del><em>k</em></del>) such that <em>i</em>
+[&lt;]{.underline}
+<em>j</em>
+[&lt;]{.underline} <em>k</em>. Use <code>triples</code> to generate the stream of all
+Pythagorean triples of positive integers, i.e., the
+triples (<em>i</em>,<em>j</em>,<em>k</em>) such that <em>i</em>
+[&lt;]{.underline} <em>j</em> and <em>i</em>^2^ +
+<em>j</em>^2^ = <em>k</em>^2^.</p>
+<p><strong>Exercise 3.70.</strong>
+It
+would be nice to be able to generate streams in which the pairs appear
+in some useful order, rather than in the order that results from an <em>ad
+hoc</em> interleaving process. We can use a technique similar to the <code>merge</code>
+procedure of exercise
+<a href="book-Z-H-24.html#%_thm_3.56">3.56</a>, if we define
+a way to say that one pair of integers is <code>less than\'\' another. One way to do this is to define a </code>weighting function'' <em>W</em>(<em>i</em>,<em>j</em>)
+and stipulate that (<em>i</em><del>1</del>,<em>j</em><del>1</del>) is less than (<em>i</em><del>2</del>,<em>j</em><del>2</del>) if
+<em>W</em>(<em>i</em><del>1</del>,<em>j</em><del>1</del>) &lt; <em>W</em>(<em>i</em><del>2</del>,<em>j</em><del>2</del>). Write a procedure
+<code>merge-weighted</code> that is like <code>merge</code>, except that <code>merge-weighted</code>
+takes an additional argument <code>weight</code>, which is a procedure that
+computes the weight of a pair, and is used to determine the order in
+which elements should appear in the resulting merged
+stream.<a href="book-Z-H-24.html#footnote_Temp_485">^[69]{.small}^</a>
+Using this, generalize <code>pairs</code> to a procedure <code>weighted-pairs</code> that
+takes two streams, together with a procedure that computes a weighting
+function, and generates the stream of pairs, ordered according to
+weight. Use your procedure to generate</p>
+<p>a. the stream of all pairs of positive integers (<em>i</em>,<em>j</em>) with <em>i</em>
+[&lt;]{.underline} <em>j</em> ordered according to the sum <em>i</em> + <em>j</em></p>
+<p>b. the stream of all pairs of positive integers (<em>i</em>,<em>j</em>) with <em>i</em>
+[&lt;]{.underline} <em>j</em>, where neither <em>i</em> nor <em>j</em> is divisible by 2, 3, or
+5, and the pairs are ordered according to the sum 2 <em>i</em> + 3 <em>j</em> + 5 <em>i</em>
+<em>j</em>.</p>
+<p><strong>Exercise 3.71.</strong>
+Numbers that can be
+expressed as the sum of two cubes in more than one way are sometimes
+called <em>Ramanujan numbers</em>, in honor of the mathematician Srinivasa
+Ramanujan.<a href="book-Z-H-24.html#footnote_Temp_487">^[70]{.small}^</a>
+Ordered streams of pairs provide an elegant solution to the problem of
+computing these numbers. To find a number that can be written as the sum
+of two cubes in two different ways, we need only generate the stream of
+pairs of integers (<em>i</em>,<em>j</em>) weighted according to the sum <em>i</em>^3^ +
+<em>j</em>^3^ (see exercise
+<a href="book-Z-H-24.html#%_thm_3.70">3.70</a>), then search
+the stream for two consecutive pairs with the same weight. Write a
+procedure to generate the Ramanujan numbers. The first such number is
+1,729. What are the next five?</p>
+<p><strong>Exercise 3.72.</strong>
+In a similar way to
+exercise
+<a href="book-Z-H-24.html#%_thm_3.71">3.71</a> generate a stream of all
+numbers that can be written as the sum of two squares in three different
+ways (showing how they can be so written).</p>
+<h4 id="streams-as-signals"><a class="header" href="#streams-as-signals"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_489">Streams as signals</a></a></h4>
+<p>We began our discussion of streams by
+describing them as computational analogs of the ``signals'' in
+signal-processing systems. In fact, we can use streams to model
+signal-processing systems in a very direct way, representing the values
+of a signal at successive time intervals as consecutive elements of a
+stream. For instance, we can implement an <em>integrator</em> or
+<em>summer</em> that, for an input stream <em>x</em> = (<em>x</em><del><em>i</em></del>), an initial value
+<em>C</em>, and a small increment <em>dt</em>, accumulates the sum</p>
+<p><img src="ch3-Z-G-48.gif" alt="" /></p>
+<p>and returns the stream of values <em>S</em> = (<em>S</em><del><em>i</em></del>). The following
+<code>integral</code> procedure is reminiscent of the ``implicit style''
+definition of the stream of integers
+(section
+<a href="book-Z-H-24.html#%_sec_3.5.2">3.5.2</a>):</p>
+<pre><code class="language-scheme editable">(define (integral integrand initial-value dt)
+  (define int
+    (cons-stream initial-value
+                 (add-streams (scale-stream integrand dt)
+                              int)))
+  int)
+</code></pre>
+<p><img src="ch3-Z-G-49.gif" alt="" /></p>
+<p><strong>Figure 3.32:</strong>
+The <code>integral</code> procedure viewed as a signal-processing
+system.</p>
+<p>Figure
+<a href="book-Z-H-24.html#%_fig_3.32">3.32</a> is a picture of a
+signal-processing system that corresponds to the <code>integral</code> procedure.
+The input stream is scaled by <em>dt</em> and passed through an adder, whose
+output is passed back through the same adder. The self-reference in the
+definition of <code>int</code> is reflected in the figure by the feedback loop that
+connects the output of the adder to one of the inputs.</p>
+<p><strong>Exercise 3.73.</strong></p>
+<p><img src="ch3-Z-G-50.gif" alt="" />
+<em>v</em> = <em>v</em><del>0</del> +
+(1/<em>C</em>)<img src="book-Z-G-D-19.gif" alt="" />0^<em>t</em>^<em>i</em> <em>dt</em> + <em>R</em> <em>i</em></p>
+<p><img src="ch3-Z-G-51.gif" alt="" /></p>
+<p><strong>Figure 3.33:</strong>
+An RC circuit and the associated signal-flow diagram.</p>
+<p>We can model electrical
+circuits using streams to represent the values of currents or voltages
+at a sequence of times. For instance, suppose we have an <em>RC circuit</em>
+consisting of a resistor of resistance <em>R</em> and a capacitor of
+capacitance <em>C</em> in series. The voltage response <em>v</em> of the circuit to an
+injected current <em>i</em> is determined by the formula in
+figure
+<a href="book-Z-H-24.html#%_fig_3.33">3.33</a>, whose structure is shown by
+the accompanying signal-flow diagram.</p>
+<p>Write a procedure <code>RC</code> that models this circuit. <code>RC</code> should take as
+inputs the values of <em>R</em>, <em>C</em>, and <em>dt</em> and should return a procedure
+that takes as inputs a stream representing the current <em>i</em> and an
+initial value for the capacitor voltage <em>v</em><del>0</del> and produces as output
+the stream of voltages <em>v</em>. For example, you should be able to use <code>RC</code>
+to model an RC circuit with <em>R</em> = 5 ohms, <em>C</em> = 1 farad, and a
+0.5-second time step by evaluating <code>(define RC1 (RC 5 1 0.5))</code>. This
+defines <code>RC1</code> as a procedure that takes a stream representing the time
+sequence of currents and an initial capacitor voltage and produces the
+output stream of voltages.</p>
+<p><strong>Exercise 3.74.</strong>
+Alyssa
+P. Hacker is designing a system to process signals coming from physical
+sensors. One important feature she wishes to produce is a signal that
+describes the <em>zero crossings</em> of the input signal. That is, the
+resulting signal should be + 1 whenever the input signal changes from
+negative to positive, - 1 whenever the input signal changes from
+positive to negative, and 0 otherwise. (Assume that the sign of a 0
+input is positive.) For example, a typical input signal with its
+associated zero-crossing signal would be</p>
+<p><code>...</code>1
+2
+1.5
+1
+0.5
+-0.1
+-2
+-3
+-2
+-0.5
+0.2
+3
+4
+<code>...</code>...<code>0 0 0 0 0 -1 0 0 0 0 1 0 0</code>...`</p>
+<p>In Alyssa's system, the signal from the sensor is represented as a
+stream <code>sense-data</code> and the stream <code>zero-crossings</code> is the corresponding
+stream of zero crossings. Alyssa first writes a procedure
+<code>sign-change-detector</code> that takes two values as arguments and compares
+the signs of the values to produce an appropriate 0, 1, or - 1. She then
+constructs her zero-crossing stream as follows:</p>
+<pre><code class="language-scheme editable">(define (make-zero-crossings input-stream last-value)
+  (cons-stream
+   (sign-change-detector (stream-car input-stream) last-value)
+   (make-zero-crossings (stream-cdr input-stream)
+                        (stream-car input-stream))))
+
+(define zero-crossings (make-zero-crossings sense-data 0))
+</code></pre>
+<p>Alyssa's boss, Eva Lu Ator, walks by and suggests that this program is
+approximately equivalent to the following one, which uses the
+generalized version of <code>stream-map</code> from
+exercise
+<a href="book-Z-H-24.html#%_thm_3.50">3.50</a>:</p>
+<pre><code class="language-scheme editable">(define zero-crossings
+  (stream-map sign-change-detector sense-data &lt;*expression*&gt;))
+</code></pre>
+<p>Complete the program by supplying the indicated &lt;<em>expression</em>&gt;.</p>
+<p><strong>Exercise
+3.75.</strong>
+Unfortunately,
+Alyssa's zero-crossing detector in
+exercise
+<a href="book-Z-H-24.html#%_thm_3.74">3.74</a> proves to be insufficient,
+because the noisy signal from the sensor leads to spurious zero
+crossings. Lem E. Tweakit, a hardware specialist, suggests that Alyssa
+smooth the signal to filter out the noise before extracting the zero
+crossings. Alyssa takes his advice and decides to extract the zero
+crossings from the signal constructed by averaging each value of the
+sense data with the previous value. She explains the problem to her
+assistant, Louis Reasoner, who attempts to implement the idea, altering
+Alyssa's program as follows:</p>
+<pre><code class="language-scheme editable">(define (make-zero-crossings input-stream last-value)
+  (let ((avpt (/ (+ (stream-car input-stream) last-value) 2)))
+    (cons-stream (sign-change-detector avpt last-value)
+                 (make-zero-crossings (stream-cdr input-stream)
+                                      avpt))))
+</code></pre>
+<p>This does not correctly implement Alyssa's plan. Find the bug that
+Louis has installed and fix it without changing the structure of the
+program. (Hint: You will need to increase the number of arguments to
+<code>make-zero-crossings</code>.)</p>
+<p><strong>Exercise
+3.76.</strong>
+Eva
+Lu Ator has a criticism of Louis's approach in
+exercise
+<a href="book-Z-H-24.html#%_thm_3.75">3.75</a>. The program he wrote is
+not modular, because it intermixes the operation of smoothing with the
+zero-crossing extraction. For example, the extractor should not have to
+be changed if Alyssa finds a better way to condition her input signal.
+Help Louis by writing a procedure <code>smooth</code> that takes a stream as input
+and produces a stream in which each element is the average of two
+successive input stream elements. Then use <code>smooth</code> as a component to
+implement the zero-crossing detector in a more modular style.</p>
+<h3 id="354"><a class="header" href="#354">[3.5.4</a></h3>
+<p>Streams and Delayed Evaluation](book-Z-H-4.html#%<em>toc</em>%_sec_3.5.4)</p>
+<p>The <code>integral</code> procedure at the end of
+the preceding section shows how we can use streams to model
+signal-processing systems that contain feedback loops.
+The feedback loop for the adder shown in
+figure
+<a href="book-Z-H-24.html#%_fig_3.32">3.32</a> is modeled by the fact that
+<code>integral</code>'s internal stream <code>int</code> is defined in terms
+of itself:</p>
+<pre><code class="language-scheme editable">(define int
+  (cons-stream initial-value
+               (add-streams (scale-stream integrand dt)
+                            int)))
+</code></pre>
+<p>The interpreter's ability to deal with such an implicit definition
+depends on the <code>delay</code> that is incorporated into <code>cons-stream</code>. Without
+this <code>delay</code>, the interpreter could not construct <code>int</code> before
+evaluating both arguments to <code>cons-stream</code>, which would require that
+<code>int</code> already be defined. In general, <code>delay</code> is crucial for using
+streams to model signal-processing systems that contain loops. Without
+<code>delay</code>, our models would have to be formulated so that the inputs to
+any signal-processing component would be fully evaluated before the
+output could be produced. This would outlaw loops.</p>
+<p>Unfortunately, stream models of systems with loops may require uses of
+<code>delay</code> beyond the ``hidden'' <code>delay</code> supplied by <code>cons-stream</code>.
+For instance, figure
+<a href="book-Z-H-24.html#%_fig_3.34">3.34</a> shows a
+signal-processing system for solving the differential
+equation <em>dy</em>/<em>dt</em> = <em>f</em>(<em>y</em>) where <em>f</em> is a given function. The figure
+shows a mapping component, which applies <em>f</em> to its input signal, linked
+in a feedback loop to an integrator in a manner very similar to that of
+the analog computer circuits that are actually used to solve such
+equations.</p>
+<p><img src="ch3-Z-G-52.gif" alt="" /></p>
+<p><strong>Figure 3.34:</strong>
+An ``analog computer circuit'' that solves the
+equation <em>dy</em>/<em>dt</em> = <em>f</em>(<em>y</em>).</p>
+<p>Assuming we are given an initial value <em>y</em><del>0</del> for <em>y</em>, we could try to
+model this system using the procedure</p>
+<pre><code class="language-scheme editable">(define (solve f y0 dt)
+  (define y (integral dy y0 dt))
+  (define dy (stream-map f y))
+  y)
+</code></pre>
+<p>This procedure does not work, because in the first line of <code>solve</code> the
+call to <code>integral</code> requires that the input <code>dy</code> be defined, which does
+not happen until the second line of <code>solve</code>.</p>
+<p>On the other hand, the intent of our definition does make sense, because
+we can, in principle, begin to generate the <code>y</code> stream without knowing
+<code>dy</code>. Indeed, <code>integral</code> and many other stream operations have
+properties similar to those of <code>cons-stream</code>, in that we can generate
+part of the answer given only partial information about the arguments.
+For <code>integral</code>, the first element of the output stream is the specified
+<code>initial-value</code>. Thus, we can generate the first element of the output
+stream without evaluating the integrand <code>dy</code>. Once we know the first
+element of <code>y</code>, the <code>stream-map</code> in the second line of <code>solve</code> can begin
+working to generate the first element of <code>dy</code>, which will produce the
+next element of <code>y</code>, and so on.</p>
+<p>To take advantage of this idea, we will redefine <code>integral</code> to expect
+the integrand stream to be a
+<em>delayed argument</em>.
+<code>Integral</code> will <code>force</code> the integrand to be evaluated only when it is
+required to generate more than the first element of the output stream:</p>
+<pre><code class="language-scheme editable">(define (integral delayed-integrand initial-value dt)
+  (define int
+    (cons-stream initial-value
+                 (let ((integrand (force delayed-integrand)))
+                   (add-streams (scale-stream integrand dt)
+                                int))))
+  int)
+</code></pre>
+<p>Now we can implement our <code>solve</code> procedure by delaying the evaluation of
+<code>dy</code> in the definition of
+<code>y</code>:<a href="book-Z-H-24.html#footnote_Temp_494">^[71]{.small}^</a></p>
+<pre><code class="language-scheme editable">(define (solve f y0 dt)
+  (define y (integral (delay dy) y0 dt))
+  (define dy (stream-map f y))
+  y)
+</code></pre>
+<p>In general, every caller of <code>integral</code> must now <code>delay</code> the integrand
+argument. We can demonstrate that the <code>solve</code> procedure works by
+approximating <em>e</em>
+<img src="book-Z-G-D-20.gif" alt="" />
+2.718 by computing the value at <em>y</em> = 1 of the solution to the
+differential equation <em>dy</em>/<em>dt</em> = <em>y</em> with initial condition <em>y</em>(0) = 1:</p>
+<pre><code class="language-scheme editable">(stream-ref (solve (lambda (y) y) 1 0.001) 1000)
+</code></pre>
+<p><em><code>2.716924</code></em></p>
+<p><strong>Exercise 3.77.</strong>
+The <code>integral</code> procedure used above
+was analogous to the ``implicit'' definition of the infinite stream
+of integers in section
+<a href="book-Z-H-24.html#%_sec_3.5.2">3.5.2</a>.
+Alternatively, we can give a definition of <code>integral</code> that is more like
+<code>integers-starting-from</code> (also in
+section
+<a href="book-Z-H-24.html#%_sec_3.5.2">3.5.2</a>):</p>
+<pre><code class="language-scheme editable">(define (integral integrand initial-value dt)
+  (cons-stream initial-value
+               (if (stream-null? integrand)
+                   the-empty-stream
+                   (integral (stream-cdr integrand)
+                             (+ (* dt (stream-car integrand))
+                                initial-value)
+                             dt))))
+</code></pre>
+<p>When used in systems with loops, this procedure has the same problem as
+does our original version of <code>integral</code>. Modify the procedure so that it
+expects the <code>integrand</code> as a delayed argument and hence can be used in
+the <code>solve</code> procedure shown above.</p>
+<p><strong>Exercise 3.78.</strong></p>
+<p><img src="ch3-Z-G-53.gif" alt="" /></p>
+<p><strong>Figure 3.35:</strong>
+Signal-flow diagram for the solution to a second-order
+linear differential equation.</p>
+<p>Consider the problem of designing a signal-processing
+system to study the homogeneous second-order linear differential
+equation</p>
+<p><img src="ch3-Z-G-54.gif" alt="" /></p>
+<p>The output stream, modeling <em>y</em>, is generated by a network that contains
+a loop. This is because the value of <em>d</em>^2^<em>y</em>/<em>dt</em>^2^ depends upon the
+values of <em>y</em> and <em>dy</em>/<em>dt</em> and both of these are determined by
+integrating <em>d</em>^2^<em>y</em>/<em>dt</em>^2^. The diagram we would like to encode is
+shown in figure
+<a href="book-Z-H-24.html#%_fig_3.35">3.35</a>. Write a procedure
+<code>solve-2nd</code> that takes as arguments the constants <em>a</em>, <em>b</em>, and <em>dt</em> and
+the initial values <em>y</em><del>0</del> and <em>dy</em><del>0</del> for <em>y</em> and <em>dy</em>/<em>dt</em> and
+generates the stream of successive values of <em>y</em>.</p>
+<p><strong>Exercise 3.79.</strong>
+Generalize the
+<code>solve-2nd</code> procedure of exercise
+<a href="book-Z-H-24.html#%_thm_3.78">3.78</a> so
+that it can be used to solve general second-order differential equations
+<em>d</em>^2^ <em>y</em>/<em>dt</em>^2^ = <em>f</em>(<em>dy</em>/<em>dt</em>, <em>y</em>).</p>
+<p><strong>Exercise
+3.80.</strong>
+A <em>series RLC
+circuit</em> consists of a resistor, a capacitor, and an inductor connected
+in series, as shown in figure
+<a href="book-Z-H-24.html#%_fig_3.36">3.36</a>. If
+<em>R</em>, <em>L</em>, and <em>C</em> are the resistance, inductance, and capacitance, then
+the relations between voltage (<em>v</em>) and current (<em>i</em>) for the three
+components are described by the equations</p>
+<p><img src="ch3-Z-G-55.gif" alt="" /></p>
+<p>and the circuit connections dictate the relations</p>
+<p><img src="ch3-Z-G-56.gif" alt="" /></p>
+<p>Combining these equations shows that the state of the circuit
+(summarized by <em>v</em><del><em>C</em></del>, the voltage across the capacitor, and <em>i</em><del><em>L</em></del>,
+the current in the inductor) is described by the pair of differential
+equations</p>
+<p><img src="ch3-Z-G-57.gif" alt="" /></p>
+<p>The signal-flow diagram representing this system of differential
+equations is shown in figure
+<a href="book-Z-H-24.html#%_fig_3.37">3.37</a>.</p>
+<p><img src="ch3-Z-G-58.gif" alt="" /></p>
+<p><strong>Figure 3.36:</strong>
+A series RLC circuit.</p>
+<p><img src="ch3-Z-G-59.gif" alt="" /></p>
+<p><strong>Figure 3.37:</strong>
+A signal-flow diagram for the solution to a series RLC
+circuit.</p>
+<p>Write a procedure <code>RLC</code> that takes as arguments the parameters <em>R</em>, <em>L</em>,
+and <em>C</em> of the circuit and the time increment <em>dt</em>. In a manner similar
+to that of the <code>RC</code> procedure of
+exercise
+<a href="book-Z-H-24.html#%_thm_3.73">3.73</a>, <code>RLC</code> should produce a
+procedure that takes the initial values of the state variables,
+<em>v</em>~<em>C</em>~0~~ and <em>i</em>~<em>L</em>~0~~, and produces a pair (using <code>cons</code>) of the
+streams of states <em>v</em><del><em>C</em></del> and <em>i</em><del><em>L</em></del>. Using <code>RLC</code>, generate the pair
+of streams that models the behavior of a series RLC circuit with <em>R</em> = 1
+ohm, <em>C</em> = 0.2 farad, <em>L</em> = 1 henry, <em>dt</em> = 0.1 second, and initial
+values <em>i</em>~<em>L</em>~0~~ = 0 amps and <em>v</em>~<em>C</em>~0~~ = 10 volts.</p>
+<h4 id="normal-order-evaluation"><a class="header" href="#normal-order-evaluation"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_499">Normal-order evaluation</a></a></h4>
+<p>The examples in this section illustrate
+how the explicit use of <code>delay</code> and <code>force</code> provides great programming
+flexibility, but the same examples also show how this can make our
+programs more complex. Our new <code>integral</code> procedure, for instance, gives
+us the power to model systems with loops, but we must now remember that
+<code>integral</code> should be called with a delayed integrand, and every
+procedure that uses <code>integral</code> must be aware of this. In effect, we have
+created two classes of procedures: ordinary procedures and procedures
+that take delayed arguments. In general, creating separate classes of
+procedures forces us to create separate classes of higher-order
+procedures as
+well.<a href="book-Z-H-24.html#footnote_Temp_500">^[72]{.small}^</a></p>
+<p>One way to avoid the need for two different classes of procedures is to
+make all procedures take delayed arguments. We could adopt a model of
+evaluation in which all arguments to procedures are automatically
+delayed and arguments are forced only when they are actually needed (for
+example, when they are required by a primitive operation). This would
+transform our language to use normal-order evaluation, which we first
+described when we introduced the substitution model for evaluation in
+section
+<a href="book-Z-H-10.html#%_sec_1.1.5">1.1.5</a>. Converting to
+normal-order evaluation provides a uniform and elegant way to simplify
+the use of delayed evaluation, and this would be a natural strategy to
+adopt if we were concerned only with stream processing. In
+section
+<a href="book-Z-H-27.html#%_sec_4.2">4.2</a>, after we have studied the
+evaluator, we will see how to transform our language in just this way.
+Unfortunately, including delays in procedure calls wreaks havoc with our
+ability to design programs that depend on the order of events, such as
+programs that use assignment, mutate data, or perform input or output.
+Even the single <code>delay</code> in <code>cons-stream</code> can cause great confusion, as
+illustrated by exercises
+<a href="book-Z-H-24.html#%_thm_3.51">3.51</a>
+and
+<a href="book-Z-H-24.html#%_thm_3.52">3.52</a>. As far as anyone knows,
+mutability and delayed evaluation do not mix well in programming
+languages, and devising ways to deal with both of these at once is an
+active area of research.</p>
+<h3 id="355"><a class="header" href="#355">[3.5.5</a></h3>
+<p>Modularity of Functional Programs and Modularity of Objects](book-Z-H-4.html#%<em>toc</em>%_sec_3.5.5)</p>
+<p>As we saw in
+section
+<a href="book-Z-H-20.html#%_sec_3.1.2">3.1.2</a>, one of the major benefits
+of introducing assignment is that we can increase the modularity of our
+systems by encapsulating, or ``hiding,'' parts of the state of a
+large system within local variables. Stream models can provide an
+equivalent modularity without the use of assignment. As an
+illustration, we can reimplement the Monte
+Carlo estimation of <img src="book-Z-G-D-9.gif" alt="" />, which we examined
+in section
+<a href="book-Z-H-20.html#%_sec_3.1.2">3.1.2</a>, from a
+stream-processing point of view.</p>
+<p>The key modularity issue was that we wished to hide the internal state
+of a random-number generator from programs that used random numbers. We
+began with a procedure <code>rand-update</code>, whose successive values furnished
+our supply of random numbers, and used this to produce a random-number
+generator:</p>
+<pre><code class="language-scheme editable">(define rand
+  (let ((x random-init))
+    (lambda ()
+      (set! x (rand-update x))
+      x)))
+</code></pre>
+<p>In the stream formulation there is no random-number generator <em>per se</em>,
+just a stream of random numbers produced by successive calls to
+<code>rand-update</code>:</p>
+<p><code>(define random-numbers</code>
+<code>(cons-stream random-init</code>
+`(stream-map rand-update random-numbers)))</p>
+<pre><code>
+We use this to construct the stream of outcomes of the Cesàro experiment
+performed on consecutive pairs in the `random-numbers` stream:
+
+`(define cesaro-stream`
+  `(map-successive-pairs (lambda (r1 r2) (= (gcd r1 r2) 1))`
+                        `random-numbers)))
+
+`(define (map-successive-pairs f s)`
+  `(cons-stream`
+   `(f (stream-car s) (stream-car (stream-cdr s)))`
+   `(map-successive-pairs f (stream-cdr (stream-cdr s))))))
+</code></pre>
+<p>The <code>cesaro-stream</code> is now fed to a <code>monte-carlo</code> procedure, which
+produces a stream of estimates of probabilities. The results are then
+converted into a stream of estimates of
+<img src="book-Z-G-D-9.gif" alt="" />. This version of the program doesn't
+need a parameter telling how many trials to perform. Better estimates of
+<img src="book-Z-G-D-9.gif" alt="" /> (from performing more experiments) are
+obtained by looking farther into the <code>pi</code> stream:</p>
+<p><code>(define (monte-carlo experiment-stream passed failed)</code>
+<code>(define (next passed failed)</code>
+<code>(cons-stream</code>
+<code>(/ passed (+ passed failed)))</code>
+<code>(monte-carlo</code>
+<code>(stream-cdr experiment-stream) passed failed))))</code>
+<code>(if (stream-car experiment-stream)</code>
+<code>(next (+ passed 1) failed)</code>
+`(next passed (+ failed 1))))))</p>
+<p><code>(define pi</code>
+<code>(stream-map (lambda (p) (sqrt (/ 6 p)))</code>
+<code>(monte-carlo cesaro-stream 0 0))))</code></p>
+<pre><code>
+There is considerable modularity in this approach,
+because we still can formulate a general `monte-carlo` procedure that
+can deal with arbitrary experiments. Yet there is no assignment or local
+state.
+
+ **Exercise
+3.81.**
+Exercise
+[3.6](book-Z-H-20.html#%_thm_3.6)
+discussed generalizing the random-number generator to allow one to reset
+the random-number sequence so as to produce repeatable sequences of
+``random\'\' numbers. Produce a stream formulation of this same
+generator that operates on an input stream of requests to `generate` a
+new random number or to `reset` the sequence to a specified value and
+that produces the desired stream of random numbers. Don\'t use
+assignment in your solution.
+
+ **Exercise
+3.82.**
+Redo
+exercise
+[3.5](book-Z-H-20.html#%_thm_3.5) on Monte Carlo integration in
+terms of streams. The stream version of `estimate-integral` will not
+have an argument telling how many trials to perform. Instead, it will
+produce a stream of estimates based on successively more trials.
+
+
+
+#### [A functional-programming view of time](book-Z-H-4.html#%_toc_%_sec_Temp_503)
+
+ Let us now return to the issues of
+objects and state that were raised at the beginning of this chapter and
+examine them in a new light. We introduced assignment and mutable
+objects to provide a mechanism for modular construction of programs that
+model systems with state. We constructed computational objects with
+local state variables and used assignment to modify these variables. We
+modeled the temporal behavior of the objects in the world by the
+temporal behavior of the corresponding computational objects.
+
+Now we have seen that streams provide an alternative way to model
+objects with local state. We can model a changing quantity, such as the
+local state of some object, using a stream that represents the time
+history of successive states. In essence, we represent time explicitly,
+using streams, so that we decouple time in our simulated world from the
+sequence of events that take place during evaluation. Indeed, because of
+the presence of `delay` there may be little relation between simulated
+time in the model and the order of events during the evaluation.
+
+In order to contrast these two approaches to modeling, let us reconsider
+the implementation of a ``withdrawal processor\'\' that
+monitors the balance in a bank account. In
+section
+[3.1.3](book-Z-H-20.html#%_sec_3.1.3) we implemented a
+simplified version of such a processor:
+
+```scheme,editable
+(define (make-simplified-withdraw balance)
+  (lambda (amount)
+    (set! balance (- balance amount))
+    balance))
+</code></pre>
+<p>Calls to <code>make-simplified-withdraw</code> produce computational objects, each
+with a local state variable <code>balance</code> that is decremented by successive
+calls to the object. The object takes an <code>amount</code> as an argument and
+returns the new balance. We can imagine the user of a bank account
+typing a sequence of inputs to such an object and observing the sequence
+of returned values shown on a display screen.</p>
+<p>Alternatively, we can model a withdrawal processor as a procedure that
+takes as input a balance and a stream of amounts to withdraw and
+produces the stream of successive balances in the account:</p>
+<pre><code class="language-scheme editable">(define (stream-withdraw balance amount-stream)
+  (cons-stream
+   balance
+   (stream-withdraw (- balance (stream-car amount-stream))
+                    (stream-cdr amount-stream))))
+</code></pre>
+<p><code>Stream-withdraw</code> implements a well-defined mathematical function whose
+output is fully determined by its input. Suppose, however, that the
+input <code>amount-stream</code> is the stream of successive values typed by the
+user and that the resulting stream of balances is displayed. Then, from
+the perspective of the user who is typing values and watching results,
+the stream process has the same behavior as the object created by
+<code>make-simplified-withdraw</code>. However, with the stream version, there is
+no assignment, no local state variable, and consequently none of the
+theoretical difficulties that we encountered in
+section
+<a href="book-Z-H-20.html#%_sec_3.1.3">3.1.3</a>. Yet the system has state!</p>
+<p>This is really remarkable. Even though <code>stream-withdraw</code> implements a
+well-defined mathematical function whose behavior does not change, the
+user's perception here is one of interacting with a system that has a
+changing state. One way to resolve this paradox is to realize that it is
+the user's temporal existence that imposes state on the system. If the
+user could step back from the interaction and think in terms of streams
+of balances rather than individual transactions, the system would appear
+stateless.<a href="book-Z-H-24.html#footnote_Temp_504">^[73]{.small}^</a></p>
+<p>From the point of view of one part of a complex process, the other parts
+appear to change with time. They have hidden time-varying local state.
+If we wish to write programs that model this kind of natural
+decomposition in our world (as we see it from our viewpoint as a part of
+that world) with structures in our computer, we make computational
+objects that are not functional -- they must change with time. We model
+state with local state variables, and we model the changes of state with
+assignments to those variables. By doing this we make the time of
+execution of a computation model time in the world that we are part of,
+and thus we get ``objects'' in our computer.</p>
+<p>Modeling with objects is powerful and intuitive, largely because this
+matches the perception of interacting with a world of which we are part.
+However, as we've seen repeatedly throughout this chapter, these models
+raise thorny problems of constraining the order of events and of
+synchronizing multiple processes. The possibility of avoiding these
+problems has stimulated the development of
+<em>functional programming languages</em>, which
+do not include any provision for assignment or mutable data. In such a
+language, all procedures implement well-defined mathematical functions
+of their arguments, whose behavior does not change. The functional
+approach is extremely attractive for
+dealing with concurrent
+systems.<a href="book-Z-H-24.html#footnote_Temp_505">^[74]{.small}^</a></p>
+<p>On the other hand, if we look closely, we can see time-related problems
+creeping into functional models as well. One particularly troublesome
+area arises when we wish to design interactive systems, especially ones
+that model interactions between independent entities. For instance,
+consider once more the implementation a banking system that permits
+joint bank accounts. In a conventional system using assignment and
+objects, we would model the fact that Peter and Paul share an account by
+having both Peter and Paul send their transaction requests to the same
+bank-account object, as we saw in
+section
+<a href="book-Z-H-20.html#%_sec_3.1.3">3.1.3</a>. From the stream point of
+view, where there are no ``objects'' <em>per se</em>, we have already
+indicated that a bank account can be modeled as a process that operates
+on a stream of transaction requests to produce a stream of responses.
+Accordingly, we could model the fact that Peter and Paul have a joint
+bank account by merging Peter's stream of transaction requests with
+Paul's stream of requests and feeding the result to the bank-account
+stream process, as shown in figure
+<a href="book-Z-H-24.html#%_fig_3.38">3.38</a>.</p>
+<p><img src="ch3-Z-G-60.gif" alt="" /></p>
+<p><strong>Figure 3.38:</strong>
+A joint bank account, modeled by merging two streams
+of transaction requests.</p>
+<p>The trouble with this formulation is in the notion of
+<em>merge</em>. It will not do to merge the two streams by simply taking
+alternately one request from Peter and one request from Paul. Suppose
+Paul accesses the account only very rarely. We could hardly force Peter
+to wait for Paul to access the account before he could issue a second
+transaction. However such a merge is implemented, it must interleave the
+two transaction streams in some way that is constrained by <code>real time\'\' as perceived by Peter and Paul, in the sense that, if Peter and Paul meet, they can agree that certain transactions were processed before the meeting, and other transactions were processed after the meeting.[^[75]{.small}^](book-Z-H-24.html#footnote_Temp_506) This is precisely the same constraint that we had to deal with in section [3.4.1](book-Z-H-23.html#%_sec_3.4.1), where we found the need to introduce explicit synchronization to ensure a </code>correct'' order
+of events in concurrent processing of objects with state. Thus, in an
+attempt to support the functional style, the need to merge inputs from
+different agents reintroduces the same problems that the functional
+style was meant to eliminate.</p>
+<p>We began this chapter with the goal of building computational models
+whose structure matches our perception of the real world we are trying
+to model. We can model the world as a collection of separate,
+time-bound, interacting objects with state, or we can model the world as
+a single, timeless, stateless unity. Each view has powerful advantages,
+but neither view alone is completely satisfactory. A grand unification
+has yet to
+emerge.<a href="book-Z-H-24.html#footnote_Temp_507">^[76]{.small}^</a></p>
+<hr />
+<p>^[52]{.small}^](book-Z-H-24.html#call_footnote_Temp_442)
+Physicists sometimes adopt this view by introducing the
+``world lines'' of particles as a device for
+reasoning about motion. We've also already mentioned
+(section
+<a href="book-Z-H-15.html#%_sec_2.2.3">2.2.3</a>) that this is the natural
+way to think about signal-processing systems. We will explore
+applications of streams to signal processing in
+section
+<a href="book-Z-H-24.html#%_sec_3.5.3">3.5.3</a>.</p>
+<p>^[53]{.small}^](book-Z-H-24.html#call_footnote_Temp_443)
+Assume that we have a predicate <code>prime?</code> (e.g., as in
+section
+<a href="book-Z-H-11.html#%_sec_1.2.6">1.2.6</a>) that tests for primality.</p>
+<p>^[54]{.small}^](book-Z-H-24.html#call_footnote_Temp_444)
+In the MIT implementation,
+<code>the-empty-stream</code> is the
+same as the empty list ``'()'', and <code>stream-null?</code> is the same as <code>null?</code>.</p>
+<p>^[55]{.small}^](book-Z-H-24.html#call_footnote_Temp_445)
+This should bother you. The fact that we are defining such similar
+procedures for streams and lists indicates that we are missing some
+underlying abstraction. Unfortunately, in order to exploit this
+abstraction, we will need to exert finer control over the process of
+evaluation than we can at present. We will discuss this point further at
+the end of section
+<a href="book-Z-H-24.html#%_sec_3.5.4">3.5.4</a>. In
+section
+<a href="book-Z-H-27.html#%_sec_4.2">4.2</a>, we'll develop a framework
+that unifies lists and streams.</p>
+<p>^[56]{.small}^](book-Z-H-24.html#call_footnote_Temp_446)
+Although <code>stream-car</code> and <code>stream-cdr</code> can
+be defined as procedures, <code>cons-stream</code> must be a special form. If
+<code>cons-stream</code> were a procedure, then, according to our model of
+evaluation, evaluating <code>(cons-stream &lt;</code><em><code>a</code></em><code>&gt; &lt;</code><em><code>b</code></em><code>&gt;)</code> would
+automatically cause &lt;<em>b</em>&gt; to be evaluated, which is precisely what we
+do not want to happen. For the same reason, <code>delay</code> must be a special
+form, though <code>force</code> can be an ordinary procedure.</p>
+<p>^[57]{.small}^](book-Z-H-24.html#call_footnote_Temp_448)
+The numbers shown here do not really appear in the delayed expression.
+What actually appears is the original expression, in an environment in
+which the variables are bound to the appropriate numbers. For example,
+<code>(+ low 1)</code> with <code>low</code> bound to 10,000 actually appears where <code>10001</code> is
+shown.</p>
+<p>^[58]{.small}^](book-Z-H-24.html#call_footnote_Temp_450)
+There are many possible implementations of streams other than the one
+described in this section. Delayed evaluation, which is the key to
+making streams practical, was inherent in
+Algol 60's <em>call-by-name</em>
+parameter-passing method. The use of this mechanism to implement streams
+was first described by Landin (1965). Delayed evaluation
+for streams was introduced into Lisp by
+Friedman and Wise (1976). In their
+implementation, <code>cons</code> always delays evaluating its arguments, so that
+lists automatically behave as streams. The memoizing optimization is
+also known as
+<em>call-by-need</em>.
+The Algol community would refer to our original delayed objects as
+<em>call-by-name thunks</em> and to the optimized versions as <em>call-by-need
+thunks</em>.</p>
+<p>^[59]{.small}^](book-Z-H-24.html#call_footnote_Temp_453)
+Exercises such as
+<a href="book-Z-H-24.html#%_thm_3.51">3.51</a>
+and
+<a href="book-Z-H-24.html#%_thm_3.52">3.52</a> are valuable for testing our
+understanding of how <code>delay</code> works. On the other hand, intermixing
+delayed evaluation with printing -- and, even worse, with assignment
+-- is extremely confusing, and instructors of courses on computer
+languages have traditionally tormented their students with examination
+questions such as the ones in this section. Needless to say, writing
+programs that depend on such subtleties is odious
+programming style. Part of the power of stream processing is that it
+lets us ignore the order in which events actually happen in our
+programs. Unfortunately, this is precisely what we cannot afford to do
+in the presence of assignment, which forces us to be concerned with time
+and change.</p>
+<p>^[60]{.small}^](book-Z-H-24.html#call_footnote_Temp_455)
+Eratosthenes, a third-century B.C.
+Alexandrian Greek philosopher, is famous
+for giving the first accurate estimate of the circumference of the
+Earth, which he computed by observing shadows cast at noon on the day of
+the summer solstice. Eratosthenes's sieve method, although ancient, has
+formed the basis for special-purpose hardware ``sieves'' that, until
+recently, were the most powerful tools in existence for locating large
+primes. Since the 70s, however, these methods have been superseded by
+outgrowths of the probabilistic techniques discussed in
+section
+<a href="book-Z-H-11.html#%_sec_1.2.6">1.2.6</a>.</p>
+<p>^[61]{.small}^](book-Z-H-24.html#call_footnote_Temp_456)
+This style of diagram was first used by Peter Henderson (1982) in
+showing the connections between functional programming and
+signal-processing ideas.</p>
+<p>^[62]{.small}^](book-Z-H-24.html#call_footnote_Temp_458)
+This uses the generalized <code>stream-map</code> from
+exercise
+<a href="book-Z-H-24.html#%_thm_3.50">3.50</a>.</p>
+<p>^[63]{.small}^](book-Z-H-24.html#call_footnote_Temp_459)
+This is a subtle argument. For a proof, see Knuth 1981,
+section 4.5.4. The argument is based on the fact that if <em>p</em><del><em>n</em></del> is the
+<em>n</em>th prime, then <em>p</em><del><em>n</em></del> &gt; <em>n</em> ln <em>n</em> for <em>n</em> &gt; 1. For <em>n</em> &gt; 4, we
+have <em>p</em><del><em>n</em></del>^2^ &gt; <em>n</em>^2^ (ln <em>n</em>)^2^ &gt; 2<em>n</em> ln <em>n</em> &gt; <em>p</em><del>2<em>n</em></del>. Thus,
+to test if 2<em>n</em> is prime, we need to check for divisibility by primes up
+to <em>p</em><del>2<em>n</em></del>. But we are guaranteed that <em>p</em><del><em>n</em></del>^2^ &gt; <em>p</em><del>2<em>n</em></del>, so we
+need only check for divisibility by primes up to <em>p</em><del><em>n</em></del>. Thus, to
+generate the primes up to 2<em>n</em>, we need only have already generated the
+primes up to <em>n</em>. This is a variant of an argument made by
+M. Minsky, H. Abelson, and L. Sussman in a 1972
+AI Memo (number 259A).</p>
+<p>^[64]{.small}^](book-Z-H-24.html#call_footnote_Temp_465)
+This exercise shows how call-by-need can be exponentially more efficient
+than call-by-name for some programs. On the other hand, Friedman and
+Wise (1976) showed that for some programs, call-by-name can be
+exponentially more efficient than call-by-need.</p>
+<p>^[65]{.small}^](book-Z-H-24.html#call_footnote_Temp_472)
+We can't use <code>(sqrt-stream x)</code> in the <code>stream-map</code> expression, because
+that would result in an infinite loop. Can you explain why? (See
+exercise
+<a href="book-Z-H-24.html#%_thm_3.63">3.63</a>.)</p>
+<p>^[66]{.small}^](book-Z-H-24.html#call_footnote_Temp_477)
+We are assuming here that we have a <code>prime?</code> predicate. This would be
+written in terms of the stream of primes, as in
+section
+<a href="book-Z-H-24.html#%_sec_3.5.2">3.5.2</a>.</p>
+<p>^[67]{.small}^](book-Z-H-24.html#call_footnote_Temp_478)
+This decomposition is similar to the <code>up-diagonal</code> strategy we used in
+section
+<a href="book-Z-H-15.html#%_sec_2.2.3">2.2.3</a>.</p>
+<p>^[68]{.small}^](book-Z-H-24.html#call_footnote_Temp_479)
+<code>Interleave</code> is a variant of the <code>shuffle</code> procedure presented by
+Vuillemin (1974).</p>
+<p>^[69]{.small}^](book-Z-H-24.html#call_footnote_Temp_485)
+We can use <code>merge-weighted</code> to implement the <code>merge</code> procedure of
+exercise
+<a href="book-Z-H-24.html#%_thm_3.56">3.56</a> by using a weighting
+function that is just the value of the number in the stream.</p>
+<p>^[70]{.small}^](book-Z-H-24.html#call_footnote_Temp_487)
+Once, when the mathematician G. H. Hardy was visiting Ramanujan in the
+hospital, he remarked that the number of his taxicab, 1729, was a
+<code>dull number.\'\' Ramanujan replied, </code>No, Hardy! It is a very
+interesting number. It is the smallest number expressible as the sum of
+two cubes in two different ways.'' The trick of using weighted
+pairs to generate the Ramanujan numbers was shown to us by Charles
+Leiserson.</p>
+<p>^[71]{.small}^](book-Z-H-24.html#call_footnote_Temp_494)
+This method of solving differential equations is a variation on the
+<em>Euler-Cauchy method</em>, which approximates the solution at a sequence of
+points separated by a time step <em>dt</em>.</p>
+<p>^[72]{.small}^](book-Z-H-24.html#call_footnote_Temp_500)
+For example, we would need a <code>stream-map-delayed</code> that is like
+<code>stream-map</code> except that it takes a procedure that expects a delayed
+argument. We would also need a separate <code>stream-filter-delayed</code>, and so
+on. This is a similar problem to the one we encountered in
+section
+<a href="book-Z-H-15.html#%_sec_2.2.4">2.2.4</a> when we implemented a generic
+<code>accumulate</code> procedure that could be used for both lists and trees. We
+can solve this problem using a similar technique, by equipping our data
+objects with type tags. See
+exercise
+<a href="book-Z-H-26.html#%_thm_4.3">4.3</a>.</p>
+<p>^[73]{.small}^](book-Z-H-24.html#call_footnote_Temp_504)
+This is the same idea that we exploited in
+section
+<a href="book-Z-H-23.html#%_sec_3.4.1">3.4.1</a> to show that a concurrent
+system can be correct even if its processes are interleaved, provided
+that the net result is equivalent to some sequential ordering of the
+processes. From the point of view of an observer of the complete time
+history of the states, any such ordering is as good as any other. From
+the point of view of a user interacting with the system, however, the
+order of events can matter.</p>
+<p>^[74]{.small}^](book-Z-H-24.html#call_footnote_Temp_505)
+John Backus, the inventor of Fortran, gave high
+visibility
+to functional programming when he was awarded the ACM Turing award in
+1978. His acceptance speech (Backus 1978) strongly advocated the
+functional approach. A good overview of functional programming is given
+in Henderson 1980 and in Darlington, Henderson, and Turner 1982.</p>
+<p>^[75]{.small}^](book-Z-H-24.html#call_footnote_Temp_506)
+Observe that, for any two streams, there is in general more than one
+acceptable order of interleaving. Thus,
+technically, ``merge'' is a relation rather than a function -- the
+answer is not a deterministic function of the inputs. We already
+mentioned (footnote
+<a href="book-Z-H-23.html#footnote_Temp_411">39</a>) that
+nondeterminism is essential when dealing with concurrency. The merge
+relation illustrates the same essential nondeterminism, from the
+functional perspective. In section
+<a href="book-Z-H-28.html#%_sec_4.3">4.3</a>, we
+will look at nondeterminism from yet another point of view.</p>
+<p>^[76]{.small}^](book-Z-H-24.html#call_footnote_Temp_507)
+The object model approximates the world by dividing it into separate
+pieces. The functional model does not modularize along object
+boundaries. The object model is useful when the unshared
+state of the ``objects'' is much larger than the state that they
+share. An example of a place where the object viewpoint fails is
+quantum mechanics, where thinking of things as individual
+particles leads to paradoxes and confusions. Unifying the object view
+with the functional view may have little to do with programming, but
+rather with fundamental epistemological issues.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="3.4.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="4.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="3.4.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="4.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="./highlight.js"></script>
+        <script src="./src/languages/scheme.min.js"></script>
+        <script src="./biwascheme.min.js"></script>
+        <script src="./biwascheme_run_logic.js"></script>
+
+
+    </div>
+    </body>
+</html>

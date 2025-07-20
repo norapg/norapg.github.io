@@ -1,0 +1,2291 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Logic Programming - SICP</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="./src/styles/docco.min.css">
+        <link rel="stylesheet" href="./run_button_style.css">
+        <link rel="stylesheet" href="./custom.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">SICP</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="44--logic-programming"><a class="header" href="#44--logic-programming"><a href="book-Z-H-4.html#%_toc_%_sec_4.4">4.4  Logic Programming</a></a></h2>
+<p>In chapter 1
+we stressed that computer science deals with imperative (how to)
+knowledge, whereas mathematics deals with declarative (what is)
+knowledge. Indeed, programming languages require that the programmer
+express knowledge in a form that indicates the step-by-step methods for
+solving particular problems. On the other hand, high-level languages
+provide, as part of the language implementation, a substantial amount of
+methodological knowledge that frees the user from concern with numerous
+details of how a specified computation will progress.</p>
+<p>Most programming languages, including Lisp, are organized around
+computing the values of mathematical functions. Expression-oriented
+languages (such as Lisp, Fortran, and Algol) capitalize on the
+'pun' that an expression that describes the value of a function
+may also be interpreted as a means of computing that value. Because of
+this, most programming languages are strongly biased toward
+unidirectional computations (computations with well-defined inputs and
+outputs). There are, however, radically different programming languages
+that relax this bias. We saw one such example in
+section <a href="book-Z-H-22.html#%_sec_3.3.5">3.3.5</a>, where the objects of
+computation were arithmetic constraints. In a constraint system the
+direction and the order of computation are not so well specified; in
+carrying out a computation the system must therefore provide more
+detailed 'how to' knowledge than would be the case with an
+ordinary arithmetic computation. This does not mean, however, that the
+user is released altogether from the responsibility of providing
+imperative knowledge. There are many constraint networks that implement
+the same set of constraints, and the user must choose from the set of
+mathematically equivalent networks a suitable network to specify a
+particular computation.</p>
+<p>The nondeterministic program evaluator of
+section <a href="book-Z-H-28.html#%_sec_4.3">4.3</a> also moves away from the view
+that programming is about constructing algorithms for computing
+unidirectional functions. In a nondeterministic language, expressions
+can have more than one value, and, as a result, the computation is
+dealing with relations rather than with single-valued
+functions. Logic programming extends this idea by combining a relational
+vision of programming with a powerful kind of symbolic pattern matching
+called
+<em>unification</em>.<a href="book-Z-H-29.html#footnote_Temp_645">^[58]{.small}^</a></p>
+<p>This approach, when it works, can be a
+very powerful way to write programs. Part of the power comes from the
+fact that a single 'what is' fact can be used to solve a number of
+different problems that would have different 'how to' components.
+As an example, consider the <code>append</code> operation, which
+takes two lists as arguments and combines their elements to form a
+single list. In a procedural language such as Lisp, we could define
+<code>append</code> in terms of the basic list constructor <code>cons</code>, as we did in
+section <a href="book-Z-H-15.html#%_sec_2.2.1">2.2.1</a>:</p>
+<pre><code class="language-scheme editable">(define (append x y)
+  (if (null? x)
+      y
+      (cons (car x) (append (cdr x) y))))
+</code></pre>
+<p>This procedure can be regarded as a translation into Lisp of the
+following two rules, the first of which covers the case where the first
+list is empty and the second of which handles the case of a nonempty
+list, which is a <code>cons</code> of two parts:</p>
+<ul>
+<li>For any list <code>y</code>, the empty list and <code>y</code> <code>append</code> to form <code>y</code>.</li>
+<li>For any <code>u</code>, <code>v</code>, <code>y</code>, and <code>z</code>, <code>(cons u v)</code> and <code>y</code> <code>append</code> to form
+<code>(cons u z)</code> if <code>v</code> and <code>y</code> <code>append</code> to form
+<code>z</code>.<a href="book-Z-H-29.html#footnote_Temp_646">^[59]{.small}^</a></li>
+</ul>
+<p>Using the <code>append</code> procedure, we can answer questions such as</p>
+<blockquote>
+<p>Find the <code>append</code> of <code>(a b)</code> and <code>(c d)</code>.</p>
+</blockquote>
+<p>But the same two rules are also sufficient for answering the following
+sorts of questions, which the procedure can't answer:</p>
+<blockquote>
+<p>Find a list <code>y</code> that <code>append</code>s with <code>(a b)</code> to produce <code>(a b c d)</code>.</p>
+<p>Find all <code>x</code> and <code>y</code> that <code>append</code> to form <code>(a b c d)</code>.</p>
+</blockquote>
+<p>In a logic programming language, the
+programmer writes an <code>append</code> 'procedure' by stating the two rules
+about <code>append</code> given above. 'How to' knowledge is provided
+automatically by the interpreter to allow this single pair of rules to
+be used to answer all three types of questions about
+<code>append</code>.<a href="book-Z-H-29.html#footnote_Temp_647">^[60]{.small}^</a></p>
+<p>Contemporary logic programming languages (including the one we implement
+here) have substantial deficiencies, in that their general 'how
+to' methods can lead them into spurious infinite loops or other
+undesirable behavior. Logic programming is an active field of research
+in computer
+science.<a href="book-Z-H-29.html#footnote_Temp_648">^[61]{.small}^</a></p>
+<p>Earlier in this chapter we explored the technology of implementing
+interpreters and described the elements that are essential to an
+interpreter for a Lisp-like language (indeed, to an interpreter for any
+conventional language). Now we will apply these ideas to discuss an
+interpreter for a logic programming language. We call this
+language the <em>query language</em>, because it is very useful
+for retrieving information from data bases by formulating
+<em>queries</em>, or questions, expressed in the language. Even
+though the query language is very different from Lisp, we will find it
+convenient to describe the language in terms of the same general
+framework we have been using all along: as a collection of primitive
+elements, together with means of combination that enable us to combine
+simple elements to create more complex elements and means of abstraction
+that enable us to regard complex elements as single conceptual units. An
+interpreter for a logic programming language is considerably more
+complex than an interpreter for a language like Lisp. Nevertheless, we
+will see that our query-language interpreter contains
+many of the same elements found in the interpreter of
+section <a href="book-Z-H-26.html#%_sec_4.1">4.1</a>. In particular, there will be
+an 'eval' part that classifies expressions according to type and
+an 'apply' part that implements the language's abstraction
+mechanism (procedures in the case of Lisp, and <em>rules</em> in the case of
+logic programming). Also, a central role is played in the implementation
+by a frame data structure, which determines the correspondence between
+symbols and their associated values. One additional interesting aspect
+of our query-language implementation is that we make substantial use of
+streams, which were introduced in chapter 3.</p>
+<h3 id="441--deductive-information-retrieval"><a class="header" href="#441--deductive-information-retrieval"><a href="book-Z-H-4.html#%_toc_%_sec_4.4.1">4.4.1  Deductive Information Retrieval</a></a></h3>
+<p>Logic programming excels in providing
+interfaces to data bases for information retrieval. The query language
+we shall implement in this chapter is designed to be used in this way.</p>
+<p>In order to illustrate what the query system does, we will show how it
+can be used to manage the data base of personnel records for
+Microshaft, a thriving high-technology company in the
+Boston area. The language provides pattern-directed access to personnel
+information and can also take advantage of general rules in order to
+make logical deductions.</p>
+<h4 id="a-sample-data-base"><a class="header" href="#a-sample-data-base"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_649">A sample data base</a></a></h4>
+<p>The personnel data base
+for Microshaft contains <em>assertions</em> about company personnel. Here is
+the information about Ben Bitdiddle, the resident computer wizard:</p>
+<pre><code class="language-scheme editable">(address (Bitdiddle Ben) (Slumerville (Ridge Road) 10))
+(job (Bitdiddle Ben) (computer wizard))
+(salary (Bitdiddle Ben) 60000)
+</code></pre>
+<p>Each assertion is a list (in this case a triple) whose elements can
+themselves be lists.</p>
+<p>As resident wizard, Ben is in charge of the company's computer
+division, and he supervises two programmers and one technician. Here is
+the information about them:</p>
+<pre><code class="language-scheme editable">(address (Hacker Alyssa P) (Cambridge (Mass Ave) 78))
+(job (Hacker Alyssa P) (computer programmer))
+(salary (Hacker Alyssa P) 40000)
+(supervisor (Hacker Alyssa P) (Bitdiddle Ben))
+(address (Fect Cy D) (Cambridge (Ames Street) 3))
+(job (Fect Cy D) (computer programmer))
+(salary (Fect Cy D) 35000)
+(supervisor (Fect Cy D) (Bitdiddle Ben))
+(address (Tweakit Lem E) (Boston (Bay State Road) 22))
+(job (Tweakit Lem E) (computer technician))
+(salary (Tweakit Lem E) 25000)
+(supervisor (Tweakit Lem E) (Bitdiddle Ben))
+</code></pre>
+<p>There is also a programmer trainee, who is supervised by Alyssa:</p>
+<pre><code class="language-scheme editable">(address (Reasoner Louis) (Slumerville (Pine Tree Road) 80))
+(job (Reasoner Louis) (computer programmer trainee))
+(salary (Reasoner Louis) 30000)
+(supervisor (Reasoner Louis) (Hacker Alyssa P))
+</code></pre>
+<p>All of these people are in the computer division, as indicated by the
+word <code>computer</code> as the first item in their job descriptions.</p>
+<p>Ben is a high-level employee. His supervisor is the company's big wheel
+himself:</p>
+<pre><code class="language-scheme editable">(supervisor (Bitdiddle Ben) (Warbucks Oliver))
+(address (Warbucks Oliver) (Swellesley (Top Heap Road)))
+(job (Warbucks Oliver) (administration big wheel))
+(salary (Warbucks Oliver) 150000)
+</code></pre>
+<p>Besides the computer division supervised by Ben, the company has an
+accounting division, consisting of a chief accountant and his assistant:</p>
+<pre><code class="language-scheme editable">(address (Scrooge Eben) (Weston (Shady Lane) 10))
+(job (Scrooge Eben) (accounting chief accountant))
+(salary (Scrooge Eben) 75000)
+(supervisor (Scrooge Eben) (Warbucks Oliver))
+(address (Cratchet Robert) (Allston (N Harvard Street) 16))
+(job (Cratchet Robert) (accounting scrivener))
+(salary (Cratchet Robert) 18000)
+(supervisor (Cratchet Robert) (Scrooge Eben))
+</code></pre>
+<p>There is also a secretary for the big wheel:</p>
+<pre><code class="language-scheme editable">(address (Aull DeWitt) (Slumerville (Onion Square) 5))
+(job (Aull DeWitt) (administration secretary))
+(salary (Aull DeWitt) 25000)
+(supervisor (Aull DeWitt) (Warbucks Oliver))
+</code></pre>
+<p>The data base also contains assertions about which kinds of jobs can be
+done by people holding other kinds of jobs. For instance, a computer
+wizard can do the jobs of both a computer programmer and a computer
+technician:</p>
+<pre><code class="language-scheme editable">(can-do-job (computer wizard) (computer programmer))
+(can-do-job (computer wizard) (computer technician))
+</code></pre>
+<p>A computer programmer could fill in for a trainee:</p>
+<pre><code class="language-scheme editable">(can-do-job (computer programmer)
+            (computer programmer trainee))
+</code></pre>
+<p>Also, as is well known,</p>
+<pre><code class="language-scheme editable">(can-do-job (administration secretary)
+            (administration big wheel))
+</code></pre>
+<h4 id="simple-queries"><a class="header" href="#simple-queries"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_650">Simple queries</a></a></h4>
+<p>The query language allows users to retrieve information
+from the data base by posing queries in response to the system's
+prompt. For example, to find all computer programmers one can say</p>
+<p><em><code>;;; Query input:</code></em></p>
+<pre><code class="language-scheme editable">(job ?x (computer programmer))
+</code></pre>
+<p>The system will respond with the following items:</p>
+<p><em><code>;;; Query results:</code></em></p>
+<pre><code class="language-scheme editable">(job (Hacker Alyssa P) (computer programmer))
+(job (Fect Cy D) (computer programmer))
+</code></pre>
+<p>The input query specifies that we are looking for entries
+in the data base that match a certain <em>pattern</em>. In this example, the
+pattern specifies entries consisting of three items, of which the first
+is the literal symbol <code>job</code>, the second can be anything, and the third
+is the literal list <code>(computer programmer)</code>. The 'anything' that
+can be the second item in the matching list is specified by a
+<em>pattern variable</em>, <code>?x</code>. The general form of a pattern
+variable is a symbol, taken to be the name of the variable, preceded by
+a question mark. We will see below why it is useful to specify names for
+pattern variables rather than just putting <code>?</code> into patterns to
+represent 'anything.' The system responds to a simple query by
+showing all entries in the data base that match the specified pattern.</p>
+<p>A pattern can have more than one variable. For example, the query</p>
+<pre><code class="language-scheme editable">(address ?x ?y)
+</code></pre>
+<p>will list all the employees' addresses.</p>
+<p>A pattern can have no variables, in which case the query simply
+determines whether that pattern is an entry in the data base. If so,
+there will be one match; if not, there will be no matches.</p>
+<p>The same pattern variable can appear more than once in a query,
+specifying that the same 'anything' must appear in each position.
+This is why variables have names. For example,</p>
+<pre><code class="language-scheme editable">(supervisor ?x ?x)
+</code></pre>
+<p>finds all people who supervise themselves (though there are no such
+assertions in our sample data base).</p>
+<p>The query</p>
+<pre><code class="language-scheme editable">(job ?x (computer ?type))
+</code></pre>
+<p>matches all job entries whose third item is a two-element list whose
+first item is <code>computer</code>:</p>
+<pre><code class="language-scheme editable">(job (Bitdiddle Ben) (computer wizard))
+(job (Hacker Alyssa P) (computer programmer))
+(job (Fect Cy D) (computer programmer))
+(job (Tweakit Lem E) (computer technician))
+</code></pre>
+<p>This same pattern does <em>not</em> match</p>
+<pre><code class="language-scheme editable">(job (Reasoner Louis) (computer programmer trainee))
+</code></pre>
+<p>because the third item in the entry is a list of three elements, and the
+pattern's third item specifies that there should be two elements. If we
+wanted to change the pattern so that the third item could be any list
+beginning with <code>computer</code>, we could
+specify<a href="book-Z-H-29.html#footnote_Temp_651">^[62]{.small}^</a></p>
+<pre><code class="language-scheme editable">(job ?x (computer . ?type))
+</code></pre>
+<p>For example,</p>
+<pre><code class="language-scheme editable">(computer . ?type)
+</code></pre>
+<p>matches the data</p>
+<pre><code class="language-scheme editable">(computer programmer trainee)
+</code></pre>
+<p>with <code>?type</code> as the list <code>(programmer trainee)</code>. It also matches the
+data</p>
+<pre><code class="language-scheme editable">(computer programmer)
+</code></pre>
+<p>with <code>?type</code> as the list <code>(programmer)</code>, and matches the data</p>
+<pre><code class="language-scheme editable">(computer)
+</code></pre>
+<p>with <code>?type</code> as the empty list <code>()</code>.</p>
+<p>We can describe the query language's processing of simple queries as
+follows:</p>
+<ul>
+<li>The system finds all assignments to variables in the query
+pattern that <em>satisfy</em> the pattern -- that is, all
+sets of values for the variables such that if the pattern variables
+are <em>instantiated with</em> (replaced by) the values, the
+result is in the data base.</li>
+<li>The system responds to the query by listing all instantiations of the
+query pattern with the variable assignments that satisfy it.</li>
+</ul>
+<p>Note that if the pattern has no variables, the query reduces to a
+determination of whether that pattern is in the data base. If so, the
+empty assignment, which assigns no values to variables, satisfies that
+pattern for that data base.</p>
+<p><strong>Exercise 4.55.</strong>  Give simple queries that retrieve
+the following information from the data base:</p>
+<p>a. all people supervised by Ben Bitdiddle;</p>
+<p>b. the names and jobs of all people in the accounting division;</p>
+<p>c. the names and addresses of all people who live in Slumerville.</p>
+<h4 id="compound-queries"><a class="header" href="#compound-queries"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_653">Compound queries</a></a></h4>
+<p>Simple queries form the primitive operations of the
+query language. In order to form compound operations, the query language
+provides means of combination. One thing that makes the query language a
+logic programming language is that the means of combination mirror the
+means of combination used in forming logical expressions: <code>and</code>, <code>or</code>,
+and <code>not</code>. (Here <code>and</code>, <code>or</code>, and <code>not</code> are not the Lisp primitives, but
+rather operations built into the query language.)</p>
+<p>We can use <code>and</code> as follows to find the addresses of all
+the computer programmers:</p>
+<pre><code class="language-scheme editable">(and (job ?person (computer programmer))
+     (address ?person ?where))
+</code></pre>
+<p>The resulting output is</p>
+<pre><code class="language-scheme editable">(and (job (Hacker Alyssa P) (computer programmer))
+     (address (Hacker Alyssa P) (Cambridge (Mass Ave) 78)))
+(and (job (Fect Cy D) (computer programmer))
+     (address (Fect Cy D) (Cambridge (Ames Street) 3)))
+</code></pre>
+<p>In general,</p>
+<p><code>(and &lt;</code><em><code>query</code><del><code>1</code></del></em><code>&gt; &lt;</code><em><code>query</code><del><code>2</code></del></em><code>&gt; ... &lt;</code><em><code>query</code>~</em><code>n</code><em>~</em><code>&gt;)</code></p>
+<p>is satisfied by all sets of values for the pattern variables that
+simultaneously satisfy &lt;<em>query~1~</em>&gt; <code>...</code> &lt;<em>query~<em>n</em>~</em>&gt;.</p>
+<p>As for simple queries, the system processes a compound query by finding
+all assignments to the pattern variables that satisfy the query, then
+displaying instantiations of the query with those values.</p>
+<p>Another means of constructing compound queries is through
+<code>or</code>. For example,</p>
+<pre><code class="language-scheme editable">(or (supervisor ?x (Bitdiddle Ben))
+    (supervisor ?x (Hacker Alyssa P)))
+</code></pre>
+<p>will find all employees supervised by Ben Bitdiddle or Alyssa P. Hacker:</p>
+<pre><code class="language-scheme editable">(or (supervisor (Hacker Alyssa P) (Bitdiddle Ben))
+    (supervisor (Hacker Alyssa P) (Hacker Alyssa P)))
+(or (supervisor (Fect Cy D) (Bitdiddle Ben))
+    (supervisor (Fect Cy D) (Hacker Alyssa P)))
+(or (supervisor (Tweakit Lem E) (Bitdiddle Ben))
+    (supervisor (Tweakit Lem E) (Hacker Alyssa P)))
+(or (supervisor (Reasoner Louis) (Bitdiddle Ben))
+    (supervisor (Reasoner Louis) (Hacker Alyssa P)))
+</code></pre>
+<p>In general,</p>
+<p><code>(or &lt;</code><em><code>query</code><del><code>1</code></del></em><code>&gt; &lt;</code><em><code>query</code><del><code>2</code></del></em><code>&gt; ... &lt;</code><em><code>query</code>~</em><code>n</code><em>~</em><code>&gt;)</code></p>
+<p>is satisfied by all sets of values for the pattern variables that
+satisfy at least one of &lt;<em>query~1~</em>&gt; <code>...</code> &lt;<em>query~<em>n</em>~</em>&gt;.</p>
+<p>Compound queries can also be formed with <code>not</code>. For
+example,</p>
+<pre><code class="language-scheme editable">(and (supervisor ?x (Bitdiddle Ben))
+     (not (job ?x (computer programmer))))
+</code></pre>
+<p>finds all people supervised by Ben Bitdiddle who are not computer
+programmers. In general,</p>
+<p><code>(not &lt;</code><em><code>query</code><del><code>1</code></del></em><code>&gt;)</code></p>
+<p>is satisfied by all assignments to the pattern variables that do not
+satisfy
+&lt;<em>query~1~</em>&gt;.<a href="book-Z-H-29.html#footnote_Temp_654">^[63]{.small}^</a></p>
+<p>The final combining form is called <code>lisp-value</code>. When
+<code>lisp-value</code> is the first element of a pattern, it specifies that the
+next element is a Lisp predicate to be applied to the rest of the
+(instantiated) elements as arguments. In general,</p>
+<p><code>(lisp-value &lt;</code><em><code>predicate</code></em><code>&gt; &lt;</code><em><code>arg</code><del><code>1</code></del></em><code>&gt; ... &lt;</code><em><code>arg</code>~</em><code>n</code><em>~</em><code>&gt;)</code></p>
+<p>will be satisfied by assignments to the pattern variables for which the
+&lt;<em>predicate</em>&gt; applied to the instantiated &lt;<em>arg~1~</em>&gt; <code>...</code>
+&lt;<em>arg~<em>n</em>~</em>&gt; is true. For example, to find all people whose salary is
+greater than $30,000 we could
+write<a href="book-Z-H-29.html#footnote_Temp_655">^[64]{.small}^</a></p>
+<pre><code class="language-scheme editable">(and (salary ?person ?amount)
+     (lisp-value &gt; ?amount 30000))
+</code></pre>
+<p><strong>Exercise 4.56.</strong>  Formulate compound queries that
+retrieve the following information:</p>
+<p>a. the names of all people who are supervised by Ben Bitdiddle,
+together with their addresses;</p>
+<p>b. all people whose salary is less than Ben Bitdiddle's, together with
+their salary and Ben Bitdiddle's salary;</p>
+<p>c. all people who are supervised by someone who is not in the computer
+division, together with the supervisor's name and job.</p>
+<h4 id="rules"><a class="header" href="#rules"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_657">Rules</a></a></h4>
+<p>In addition to primitive queries and
+compound queries, the query language provides means for abstracting
+queries. These are given by <em>rules</em>. The rule</p>
+<pre><code class="language-scheme editable">(rule (lives-near ?person-1 ?person-2)
+      (and (address ?person-1 (?town . ?rest-1))
+           (address ?person-2 (?town . ?rest-2))
+           (not (same ?person-1 ?person-2))))
+</code></pre>
+<p>specifies that two people live near each other if they live in the same
+town. The final <code>not</code> clause prevents the rule from saying that all
+people live near themselves. The <code>same</code> relation is defined by a very
+simple
+rule:<a href="book-Z-H-29.html#footnote_Temp_658">^[65]{.small}^</a></p>
+<pre><code class="language-scheme editable">(rule (same ?x ?x))
+</code></pre>
+<p>The following rule declares that a person is a 'wheel' in an
+organization if he supervises someone who is in turn a supervisor:</p>
+<pre><code class="language-scheme editable">(rule (wheel ?person)
+      (and (supervisor ?middle-manager ?person)
+           (supervisor ?x ?middle-manager)))
+</code></pre>
+<p>The general form of a rule is</p>
+<p><code>(rule &lt;</code><em><code>conclusion</code></em><code>&gt; &lt;</code><em><code>body</code></em><code>&gt;)</code></p>
+<p>where &lt;<em>conclusion</em>&gt; is a pattern and &lt;<em>body</em>&gt; is any
+query.<a href="book-Z-H-29.html#footnote_Temp_659">^[66]{.small}^</a>
+We can think of a rule as representing a large (even infinite) set of
+assertions, namely all instantiations of the rule conclusion with
+variable assignments that satisfy the rule body. When we described
+simple queries (patterns), we said that an assignment to variables
+satisfies a pattern if the instantiated pattern is in the data base. But
+the pattern needn't be explicitly in the data base as an assertion. It
+can be an implicit assertion implied by a rule. For
+example, the query</p>
+<pre><code class="language-scheme editable">(lives-near ?x (Bitdiddle Ben))
+</code></pre>
+<p>results in</p>
+<pre><code class="language-scheme editable">(lives-near (Reasoner Louis) (Bitdiddle Ben))
+(lives-near (Aull DeWitt) (Bitdiddle Ben))
+</code></pre>
+<p>To find all computer programmers who live near Ben Bitdiddle, we can ask</p>
+<pre><code class="language-scheme editable">(and (job ?x (computer programmer))
+     (lives-near ?x (Bitdiddle Ben)))
+</code></pre>
+<p>As in the case of compound procedures, rules can be used
+as parts of other rules (as we saw with the <code>lives-near</code> rule above) or
+even be defined recursively. For instance, the rule</p>
+<pre><code class="language-scheme editable">(rule (outranked-by ?staff-person ?boss)
+      (or (supervisor ?staff-person ?boss)
+          (and (supervisor ?staff-person ?middle-manager)
+               (outranked-by ?middle-manager ?boss))))
+</code></pre>
+<p>says that a staff person is outranked by a boss in the organization if
+the boss is the person's supervisor or (recursively) if the person's
+supervisor is outranked by the boss.</p>
+<p><strong>Exercise 4.57.</strong>  Define a rule that says that person
+1 can replace person 2 if either person 1 does the same job as person 2
+or someone who does person 1's job can also do person 2's job, and if
+person 1 and person 2 are not the same person. Using your rule, give
+queries that find the following:</p>
+<p>a. all people who can replace Cy D. Fect;</p>
+<p>b. all people who can replace someone who is being paid more than they
+are, together with the two salaries.</p>
+<p><strong>Exercise 4.58.</strong>  Define a rule that says that a
+person is a 'big shot' in a division if the person works in the
+division but does not have a supervisor who works in the division.</p>
+<p><strong>Exercise 4.59.</strong>  Ben Bitdiddle has missed one meeting
+too many. Fearing that his habit of forgetting meetings could cost him
+his job, Ben decides to do something about it. He adds all the weekly
+meetings of the firm to the Microshaft data base by asserting the
+following:</p>
+<pre><code class="language-scheme editable">(meeting accounting (Monday 9am))
+(meeting administration (Monday 10am))
+(meeting computer (Wednesday 3pm))
+(meeting administration (Friday 1pm))
+</code></pre>
+<p>Each of the above assertions is for a meeting of an entire division. Ben
+also adds an entry for the company-wide meeting that spans all the
+divisions. All of the company's employees attend this meeting.</p>
+<pre><code class="language-scheme editable">(meeting whole-company (Wednesday 4pm))
+</code></pre>
+<p>a. On Friday morning, Ben wants to query the data base for all the
+meetings that occur that day. What query should he use?</p>
+<p>b. Alyssa P. Hacker is unimpressed. She thinks it would be much more
+useful to be able to ask for her meetings by specifying her name. So she
+designs a rule that says that a person's meetings include all
+<code>whole-company</code> meetings plus all meetings of that person's division.
+Fill in the body of Alyssa's rule.</p>
+<pre><code class="language-scheme editable">(rule (meeting-time ?person ?day-and-time)
+      &lt;rule-body&gt;)
+</code></pre>
+<p>c. Alyssa arrives at work on Wednesday morning and wonders what
+meetings she has to attend that day. Having defined the above rule, what
+query should she make to find this out?</p>
+<p><strong>Exercise 4.60.</strong>  By giving the query</p>
+<pre><code class="language-scheme editable">(lives-near ?person (Hacker Alyssa P))
+</code></pre>
+<p>Alyssa P. Hacker is able to find people who live near her, with whom she
+can ride to work. On the other hand, when she tries to find all pairs of
+people who live near each other by querying</p>
+<pre><code class="language-scheme editable">(lives-near ?person-1 ?person-2)
+</code></pre>
+<p>she notices that each pair of people who live near each other is listed
+twice; for example,</p>
+<pre><code class="language-scheme editable">(lives-near (Hacker Alyssa P) (Fect Cy D))
+(lives-near (Fect Cy D) (Hacker Alyssa P))
+</code></pre>
+<p>Why does this happen? Is there a way to find a list of people who live
+near each other, in which each pair appears only once? Explain.</p>
+<h4 id="logic-as-programs"><a class="header" href="#logic-as-programs"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_664">Logic as programs</a></a></h4>
+<p>We can regard a rule as a kind of logical implication:
+<em>If</em> an assignment of values to pattern variables satisfies the body,
+<em>then</em> it satisfies the conclusion. Consequently, we can regard the
+query language as having the ability to perform <em>logical deductions</em>
+based upon the rules. As an example, consider the <code>append</code> operation
+described at the beginning of section <a href="book-Z-H-29.html#%_sec_4.4">4.4</a>.
+As we said, <code>append</code> can be characterized by the following two rules:</p>
+<ul>
+<li>For any list <code>y</code>, the empty list and <code>y</code> <code>append</code> to form <code>y</code>.</li>
+<li>For any <code>u</code>, <code>v</code>, <code>y</code>, and <code>z</code>, <code>(cons u v)</code> and <code>y</code> <code>append</code> to form
+<code>(cons u z)</code> if <code>v</code> and <code>y</code> <code>append</code> to form <code>z</code>.</li>
+</ul>
+<p>To express this in our query language, we define two rules for a
+relation</p>
+<p><code>(append-to-form x y z)</code></p>
+<p>which we can interpret to mean '<code>x</code> and <code>y</code> <code>append</code> to form <code>z</code>':</p>
+<pre><code class="language-scheme editable">(rule (append-to-form () ?y ?y))
+(rule (append-to-form (?u . ?v) ?y (?u . ?z))
+      (append-to-form ?v ?y ?z))
+</code></pre>
+<p>The first rule has no body, which means that the
+conclusion holds for any value of <code>?y</code>. Note how the second rule makes
+use of dotted-tail notation to name the <code>car</code> and <code>cdr</code>
+of a list.</p>
+<p>Given these two rules, we can formulate queries that compute the
+<code>append</code> of two lists:</p>
+<p><em><code>;;; Query input:</code></em></p>
+<pre><code class="language-scheme editable">(append-to-form (a b) (c d) ?z)
+</code></pre>
+<p><em><code>;;; Query results:</code></em></p>
+<pre><code class="language-scheme editable">(append-to-form (a b) (c d) (a b c d))
+</code></pre>
+<p>What is more striking, we can use the same rules to ask the question
+'Which list, when <code>append</code>ed to <code>(a b)</code>, yields <code>(a b c d)</code>?' This
+is done as follows:</p>
+<p><em><code>;;; Query input:</code></em></p>
+<pre><code class="language-scheme editable">(append-to-form (a b) ?y (a b c d))
+</code></pre>
+<p><em><code>;;; Query results:</code></em></p>
+<pre><code class="language-scheme editable">(append-to-form (a b) (c d) (a b c d))
+</code></pre>
+<p>We can also ask for all pairs of lists that <code>append</code> to form
+<code>(a b c d)</code>:</p>
+<p><em><code>;;; Query input:</code></em></p>
+<pre><code class="language-scheme editable">(append-to-form ?x ?y (a b c d))
+</code></pre>
+<p><em><code>;;; Query results:</code></em></p>
+<pre><code class="language-scheme editable">(append-to-form () (a b c d) (a b c d))
+(append-to-form (a) (b c d) (a b c d))
+(append-to-form (a b) (c d) (a b c d))
+(append-to-form (a b c) (d) (a b c d))
+(append-to-form (a b c d) () (a b c d))
+</code></pre>
+<p>The query system may seem to exhibit quite a bit of intelligence in
+using the rules to deduce the answers to the queries above. Actually, as
+we will see in the next section, the system is following a
+well-determined algorithm in unraveling the rules. Unfortunately,
+although the system works impressively in the <code>append</code> case, the general
+methods may break down in more complex cases, as we will see in
+section <a href="book-Z-H-29.html#%_sec_4.4.3">4.4.3</a>.</p>
+<p><strong>Exercise 4.61.</strong>  The following rules implement a
+<code>next-to</code> relation that finds adjacent elements of a list:</p>
+<pre><code class="language-scheme editable">(rule (?x next-to ?y in (?x ?y . ?u)))
+
+(rule (?x next-to ?y in (?v . ?z))
+      (?x next-to ?y in ?z))
+</code></pre>
+<p>What will the response be to the following queries?</p>
+<pre><code class="language-scheme editable">(?x next-to ?y in (1 (2 3) 4))
+
+(?x next-to 1 in (2 1 3 1))
+</code></pre>
+<p><strong>Exercise 4.62.</strong>  Define rules to
+implement the <code>last-pair</code> operation of
+exercise <a href="book-Z-H-15.html#%_thm_2.17">2.17</a>, which returns a list
+containing the last element of a nonempty list. Check your rules on
+queries such as <code>(last-pair (3) ?x)</code>, <code>(last-pair (1 2 3) ?x)</code>, and
+<code>(last-pair (2 ?x) (3))</code>. Do your rules work correctly on queries such
+as <code>(last-pair ?x (3))</code> ?</p>
+<p><strong>Exercise 4.63.</strong>  The
+following data base (see Genesis 4) traces the genealogy of the
+descendants of Ada back to Adam, by way of Cain:</p>
+<pre><code class="language-scheme editable">(son Adam Cain)
+(son Cain Enoch)
+(son Enoch Irad)
+(son Irad Mehujael)
+(son Mehujael Methushael)
+(son Methushael Lamech)
+(wife Lamech Ada)
+(son Ada Jabal)
+(son Ada Jubal)
+</code></pre>
+<p>Formulate rules such as 'If <em>S</em> is the son of <em>F</em>, and <em>F</em> is the son
+of <em>G</em>, then <em>S</em> is the grandson of <em>G</em>' and 'If <em>W</em> is the wife
+of <em>M</em>, and <em>S</em> is the son of <em>W</em>, then <em>S</em> is the son of <em>M</em>' (which
+was supposedly more true in biblical times than today) that will enable
+the query system to find the grandson of Cain; the sons of Lamech; the
+grandsons of Methushael. (See
+exercise <a href="book-Z-H-29.html#%_thm_4.69">4.69</a> for some rules to deduce
+more complicated relationships.)</p>
+<h3 id="442--how-the-query-system-works"><a class="header" href="#442--how-the-query-system-works"><a href="book-Z-H-4.html#%_toc_%_sec_4.4.2">4.4.2  How the Query System Works</a></a></h3>
+<p>In section <a href="book-Z-H-29.html#%_sec_4.4.4">4.4.4</a> we will
+present a complete implementation of the query interpreter as a collection
+of procedures. In this section we give an overview that explains the
+general structure of the system independent of low-level implementation
+details. After describing the implementation of the interpreter, we will
+be in a position to understand some of its limitations and some of the
+subtle ways in which the query language's logical operations differ
+from the operations of mathematical logic.</p>
+<p>It should be apparent that the query evaluator must perform some kind of
+search in order to match queries against facts and rules in the data
+base. One way to do this would be to implement the query system as a
+nondeterministic program, using the <code>amb</code> evaluator of
+section <a href="book-Z-H-28.html#%_sec_4.3">4.3</a> (see
+exercise <a href="book-Z-H-29.html#%_thm_4.78">4.78</a>). Another possibility is to
+manage the search with the aid of streams. Our implementation follows
+this second approach.</p>
+<p>The query system is organized around two central operations called
+<em>pattern matching</em> and <em>unification</em>. We first describe pattern matching
+and explain how this operation, together with the organization of
+information in terms of streams of frames, enables us to implement both
+simple and compound queries. We next discuss unification, a
+generalization of pattern matching needed to implement rules. Finally,
+we show how the entire query interpreter fits together through a
+procedure that classifies expressions in a manner analogous to the way
+<code>eval</code> classifies expressions for the interpreter described in
+section <a href="book-Z-H-26.html#%_sec_4.1">4.1</a>.</p>
+<h4 id="pattern-matching"><a class="header" href="#pattern-matching"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_668">Pattern matching</a></a></h4>
+<p>A <em>pattern matcher</em> is a program that
+tests whether some datum fits a specified pattern. For example, the data
+list <code>((a b) c (a b))</code> matches the pattern <code>(?x c ?x)</code> with the pattern
+variable <code>?x</code> bound to <code>(a b)</code>. The same data list matches the pattern
+<code>(?x ?y ?z)</code> with <code>?x</code> and <code>?z</code> both bound to <code>(a b)</code> and <code>?y</code> bound to
+<code>c</code>. It also matches the pattern <code>((?x ?y) c (?x ?y))</code> with <code>?x</code> bound
+to <code>a</code> and <code>?y</code> bound to <code>b</code>. However, it does not match the pattern
+<code>(?x a ?y)</code>, since that pattern specifies a list whose second element is
+the symbol <code>a</code>.</p>
+<p>The pattern matcher used by the query
+system takes as inputs a pattern, a datum, and a <em>frame</em> that specifies
+bindings for various pattern variables. It checks whether the datum
+matches the pattern in a way that is consistent with the bindings
+already in the frame. If so, it returns the given frame augmented by any
+bindings that may have been determined by the match. Otherwise, it
+indicates that the match has failed.</p>
+<p>For example, using the pattern <code>(?x ?y ?x)</code> to match <code>(a b a)</code> given an
+empty frame will return a frame specifying that <code>?x</code> is bound to <code>a</code> and
+<code>?y</code> is bound to <code>b</code>. Trying the match with the same pattern, the same
+datum, and a frame specifying that <code>?y</code> is bound to <code>a</code> will fail.
+Trying the match with the same pattern, the same datum, and a frame in
+which <code>?y</code> is bound to <code>b</code> and <code>?x</code> is unbound will return the given
+frame augmented by a binding of <code>?x</code> to <code>a</code>.</p>
+<p>The pattern matcher is all the mechanism that is needed
+to process simple queries that don't involve rules. For instance, to
+process the query</p>
+<pre><code class="language-scheme editable">(job ?x (computer programmer))
+</code></pre>
+<p>we scan through all assertions in the data base and select those that
+match the pattern with respect to an initially empty frame. For each
+match we find, we use the frame returned by the match to instantiate the
+pattern with a value for <code>?x</code>.</p>
+<h4 id="streams-of-frames"><a class="header" href="#streams-of-frames"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_669">Streams of frames</a></a></h4>
+<p>The testing of patterns against frames is
+organized through the use of streams. Given a single frame, the matching
+process runs through the data-base entries one by one. For each
+data-base entry, the matcher generates either a special symbol
+indicating that the match has failed or an extension to the frame. The
+results for all the data-base entries are collected into a stream, which
+is passed through a filter to weed out the failures. The result is a
+stream of all the frames that extend the given frame via a match to some
+assertion in the data
+base.<a href="book-Z-H-29.html#footnote_Temp_670">^[67]{.small}^</a></p>
+<p>In our system, a query takes an input stream of frames and performs the
+above matching operation for every frame in the stream, as indicated in
+figure <a href="book-Z-H-29.html#%_fig_4.4">4.4</a>. That is, for each frame in the
+input stream, the query generates a new stream consisting of all
+extensions to that frame by matches to assertions in the data base. All
+these streams are then combined to form one huge stream, which contains
+all possible extensions of every frame in the input stream. This stream
+is the output of the query.</p>
+<p><img src="ch4-Z-G-4.gif" alt="" /></p>
+<p><strong>Figure 4.4:</strong>  A query processes a stream of frames.</p>
+<p>To answer a simple query, we use the query with an input
+stream consisting of a single empty frame. The resulting output stream
+contains all extensions to the empty frame (that is, all answers to our
+query). This stream of frames is then used to generate a stream of
+copies of the original query pattern with the variables instantiated by
+the values in each frame, and this is the stream that is finally
+printed.</p>
+<h4 id="compound-queries-1"><a class="header" href="#compound-queries-1"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_671">Compound queries</a></a></h4>
+<p>The real elegance of the stream-of-frames implementation
+is evident when we deal with compound queries. The processing of
+compound queries makes use of the ability of our matcher to demand that
+a match be consistent with a specified frame. For
+example, to handle the <code>and</code> of two queries, such as</p>
+<pre><code class="language-scheme editable">(and (can-do-job ?x (computer programmer trainee))
+     (job ?person ?x))
+</code></pre>
+<p>(informally, 'Find all people who can do the job of a computer
+programmer trainee'), we first find all entries that match the
+pattern</p>
+<pre><code class="language-scheme editable">(can-do-job ?x (computer programmer trainee))
+</code></pre>
+<p>This produces a stream of frames, each of which contains a binding for
+<code>?x</code>. Then for each frame in the stream we find all entries that match</p>
+<pre><code class="language-scheme editable">(job ?person ?x)
+</code></pre>
+<p>in a way that is consistent with the given binding for <code>?x</code>. Each such
+match will produce a frame containing bindings for <code>?x</code> and <code>?person</code>.
+The <code>and</code> of two queries can be viewed as a series combination of the
+two component queries, as shown in
+figure <a href="book-Z-H-29.html#%_fig_4.5">4.5</a>. The frames that pass through
+the first query filter are filtered and further extended by the second
+query.</p>
+<p><img src="ch4-Z-G-5.gif" alt="" /></p>
+<p><strong>Figure 4.5:</strong>  The <code>and</code> combination of two queries is produced by
+operating on the stream of frames in series.</p>
+<p>Figure <a href="book-Z-H-29.html#%_fig_4.6">4.6</a> shows the
+analogous method for computing the <code>or</code> of two queries as a parallel
+combination of the two component queries. The input stream of frames is
+extended separately by each query. The two resulting streams are then
+merged to produce the final output stream.</p>
+<p><img src="ch4-Z-G-6.gif" alt="" /></p>
+<p><strong>Figure 4.6:</strong>  The <code>or</code> combination of two queries is produced by
+operating on the stream of frames in parallel and merging the results.</p>
+<p>Even from this high-level description, it is apparent
+that the processing of compound queries can be slow. For example, since
+a query may produce more than one output frame for each input frame, and
+each query in an <code>and</code> gets its input frames from the previous query, an
+<code>and</code> query could, in the worst case, have to perform a number of
+matches that is exponential in the number of queries (see
+exercise <a href="book-Z-H-29.html#%_thm_4.76">4.76</a>).<a href="book-Z-H-29.html#footnote_Temp_672">^[68]{.small}^</a>
+Though systems for handling only simple queries are quite practical,
+dealing with complex queries is extremely
+difficult.<a href="book-Z-H-29.html#footnote_Temp_673">^[69]{.small}^</a></p>
+<p>From the stream-of-frames viewpoint, the <code>not</code> of some
+query acts as a filter that removes all frames for which the query can
+be satisfied. For instance, given the pattern</p>
+<pre><code class="language-scheme editable">(not (job ?x (computer programmer)))
+</code></pre>
+<p>we attempt, for each frame in the input stream, to produce extension
+frames that satisfy <code>(job ?x (computer programmer))</code>. We remove from the
+input stream all frames for which such extensions exist. The result is a
+stream consisting of only those frames in which the binding for <code>?x</code>
+does not satisfy <code>(job ?x (computer programmer))</code>. For example, in
+processing the query</p>
+<pre><code class="language-scheme editable">(and (supervisor ?x ?y)
+     (not (job ?x (computer programmer))))
+</code></pre>
+<p>the first clause will generate frames with bindings for <code>?x</code> and <code>?y</code>.
+The <code>not</code> clause will then filter these by removing all frames in which
+the binding for <code>?x</code> satisfies the restriction that <code>?x</code> is a computer
+programmer.<a href="book-Z-H-29.html#footnote_Temp_674">^[70]{.small}^</a></p>
+<p>The <code>lisp-value</code> special form is implemented as a similar
+filter on frame streams. We use each frame in the stream to instantiate
+any variables in the pattern, then apply the Lisp predicate. We remove
+from the input stream all frames for which the predicate fails.</p>
+<h4 id="unification"><a class="header" href="#unification"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_675">Unification</a></a></h4>
+<p>In order to handle rules in the query
+language, we must be able to find the rules whose conclusions match a
+given query pattern. Rule conclusions are like assertions except that
+they can contain variables, so we will need a generalization of pattern
+matching -- called <em>unification</em> -- in which both the 'pattern'
+and the 'datum' may contain variables.</p>
+<p>A unifier takes two patterns, each containing constants and variables,
+and determines whether it is possible to assign values to the variables
+that will make the two patterns equal. If so, it returns a frame
+containing these bindings. For example, unifying <code>(?x a ?y)</code> and
+<code>(?y ?z a)</code> will specify a frame in which <code>?x</code>, <code>?y</code>, and <code>?z</code> must all
+be bound to <code>a</code>. On the other hand, unifying <code>(?x ?y a)</code> and <code>(?x b ?y)</code>
+will fail, because there is no value for <code>?y</code> that can make the two
+patterns equal. (For the second elements of the patterns to be equal,
+<code>?y</code> would have to be <code>b</code>; however, for the third elements to be equal,
+<code>?y</code> would have to be <code>a</code>.) The unifier used in the query system, like
+the pattern matcher, takes a frame as input and performs unifications
+that are consistent with this frame.</p>
+<p>The unification algorithm is the most technically difficult part of the
+query system. With complex patterns, performing unification may seem to
+require deduction. To unify <code>(?x ?x)</code> and <code>((a ?y c) (a b ?z))</code>, for
+example, the algorithm must infer that <code>?x</code> should be <code>(a b c)</code>, <code>?y</code>
+should be <code>b</code>, and <code>?z</code> should be <code>c</code>. We may think of this process as
+solving a set of equations among the pattern components. In general,
+these are simultaneous equations, which may require substantial
+manipulation to
+solve.<a href="book-Z-H-29.html#footnote_Temp_676">^[71]{.small}^</a>
+For example, unifying <code>(?x ?x)</code> and <code>((a ?y c) (a b ?z))</code> may be thought
+of as specifying the simultaneous equations</p>
+<p><code>?x  =  (a ?y c)</code>
+<code>?x  =  (a b ?z)</code></p>
+<p>These equations imply that</p>
+<p><code>(a ?y c)  =  (a b ?z)</code></p>
+<p>which in turn implies that</p>
+<p><code>a  =  a, ?y  =  b, c  =  ?z,</code></p>
+<p>and hence that</p>
+<p><code>?x  =  (a b c)</code></p>
+<p>In a successful pattern match, all pattern
+variables become bound, and the values to which they are bound contain
+only constants. This is also true of all the examples of unification we
+have seen so far. In general, however, a successful unification may not
+completely determine the variable values; some variables may remain
+unbound and others may be bound to values that contain variables.</p>
+<p>Consider the unification of <code>(?x a)</code> and <code>((b ?y) ?z)</code>. We can deduce
+that <code>?x = (b ?y)</code> and <code>a = ?z</code>, but we cannot further solve for <code>?x</code>
+or <code>?y</code>. The unification doesn't fail, since it is certainly possible
+to make the two patterns equal by assigning values to <code>?x</code> and <code>?y</code>.
+Since this match in no way restricts the values <code>?y</code> can take on, no
+binding for <code>?y</code> is put into the result frame. The match does, however,
+restrict the value of <code>?x</code>. Whatever value <code>?y</code> has, <code>?x</code> must be
+<code>(b ?y)</code>. A binding of <code>?x</code> to the pattern <code>(b ?y)</code> is thus put into the
+frame. If a value for <code>?y</code> is later determined and added to the frame
+(by a pattern match or unification that is required to be consistent
+with this frame), the previously bound <code>?x</code> will refer to this
+value.<a href="book-Z-H-29.html#footnote_Temp_677">^[72]{.small}^</a></p>
+<h4 id="applying-rules"><a class="header" href="#applying-rules"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_678">Applying rules</a></a></h4>
+<p>Unification is the key to the component of the query
+system that makes inferences from rules. To see how this is
+accomplished, consider processing a query that involves applying a rule,
+such as</p>
+<pre><code class="language-scheme editable">(lives-near ?x (Hacker Alyssa P))
+</code></pre>
+<p>To process this query, we first use the ordinary pattern-match procedure
+described above to see if there are any assertions in the data base that
+match this pattern. (There will not be any in this case, since our data
+base includes no direct assertions about who lives near whom.) The next
+step is to attempt to unify the query pattern with the conclusion of
+each rule. We find that the pattern unifies with the conclusion of the
+rule</p>
+<pre><code class="language-scheme editable">(rule (lives-near ?person-1 ?person-2)
+      (and (address ?person-1 (?town . ?rest-1))
+           (address ?person-2 (?town . ?rest-2))
+           (not (same ?person-1 ?person-2))))
+</code></pre>
+<p>resulting in a frame specifying that <code>?person-2</code> is bound to
+<code>(Hacker Alyssa P)</code> and that <code>?x</code> should be bound to (have the same
+value as) <code>?person-1</code>. Now, relative to this frame, we evaluate the
+compound query given by the body of the rule. Successful matches will
+extend this frame by providing a binding for <code>?person-1</code>, and
+consequently a value for <code>?x</code>, which we can use to instantiate the
+original query pattern.</p>
+<p>In general, the query evaluator uses the following method to apply a
+rule when trying to establish a query pattern in a frame that specifies
+bindings for some of the pattern variables:</p>
+<ul>
+<li>Unify the query with the conclusion of the rule to form, if
+successful, an extension of the original frame.</li>
+<li>Relative to the extended frame, evaluate the query formed by the body
+of the rule.</li>
+</ul>
+<p>Notice how similar this is to the method for applying a
+procedure in the <code>eval</code>/<code>apply</code> evaluator for Lisp:</p>
+<ul>
+<li></li>
+<li>Bind the procedure's parameters to its arguments to form a frame that
+extends the original procedure environment.</li>
+<li>Relative to the extended environment, evaluate the expression formed
+by the body of the procedure.</li>
+</ul>
+<p>The similarity between the two evaluators should come as no surprise.
+Just as procedure definitions are the means of abstraction in Lisp, rule
+definitions are the means of abstraction in the query language. In each
+case, we unwind the abstraction by creating appropriate bindings and
+evaluating the rule or procedure body relative to these.</p>
+<h4 id="simple-queries-1"><a class="header" href="#simple-queries-1"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_679">Simple queries</a></a></h4>
+<p>We saw earlier in this section how to evaluate simple
+queries in the absence of rules. Now that we have seen how to apply
+rules, we can describe how to evaluate simple queries by using both
+rules and assertions.</p>
+<p>Given the query pattern and a stream of frames, we produce, for each
+frame in the input stream, two streams:</p>
+<ul>
+<li>a stream of extended frames obtained by matching the pattern against
+all assertions in the data base (using the pattern matcher), and</li>
+<li>a stream of extended frames obtained by applying all possible rules
+(using the
+unifier).<a href="book-Z-H-29.html#footnote_Temp_680">^[73]{.small}^</a></li>
+</ul>
+<p>Appending these two streams produces a stream that consists of all the
+ways that the given pattern can be satisfied consistent with the
+original frame. These streams (one for each frame in the input stream)
+are now all combined to form one large stream, which therefore consists
+of all the ways that any of the frames in the original input stream can
+be extended to produce a match with the given pattern.</p>
+<h4 id="the-query-evaluator-and-the-driver-loop"><a class="header" href="#the-query-evaluator-and-the-driver-loop"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_681">The query evaluator and the driver loop</a></a></h4>
+<p>Despite the complexity of the underlying matching
+operations, the system is organized much like an evaluator for any
+language. The procedure that coordinates the matching operations is
+called <code>qeval</code>, and it plays a role
+analogous to that of the <code>eval</code> procedure for Lisp. <code>Qeval</code> takes as
+inputs a query and a stream of frames. Its output is a stream of frames,
+corresponding to successful matches to the query pattern, that extend
+some frame in the input stream, as indicated in
+figure <a href="book-Z-H-29.html#%_fig_4.4">4.4</a>. Like <code>eval</code>, <code>qeval</code>
+classifies the different types of expressions (queries) and dispatches
+to an appropriate procedure for each. There is a procedure for each
+special form (<code>and</code>, <code>or</code>, <code>not</code>, and <code>lisp-value</code>) and one for simple
+queries.</p>
+<p>The driver loop, which is analogous to the
+<code>driver-loop</code> procedure for the other evaluators in this chapter, reads
+queries from the terminal. For each query, it calls <code>qeval</code> with the
+query and a stream that consists of a single empty frame. This will
+produce the stream of all possible matches (all possible extensions to
+the empty frame). For each frame in the resulting stream, it
+instantiates the original query using the values of the variables found
+in the frame. This stream of instantiated queries is then
+printed.<a href="book-Z-H-29.html#footnote_Temp_682">^[74]{.small}^</a></p>
+<p>The driver also checks for the special
+command <code>assert!</code>, which signals that the input is not a query but
+rather an assertion or rule to be added to the data base. For instance,</p>
+<pre><code class="language-scheme editable">(assert! (job (Bitdiddle Ben) (computer wizard)))
+(assert! (rule (wheel ?person)
+               (and (supervisor ?middle-manager ?person)
+                    (supervisor ?x ?middle-manager))))
+</code></pre>
+<h3 id="443--is-logic-programming-mathematical-logic"><a class="header" href="#443--is-logic-programming-mathematical-logic"><a href="book-Z-H-4.html#%_toc_%_sec_4.4.3">4.4.3  Is Logic Programming Mathematical Logic?</a></a></h3>
+<p>The means of combination used in the
+query language may at first seem identical to the operations <code>and</code>,
+<code>or</code>, and <code>not</code> of mathematical logic, and the application of
+query-language rules is in fact accomplished through a legitimate method
+of
+inference.<a href="book-Z-H-29.html#footnote_Temp_683">^[75]{.small}^</a>
+This identification of the query language with mathematical logic is not
+really valid, though, because the query language provides a
+<em>control structure</em> that interprets the logical
+statements procedurally. We can often take advantage of this control
+structure. For example, to find all of the supervisors of programmers we
+could formulate a query in either of two logically equivalent forms:</p>
+<pre><code class="language-scheme editable">(and (job ?x (computer programmer))
+     (supervisor ?x ?y))
+</code></pre>
+<p>or</p>
+<pre><code class="language-scheme editable">(and (supervisor ?x ?y)
+     (job ?x (computer programmer)))
+</code></pre>
+<p>If a company has many more supervisors than programmers
+(the usual case), it is better to use the first form rather than the
+second because the data base must be scanned for each intermediate
+result (frame) produced by the first clause of the <code>and</code>.</p>
+<p>The aim of logic programming is to provide
+the programmer with techniques for decomposing a computational problem
+into two separate problems: 'what' is to be computed, and
+'how' this should be computed. This is accomplished by selecting a
+subset of the statements of mathematical logic that is powerful enough
+to be able to describe anything one might want to compute, yet weak
+enough to have a controllable procedural interpretation. The intention
+here is that, on the one hand, a program specified in a logic
+programming language should be an effective program that can be carried
+out by a computer. Control ('how' to compute) is effected by using
+the order of evaluation of the language. We should be able to arrange
+the order of clauses and the order of subgoals within each clause so
+that the computation is done in an order deemed to be effective and
+efficient. At the same time, we should be able to view the result of the
+computation ('what' to compute) as a simple consequence of the
+laws of logic.</p>
+<p>Our query language can be regarded as just such a procedurally
+interpretable subset of mathematical logic. An assertion represents a
+simple fact (an atomic proposition). A rule represents the implication
+that the rule conclusion holds for those cases where the rule body
+holds. A rule has a natural procedural interpretation: To establish the
+conclusion of the rule, establish the body of the rule. Rules,
+therefore, specify computations. However, because rules can also be
+regarded as statements of mathematical logic, we can justify any
+'inference' accomplished by a logic program by asserting that the
+same result could be obtained by working entirely within mathematical
+logic.<a href="book-Z-H-29.html#footnote_Temp_684">^[76]{.small}^</a></p>
+<h4 id="infinite-loops"><a class="header" href="#infinite-loops"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_685">Infinite loops</a></a></h4>
+<p>A consequence of the procedural interpretation of logic
+programs is that it is possible to construct hopelessly inefficient
+programs for solving certain problems. An extreme case of inefficiency
+occurs when the system falls into infinite loops in making deductions.
+As a simple example, suppose we are setting up a data base of famous
+marriages, including</p>
+<pre><code class="language-scheme editable">(assert! (married Minnie Mickey))
+</code></pre>
+<p>If we now ask</p>
+<pre><code class="language-scheme editable">(married Mickey ?who)
+</code></pre>
+<p>we will get no response, because the system doesn't know that if <em>A</em> is
+married to <em>B</em>, then <em>B</em> is married to <em>A</em>. So we assert the rule</p>
+<pre><code class="language-scheme editable">(assert! (rule (married ?x ?y)
+               (married ?y ?x)))
+</code></pre>
+<p>and again query</p>
+<pre><code class="language-scheme editable">(married Mickey ?who)
+</code></pre>
+<p>Unfortunately, this will drive the system into an infinite loop, as
+follows:</p>
+<ul>
+<li>The system finds that the <code>married</code> rule is applicable; that is, the
+rule conclusion <code>(married ?x ?y)</code> successfully unifies with the query
+pattern <code>(married Mickey ?who)</code> to produce a frame in which <code>?x</code> is
+bound to <code>Mickey</code> and <code>?y</code> is bound to <code>?who</code>. So the interpreter
+proceeds to evaluate the rule body <code>(married ?y ?x)</code> in this frame --
+in effect, to process the query <code>(married ?who Mickey)</code>.</li>
+<li>One answer appears directly as an assertion in the data base:
+<code>(married Minnie Mickey)</code>.</li>
+<li>The <code>married</code> rule is also applicable, so the interpreter again
+evaluates the rule body, which this time is equivalent to
+<code>(married Mickey ?who)</code>.</li>
+</ul>
+<p>The system is now in an infinite loop. Indeed, whether the system will
+find the simple answer <code>(married Minnie Mickey)</code> before it goes into the
+loop depends on implementation details concerning the order in which the
+system checks the items in the data base. This is a very simple example
+of the kinds of loops that can occur. Collections of interrelated rules
+can lead to loops that are much harder to anticipate, and the appearance
+of a loop can depend on the order of clauses in an <code>and</code> (see
+exercise <a href="book-Z-H-29.html#%_thm_4.64">4.64</a>) or on low-level details
+concerning the order in which the system processes
+queries.<a href="book-Z-H-29.html#footnote_Temp_686">^[77]{.small}^</a></p>
+<h4 id="problems-with-not"><a class="header" href="#problems-with-not"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_687">Problems with <code>not</code></a></a></h4>
+<p>Another quirk in the query system
+concerns <code>not</code>. Given the data base of
+section <a href="book-Z-H-29.html#%_sec_4.4.1">4.4.1</a>, consider the following
+two queries:</p>
+<pre><code class="language-scheme editable">(and (supervisor ?x ?y)
+     (not (job ?x (computer programmer))))
+(and (not (job ?x (computer programmer)))
+     (supervisor ?x ?y))
+</code></pre>
+<p>These two queries do not produce the same result. The first query begins
+by finding all entries in the data base that match <code>(supervisor ?x ?y)</code>,
+and then filters the resulting frames by removing the ones in which the
+value of <code>?x</code> satisfies <code>(job ?x (computer programmer))</code>. The second
+query begins by filtering the incoming frames to remove those that can
+satisfy <code>(job ?x (computer programmer))</code>. Since the only incoming frame
+is empty, it checks the data base to see if there are any patterns that
+satisfy <code>(job ?x (computer programmer))</code>. Since there generally are
+entries of this form, the <code>not</code> clause filters out the empty frame and
+returns an empty stream of frames. Consequently, the entire compound
+query returns an empty stream.</p>
+<p>The trouble is that our implementation of <code>not</code> really is meant to serve
+as a filter on values for the variables. If a <code>not</code> clause is processed
+with a frame in which some of the variables remain unbound (as does <code>?x</code>
+in the example above), the system will produce unexpected results.
+Similar problems occur with the use of <code>lisp-value</code> --
+the Lisp predicate can't work if some of its arguments are unbound. See
+exercise <a href="book-Z-H-29.html#%_thm_4.77">4.77</a>.</p>
+<p>There is also a much more serious way in which the <code>not</code> of the query
+language differs from the <code>not</code> of mathematical logic. In logic, we
+interpret the statement 'not <em>P</em>' to mean that <em>P</em> is not true. In
+the query system, however, 'not <em>P</em>' means that <em>P</em> is not
+deducible from the knowledge in the data base. For example, given the
+personnel data base of section <a href="book-Z-H-29.html#%_sec_4.4.1">4.4.1</a>,
+the system would happily deduce all sorts of <code>not</code> statements, such as
+that Ben Bitdiddle is not a baseball fan, that it is not raining
+outside, and that 2 + 2 is not
+4.<a href="book-Z-H-29.html#footnote_Temp_688">^[78]{.small}^</a>
+In other words, the <code>not</code> of logic programming languages reflects the
+so-called <em>closed world assumption</em> that all relevant
+information has been included in the data
+base.<a href="book-Z-H-29.html#footnote_Temp_689">^[79]{.small}^</a></p>
+<p><strong>Exercise 4.64.</strong>  Louis Reasoner
+mistakenly deletes the <code>outranked-by</code> rule
+(section <a href="book-Z-H-29.html#%_sec_4.4.1">4.4.1</a>) from the data base. When
+he realizes this, he quickly reinstalls it. Unfortunately, he makes a
+slight change in the rule, and types it in as</p>
+<pre><code class="language-scheme editable">(rule (outranked-by ?staff-person ?boss)
+      (or (supervisor ?staff-person ?boss)
+          (and (outranked-by ?middle-manager ?boss)
+               (supervisor ?staff-person ?middle-manager))))
+</code></pre>
+<p>Just after Louis types this information into the system, DeWitt Aull
+comes by to find out who outranks Ben Bitdiddle. He issues the query</p>
+<pre><code class="language-scheme editable">(outranked-by (Bitdiddle Ben) ?who)
+</code></pre>
+<p>After answering, the system goes into an infinite loop. Explain why.</p>
+<p><strong>Exercise 4.65.</strong>  Cy D. Fect, looking
+forward to the day when he will rise in the organization, gives a query
+to find all the wheels (using the <code>wheel</code> rule of
+section <a href="book-Z-H-29.html#%_sec_4.4.1">4.4.1</a>):</p>
+<pre><code class="language-scheme editable">(wheel ?who)
+</code></pre>
+<p>To his surprise, the system responds</p>
+<p><em><code>;;; Query results:</code></em></p>
+<pre><code class="language-scheme editable">(wheel (Warbucks Oliver))
+(wheel (Bitdiddle Ben))
+(wheel (Warbucks Oliver))
+(wheel (Warbucks Oliver))
+(wheel (Warbucks Oliver))
+</code></pre>
+<p>Why is Oliver Warbucks listed four times?</p>
+<p><strong>Exercise 4.66.</strong>  Ben has been
+generalizing the query system to provide statistics about the company.
+For example, to find the total salaries of all the computer programmers
+one will be able to say</p>
+<p><code>(sum ?amount</code>
+<code>     (and (job ?x (computer programmer))</code>
+<code>          (salary ?x ?amount)))</code></p>
+<p>In general, Ben's new system allows expressions of the form</p>
+<p><code>(accumulation-function &lt;</code><em><code>variable</code></em><code>&gt;</code>
+<code>                       &lt;</code><em><code>query pattern</code></em><code>&gt;)</code></p>
+<p>where <code>accumulation-function</code> can be things like <code>sum</code>, <code>average</code>, or
+<code>maximum</code>. Ben reasons that it should be a cinch to implement this. He
+will simply feed the query pattern to <code>qeval</code>. This will produce a
+stream of frames. He will then pass this stream through a mapping
+function that extracts the value of the designated variable from each
+frame in the stream and feed the resulting stream of values to the
+accumulation function. Just as Ben completes the implementation and is
+about to try it out, Cy walks by, still puzzling over the <code>wheel</code> query
+result in exercise <a href="book-Z-H-29.html#%_thm_4.65">4.65</a>. When Cy shows
+Ben the system's response, Ben groans, 'Oh, no, my simple
+accumulation scheme won't work!'</p>
+<p>What has Ben just realized? Outline a method he can use to salvage the
+situation.</p>
+<p><strong>Exercise 4.67.</strong>  Devise
+a way to install a loop detector in the query system so as to avoid the
+kinds of simple loops illustrated in the text and in
+exercise <a href="book-Z-H-29.html#%_thm_4.64">4.64</a>. The general idea is that
+the system should maintain some sort of history of its current chain of
+deductions and should not begin processing a query that it is already
+working on. Describe what kind of information (patterns and frames) is
+included in this history, and how the check should be made. (After you
+study the details of the query-system implementation in
+section <a href="book-Z-H-29.html#%_sec_4.4.4">4.4.4</a>, you may want to modify
+the system to include your loop detector.)</p>
+<p><strong>Exercise 4.68.</strong>  Define rules to
+implement the <code>reverse</code> operation of
+exercise <a href="book-Z-H-15.html#%_thm_2.18">2.18</a>, which returns a list
+containing the same elements as a given list in reverse order. (Hint:
+Use <code>append-to-form</code>.) Can your rules answer both <code>(reverse (1 2 3) ?x)</code>
+and <code>(reverse ?x (1 2 3))</code> ?</p>
+<p><strong>Exercise 4.69.</strong>  Beginning with the data base and the
+rules you formulated in exercise <a href="book-Z-H-29.html#%_thm_4.63">4.63</a>,
+devise a rule for adding 'greats' to a grandson relationship. This
+should enable the system to deduce that Irad is the great-grandson of
+Adam, or that Jabal and Jubal are the
+great-great-great-great-great-grandsons of Adam. (Hint: Represent the
+fact about Irad, for example, as <code>((great grandson) Adam Irad)</code>. Write
+rules that determine if a list ends in the word <code>grandson</code>. Use this to
+express a rule that allows one to derive the relationship
+<code>((great . ?rel) ?x ?y)</code>, where <code>?rel</code> is a list ending in <code>grandson</code>.)
+Check your rules on queries such as <code>((great grandson) ?g ?ggs)</code> and
+<code>(?relationship Adam Irad)</code>.</p>
+<h3 id="444--implementing-the-query-system"><a class="header" href="#444--implementing-the-query-system"><a href="book-Z-H-4.html#%_toc_%_sec_4.4.4">4.4.4  Implementing the Query System</a></a></h3>
+<p>Section <a href="book-Z-H-29.html#%_sec_4.4.2">4.4.2</a> described how the query
+system works. Now we fill in the details by presenting a complete
+implementation of the system.</p>
+<h4 id="4441--the-driver-loop-and-instantiation"><a class="header" href="#4441--the-driver-loop-and-instantiation"><a href="book-Z-H-4.html#%_toc_%_sec_4.4.4.1">4.4.4.1  The Driver Loop and Instantiation</a></a></h4>
+<p>The driver loop for the query system
+repeatedly reads input expressions. If the expression is a rule or
+assertion to be added to the data base, then the information is added.
+Otherwise the expression is assumed to be a query. The driver passes
+this query to the evaluator <code>qeval</code> together with an initial frame
+stream consisting of a single empty frame. The result of the evaluation
+is a stream of frames generated by satisfying the query with variable
+values found in the data base. These frames are used to form a new
+stream consisting of copies of the original query in which the variables
+are instantiated with values supplied by the stream of frames, and this
+final stream is printed at the terminal:</p>
+<pre><code class="language-scheme editable">(define input-prompt ";;; Query input:")
+(define output-prompt ";;; Query results:")
+(define (query-driver-loop)
+  (prompt-for-input input-prompt)
+  (let ((q (query-syntax-process (read))))
+    (cond ((assertion-to-be-added? q)
+           (add-rule-or-assertion! (add-assertion-body q))
+           (newline)
+           (display "Assertion added to data base.")
+           (query-driver-loop))
+          (else
+           (newline)
+           (display output-prompt)
+           (display-stream
+            (stream-map
+             (lambda (frame)
+               (instantiate q
+                            frame
+                            (lambda (v f)
+                              (contract-question-mark v))))
+             (qeval q (singleton-stream '())))))
+           (query-driver-loop)))))
+</code></pre>
+<p>Here, as in the other evaluators in this chapter, we use
+an abstract syntax for the expressions of the query language. The
+implementation of the expression syntax, including the predicate
+<code>assertion-to-be-added?</code> and the selector <code>add-assertion-body</code>, is given
+in section <a href="book-Z-H-29.html#%_sec_4.4.4.7">4.4.4.7</a>.
+<code>Add-rule-or-assertion!</code> is defined in
+section <a href="book-Z-H-29.html#%_sec_4.4.4.5">4.4.4.5</a>.</p>
+<p>Before doing any processing on an input expression, the driver loop
+transforms it syntactically into a form that makes the processing more
+efficient. This involves changing the
+representation of pattern variables. When
+the query is instantiated, any variables that remain unbound are
+transformed back to the input representation before being printed. These
+transformations are performed by the two procedures
+<code>query-syntax-process</code> and <code>contract-question-mark</code> (section
+<a href="book-Z-H-29.html#%_sec_4.4.4.7">4.4.4.7</a>).</p>
+<p>To instantiate an expression, we copy it, replacing any
+variables in the expression by their values in a given frame. The values
+are themselves instantiated, since they could contain variables (for
+example, if <code>?x</code> in <code>exp</code> is bound to <code>?y</code> as the result of unification
+and <code>?y</code> is in turn bound to 5). The action to take if a variable cannot
+be instantiated is given by a procedural argument to <code>instantiate</code>.</p>
+<pre><code class="language-scheme editable">(define (instantiate exp frame unbound-var-handler)
+  (define (copy exp)
+    (cond ((var? exp)
+           (let ((binding (binding-in-frame exp frame)))
+             (if binding
+                 (copy (binding-value binding))
+                 (unbound-var-handler exp frame))))
+          ((pair? exp)
+           (cons (copy (car exp)) (copy (cdr exp))))
+          (else exp)))
+  (copy exp))
+</code></pre>
+<p>The procedures that manipulate bindings are defined in
+section <a href="book-Z-H-29.html#%_sec_4.4.4.8">4.4.4.8</a>.</p>
+<h4 id="4442--the-evaluator"><a class="header" href="#4442--the-evaluator"><a href="book-Z-H-4.html#%_toc_%_sec_4.4.4.2">4.4.4.2  The Evaluator</a></a></h4>
+<p>The <code>qeval</code> procedure, called by the <code>query-driver-loop</code>,
+is the basic evaluator of the query system. It takes as inputs a query
+and a stream of frames, and it returns a stream of extended frames. It
+identifies special forms by a data-directed dispatch
+using <code>get</code> and <code>put</code>, just as we did in implementing generic operations
+in chapter 2. Any query that is not identified as a special form is
+assumed to be a simple query, to be processed by <code>simple-query</code>.</p>
+<pre><code class="language-scheme editable">(define (qeval query frame-stream)
+  (let ((qproc (get (type query) 'qeval)))
+    (if qproc
+        (qproc (contents query) frame-stream)
+        (simple-query query frame-stream))))
+</code></pre>
+<p><code>Type</code> and <code>contents</code>, defined in
+section <a href="book-Z-H-29.html#%_sec_4.4.4.7">4.4.4.7</a>, implement the
+abstract syntax of the special forms.</p>
+<h4 id="simple-queries-2"><a class="header" href="#simple-queries-2"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_696">Simple queries</a></a></h4>
+<p>The <code>simple-query</code> procedure handles simple queries. It
+takes as arguments a simple query (a pattern) together with a stream of
+frames, and it returns the stream formed by extending each frame by all
+data-base matches of the query.</p>
+<pre><code class="language-scheme editable">(define (simple-query query-pattern frame-stream)
+  (stream-flatmap
+   (lambda (frame)
+     (stream-append-delayed
+      (find-assertions query-pattern frame)
+      (delay (apply-rules query-pattern frame))))
+   frame-stream))
+</code></pre>
+<p>For each frame in the input stream, we use <code>find-assertions</code>
+(section <a href="book-Z-H-29.html#%_sec_4.4.4.3">4.4.4.3</a>) to match the pattern
+against all assertions in the data base, producing a stream of extended
+frames, and we use <code>apply-rules</code>
+(section <a href="book-Z-H-29.html#%_sec_4.4.4.4">4.4.4.4</a>) to apply all
+possible rules, producing another stream of extended frames. These two
+streams are combined (using <code>stream-append-delayed</code>,
+section <a href="book-Z-H-29.html#%_sec_4.4.4.6">4.4.4.6</a>) to make a stream of
+all the ways that the given pattern can be satisfied consistent with the
+original frame (see exercise <a href="book-Z-H-29.html#%_thm_4.71">4.71</a>). The
+streams for the individual input frames are combined using
+<code>stream-flatmap</code> (section <a href="book-Z-H-29.html#%_sec_4.4.4.6">4.4.4.6</a>) to
+form one large stream of all the ways that any of the frames in the
+original input stream can be extended to produce a match with the given
+pattern.</p>
+<h4 id="compound-queries-2"><a class="header" href="#compound-queries-2"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_697">Compound queries</a></a></h4>
+<p><code>And</code> queries are handled as illustrated
+in figure <a href="book-Z-H-29.html#%_fig_4.5">4.5</a> by the <code>conjoin</code> procedure.
+<code>Conjoin</code> takes as inputs the conjuncts and the frame stream and returns
+the stream of extended frames. First, <code>conjoin</code> processes the stream of
+frames to find the stream of all possible frame extensions that satisfy
+the first query in the conjunction. Then, using this as the new frame
+stream, it recursively applies <code>conjoin</code> to the rest of the queries.</p>
+<pre><code class="language-scheme editable">(define (conjoin conjuncts frame-stream)
+  (if (empty-conjunction? conjuncts)
+      frame-stream
+      (conjoin (rest-conjuncts conjuncts)
+               (qeval (first-conjunct conjuncts)
+                      frame-stream))))
+</code></pre>
+<p>The expression</p>
+<p><code>(put 'and 'qeval conjoin)</code></p>
+<p>sets up <code>qeval</code> to dispatch to <code>conjoin</code> when an <code>and</code> form is
+encountered.</p>
+<p><code>Or</code> queries are handled similarly, as shown in
+figure <a href="book-Z-H-29.html#%_fig_4.6">4.6</a>. The output streams for the
+various disjuncts of the <code>or</code> are computed separately and merged using
+the <code>interleave-delayed</code> procedure from
+section <a href="book-Z-H-29.html#%_sec_4.4.4.6">4.4.4.6</a>. (See
+exercises <a href="book-Z-H-29.html#%_thm_4.71">4.71</a>
+and <a href="book-Z-H-29.html#%_thm_4.72">4.72</a>.)</p>
+<pre><code class="language-scheme editable">(define (disjoin disjuncts frame-stream)
+  (if (empty-disjunction? disjuncts)
+      the-empty-stream
+      (interleave-delayed
+       (qeval (first-disjunct disjuncts) frame-stream)
+       (delay (disjoin (rest-disjuncts disjuncts)
+                       frame-stream)))))
+(put 'or 'qeval disjoin)
+</code></pre>
+<p>The predicates and selectors for the syntax of conjuncts and disjuncts
+are given in section <a href="book-Z-H-29.html#%_sec_4.4.4.7">4.4.4.7</a>.</p>
+<h4 id="filters"><a class="header" href="#filters"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_698">Filters</a></a></h4>
+<p><code>Not</code> is handled by the method outlined in
+section <a href="book-Z-H-29.html#%_sec_4.4.2">4.4.2</a>. We attempt to extend each
+frame in the input stream to satisfy the query being negated, and we
+include a given frame in the output stream only if it cannot be
+extended.</p>
+<pre><code class="language-scheme editable">(define (negate operands frame-stream)
+  (stream-flatmap
+   (lambda (frame)
+     (if (stream-null? (qeval (negated-query operands)
+                              (singleton-stream frame)))
+         (singleton-stream frame)
+         the-empty-stream))
+   frame-stream))
+(put 'not 'qeval negate)
+</code></pre>
+<p><code>Lisp-value</code> is a filter similar to <code>not</code>. Each frame in
+the stream is used to instantiate the variables in the pattern, the
+indicated predicate is applied, and the frames for which the predicate
+returns false are filtered out of the input stream. An error results if
+there are unbound pattern variables.</p>
+<pre><code class="language-scheme editable">(define (lisp-value call frame-stream)
+  (stream-flatmap
+   (lambda (frame)
+     (if (execute
+          (instantiate
+           call
+           frame
+           (lambda (v f)
+             (error "Unknown pat var -- LISP-VALUE" v))))
+         (singleton-stream frame)
+         the-empty-stream))
+   frame-stream))
+(put 'lisp-value 'qeval lisp-value)
+</code></pre>
+<p><code>Execute</code>, which applies the predicate to the arguments, must <code>eval</code> the
+predicate expression to get the procedure to apply. However, it must not
+evaluate the arguments, since they are already the actual arguments, not
+expressions whose evaluation (in Lisp) will produce the arguments. Note
+that <code>execute</code> is implemented using <code>eval</code> and <code>apply</code>
+from the underlying Lisp system.</p>
+<pre><code class="language-scheme editable">(define (execute exp)
+  (apply (eval (predicate exp) user-initial-environment)
+         (args exp)))
+</code></pre>
+<p>The <code>always-true</code> special form provides for a query that is always
+satisfied. It ignores its contents (normally empty) and simply passes
+through all the frames in the input stream. <code>Always-true</code> is used by the
+<code>rule-body</code> selector (section <a href="book-Z-H-29.html#%_sec_4.4.4.7">4.4.4.7</a>)
+to provide bodies for rules that were defined without
+bodies (that is, rules whose conclusions are always satisfied).</p>
+<pre><code class="language-scheme editable">(define (always-true ignore frame-stream) frame-stream)
+(put 'always-true 'qeval always-true)
+</code></pre>
+<p>The selectors that define the syntax of <code>not</code> and <code>lisp-value</code> are given
+in section <a href="book-Z-H-29.html#%_sec_4.4.4.7">4.4.4.7</a>.</p>
+<h4 id="4443--finding-assertions-by-pattern-matching"><a class="header" href="#4443--finding-assertions-by-pattern-matching"><a href="book-Z-H-4.html#%_toc_%_sec_4.4.4.3">4.4.4.3  Finding Assertions by Pattern Matching</a></a></h4>
+<p><code>Find-assertions</code>, called by
+<code>simple-query</code> (section <a href="book-Z-H-29.html#%_sec_4.4.4.2">4.4.4.2</a>),
+takes as input a pattern and a frame. It returns a stream of frames,
+each extending the given one by a data-base match of the given pattern.
+It uses <code>fetch-assertions</code>
+(section <a href="book-Z-H-29.html#%_sec_4.4.4.5">4.4.4.5</a>) to get a stream of
+all the assertions in the data base that should be checked for a match
+against the pattern and the frame. The reason for <code>fetch-assertions</code>
+here is that we can often apply simple tests that will eliminate many of
+the entries in the data base from the pool of candidates for a
+successful match. The system would still work if we eliminated
+<code>fetch-assertions</code> and simply checked a stream of all assertions in the
+data base, but the computation would be less efficient because we would
+need to make many more calls to the matcher.</p>
+<pre><code class="language-scheme editable">(define (find-assertions pattern frame)
+  (stream-flatmap (lambda (datum)
+                    (check-an-assertion datum pattern frame))
+                  (fetch-assertions pattern frame)))
+</code></pre>
+<p><code>Check-an-assertion</code> takes as arguments a pattern, a data object
+(assertion), and a frame and returns either a one-element stream
+containing the extended frame or <code>the-empty-stream</code> if the match fails.</p>
+<pre><code class="language-scheme editable">(define (check-an-assertion assertion query-pat query-frame)
+  (let ((match-result
+         (pattern-match query-pat assertion query-frame)))
+    (if (eq? match-result 'failed)
+        the-empty-stream
+        (singleton-stream match-result))))
+</code></pre>
+<p>The basic pattern matcher returns either the symbol <code>failed</code> or an
+extension of the given frame. The basic idea of the matcher is to check
+the pattern against the data, element by element, accumulating bindings
+for the pattern variables. If the pattern and the data object are the
+same, the match succeeds and we return the frame of bindings accumulated
+so far. Otherwise, if the pattern is a variable we extend the current
+frame by binding the variable to the data, so long as this is consistent
+with the bindings already in the frame. If the pattern and the data are
+both pairs, we (recursively) match the <code>car</code> of the pattern against the
+<code>car</code> of the data to produce a frame; in this frame we then match the
+<code>cdr</code> of the pattern against the <code>cdr</code> of the data. If none of these
+cases are applicable, the match fails and we return the symbol <code>failed</code>.</p>
+<pre><code class="language-scheme editable">(define (pattern-match pat dat frame)
+  (cond ((eq? frame 'failed) 'failed)
+        ((equal? pat dat) frame)
+        ((var? pat) (extend-if-consistent pat dat frame))
+        ((and (pair? pat) (pair? dat))
+         (pattern-match (cdr pat)
+                        (cdr dat)
+                        (pattern-match (car pat)
+                                       (car dat)
+                                       frame)))
+        (else 'failed)))
+</code></pre>
+<p>Here is the procedure that extends a frame by adding a new binding, if
+this is consistent with the bindings already in the frame:</p>
+<pre><code class="language-scheme editable">(define (extend-if-consistent var dat frame)
+  (let ((binding (binding-in-frame var frame)))
+    (if binding
+        (pattern-match (binding-value binding) dat frame)
+        (extend var dat frame))))
+</code></pre>
+<p>If there is no binding for the variable in the frame, we simply add the
+binding of the variable to the data. Otherwise we match, in the frame,
+the data against the value of the variable in the frame. If the stored
+value contains only constants, as it must if it was stored during
+pattern matching by <code>extend-if-consistent</code>, then the match simply tests
+whether the stored and new values are the same. If so, it returns the
+unmodified frame; if not, it returns a failure indication. The stored
+value may, however, contain pattern variables if it was stored during
+unification (see section <a href="book-Z-H-29.html#%_sec_4.4.4.4">4.4.4.4</a>). The
+recursive match of the stored pattern against the new data will add or
+check bindings for the variables in this pattern. For example, suppose
+we have a frame in which <code>?x</code> is bound to <code>(f ?y)</code> and <code>?y</code> is unbound,
+and we wish to augment this frame by a binding of <code>?x</code> to <code>(f b)</code>. We
+look up <code>?x</code> and find that it is bound to <code>(f ?y)</code>. This leads us to
+match <code>(f ?y)</code> against the proposed new value <code>(f b)</code> in the same frame.
+Eventually this match extends the frame by adding a binding of <code>?y</code> to
+<code>b</code>. <code>?X</code> remains bound to <code>(f ?y)</code>. We never modify a stored binding
+and we never store more than one binding for a given variable.</p>
+<p>The procedures used by <code>extend-if-consistent</code> to manipulate bindings are
+defined in section <a href="book-Z-H-29.html#%_sec_4.4.4.8">4.4.4.8</a>.</p>
+<h4 id="patterns-with-dotted-tails"><a class="header" href="#patterns-with-dotted-tails"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_699">Patterns with dotted tails</a></a></h4>
+<p>If a pattern contains a dot followed by a pattern
+variable, the pattern variable matches the rest of the data list (rather
+than the next element of the data list), just as one would expect with
+the dotted-tail notation described in
+exercise <a href="book-Z-H-15.html#%_thm_2.20">2.20</a>. Although the pattern
+matcher we have just implemented doesn't look for dots, it does behave
+as we want. This is because the Lisp <code>read</code> primitive, which is used by
+<code>query-driver-loop</code> to read the query and represent it as a list
+structure, treats dots in a special way.</p>
+<p>When <code>read</code> sees a dot, instead of making
+the next item be the next element of a list (the <code>car</code> of a <code>cons</code> whose
+<code>cdr</code> will be the rest of the list) it makes the next item be the <code>cdr</code>
+of the list structure. For example, the list structure produced by
+<code>read</code> for the pattern <code>(computer ?type)</code> could be constructed by
+evaluating the expression <code>(cons 'computer (cons '?type '()))</code>, and that
+for <code>(computer . ?type)</code> could be constructed by evaluating the
+expression <code>(cons 'computer '?type)</code>.</p>
+<p>Thus, as <code>pattern-match</code> recursively compares <code>car</code>s and <code>cdr</code>s of a
+data list and a pattern that had a dot, it eventually matches the
+variable after the dot (which is a <code>cdr</code> of the pattern) against a
+sublist of the data list, binding the variable to that list. For
+example, matching the pattern <code>(computer . ?type)</code> against
+<code>(computer programmer trainee)</code> will match <code>?type</code> against the list
+<code>(programmer trainee)</code>.</p>
+<h4 id="4444--rules-and-unification"><a class="header" href="#4444--rules-and-unification"><a href="book-Z-H-4.html#%_toc_%_sec_4.4.4.4">4.4.4.4  Rules and Unification</a></a></h4>
+<p><code>Apply-rules</code> is the rule analog of <code>find-assertions</code>
+(section <a href="book-Z-H-29.html#%_sec_4.4.4.3">4.4.4.3</a>). It takes as input a
+pattern and a frame, and it forms a stream of extension frames by
+applying rules from the data base. <code>Stream-flatmap</code> maps <code>apply-a-rule</code>
+down the stream of possibly applicable rules (selected by <code>fetch-rules</code>,
+section <a href="book-Z-H-29.html#%_sec_4.4.4.5">4.4.4.5</a>) and combines the
+resulting streams of frames.</p>
+<pre><code class="language-scheme editable">(define (apply-rules pattern frame)
+  (stream-flatmap (lambda (rule)
+                    (apply-a-rule rule pattern frame))
+                  (fetch-rules pattern frame)))
+</code></pre>
+<p><code>Apply-a-rule</code> applies rules using the method outlined in section
+<a href="book-Z-H-29.html#%_sec_4.4.2">4.4.2</a>. It first augments its argument
+frame by unifying the rule conclusion with the pattern in the given
+frame. If this succeeds, it evaluates the rule body in this new frame.</p>
+<p>Before any of this happens, however, the program renames all the
+variables in the rule with unique new names. The reason for this is to
+prevent the variables for different rule applications from becoming
+confused with each other. For instance, if two rules both use a variable
+named <code>?x</code>, then each one may add a binding for <code>?x</code> to the frame when
+it is applied. These two <code>?x</code>'s have nothing to do with each other, and
+we should not be fooled into thinking that the two bindings must be
+consistent. Rather than rename variables, we could devise a more clever
+environment structure; however, the renaming approach we have chosen
+here is the most straightforward, even if not the most efficient. (See
+exercise <a href="book-Z-H-29.html#%_thm_4.79">4.79</a>.) Here is the
+<code>apply-a-rule</code> procedure:</p>
+<pre><code class="language-scheme editable">(define (apply-a-rule rule query-pattern query-frame)
+  (let ((clean-rule (rename-variables-in rule)))
+    (let ((unify-result
+           (unify-match query-pattern
+                        (conclusion clean-rule)
+                        query-frame)))
+      (if (eq? unify-result 'failed)
+          the-empty-stream
+          (qeval (rule-body clean-rule)
+                 (singleton-stream unify-result))))))
+</code></pre>
+<p>The selectors <code>rule-body</code> and <code>conclusion</code> that extract parts of a rule
+are defined in section <a href="book-Z-H-29.html#%_sec_4.4.4.7">4.4.4.7</a>.</p>
+<p>We generate unique variable names by associating a unique identifier
+(such as a number) with each rule application and combining this
+identifier with the original variable names. For example, if the
+rule-application identifier is 7, we might change each <code>?x</code> in the rule
+to <code>?x-7</code> and each <code>?y</code> in the rule to <code>?y-7</code>. (<code>Make-new-variable</code> and
+<code>new-rule-application-id</code> are included with the syntax procedures in
+section <a href="book-Z-H-29.html#%_sec_4.4.4.7">4.4.4.7</a>.)</p>
+<pre><code class="language-scheme editable">(define (rename-variables-in rule)
+  (let ((rule-application-id (new-rule-application-id)))
+    (define (tree-walk exp)
+      (cond ((var? exp)
+             (make-new-variable exp rule-application-id))
+            ((pair? exp)
+             (cons (tree-walk (car exp))
+                   (tree-walk (cdr exp))))
+            (else exp)))
+    (tree-walk rule)))
+</code></pre>
+<p>The unification algorithm is implemented
+as a procedure that takes as inputs two patterns and a frame and returns
+either the extended frame or the symbol <code>failed</code>. The unifier is like
+the pattern matcher except that it is symmetrical -- variables are
+allowed on both sides of the match. <code>Unify-match</code> is basically the same
+as <code>pattern-match</code>, except that there is extra code (marked
+'***' below) to handle the case where the object on the right
+side of the match is a variable.</p>
+<pre><code class="language-scheme editable">(define (unify-match p1 p2 frame)
+  (cond ((eq? frame 'failed) 'failed)
+        ((equal? p1 p2) frame)
+        ((var? p1) (extend-if-possible p1 p2 frame))
+        ((var? p2) (extend-if-possible p2 p1 frame))  ; ***
+        ((and (pair? p1) (pair? p2))
+         (unify-match (cdr p1)
+                      (cdr p2)
+                      (unify-match (car p1)
+                                   (car p2)
+                                   frame)))
+        (else 'failed)))
+</code></pre>
+<p>In unification, as in one-sided pattern matching, we want to accept a
+proposed extension of the frame only if it is consistent with existing
+bindings. The procedure <code>extend-if-possible</code> used in unification is the
+same as the <code>extend-if-consistent</code> used in pattern matching except for
+two special checks, marked '***' in the program below. In the
+first case, if the variable we are trying to match is not bound, but the
+value we are trying to match it with is itself a (different) variable,
+it is necessary to check to see if the value is bound, and if so, to
+match its value. If both parties to the match are unbound, we may bind
+either to the other.</p>
+<p>The second check deals with attempts to bind a variable to a pattern
+that includes that variable. Such a situation can occur whenever a
+variable is repeated in both patterns. Consider, for example, unifying
+the two patterns <code>(?x ?x)</code> and <code>(?y &lt;</code><em><code>expression involving ?y</code></em><code>&gt;)</code>
+in a frame where both <code>?x</code> and <code>?y</code> are unbound. First <code>?x</code> is matched
+against <code>?y</code>, making a binding of <code>?x</code> to <code>?y</code>. Next, the same <code>?x</code> is
+matched against the given expression involving <code>?y</code>. Since <code>?x</code> is
+already bound to <code>?y</code>, this results in matching <code>?y</code> against the
+expression. If we think of the unifier as finding a set of values for
+the pattern variables that make the patterns the same, then these
+patterns imply instructions to find a <code>?y</code> such that <code>?y</code> is equal to
+the expression involving <code>?y</code>. There is no general method for solving
+such equations, so we reject such bindings; these cases are recognized
+by the predicate
+<code>depends-on?</code>.<a href="book-Z-H-29.html#footnote_Temp_700">^[80]{.small}^</a>
+On the other hand, we do not want to reject attempts to bind a variable
+to itself. For example, consider unifying <code>(?x ?x)</code> and <code>(?y ?y)</code>. The
+second attempt to bind <code>?x</code> to <code>?y</code> matches <code>?y</code> (the stored value of
+<code>?x</code>) against <code>?y</code> (the new value of <code>?x</code>). This is taken care of by the
+<code>equal?</code> clause of <code>unify-match</code>.</p>
+<pre><code class="language-scheme editable">(define (extend-if-possible var val frame)
+  (let ((binding (binding-in-frame var frame)))
+    (cond (binding
+           (unify-match
+            (binding-value binding) val frame))
+          ((var? val)                      ; ***
+           (let ((binding (binding-in-frame val frame)))
+             (if binding
+                 (unify-match
+                  var (binding-value binding) frame)
+                 (extend var val frame))))
+          ((depends-on? val var frame)     ; ***
+           'failed)
+          (else (extend var val frame)))))
+</code></pre>
+<p><code>Depends-on?</code> is a predicate that tests whether an expression proposed
+to be the value of a pattern variable depends on the variable. This must
+be done relative to the current frame because the expression may contain
+occurrences of a variable that already has a value that depends on our
+test variable. The structure of <code>depends-on?</code> is a simple recursive tree
+walk in which we substitute for the values of variables whenever
+necessary.</p>
+<pre><code class="language-scheme editable">(define (depends-on? exp var frame)
+  (define (tree-walk e)
+    (cond ((var? e)
+           (if (equal? var e)
+               true
+               (let ((b (binding-in-frame e frame)))
+                 (if b
+                     (tree-walk (binding-value b))
+                     false))))
+          ((pair? e)
+           (or (tree-walk (car e))
+               (tree-walk (cdr e))))
+          (else false)))
+  (tree-walk exp))
+</code></pre>
+<h4 id="4445--maintaining-the-data-base"><a class="header" href="#4445--maintaining-the-data-base"><a href="book-Z-H-4.html#%_toc_%_sec_4.4.4.5">4.4.4.5  Maintaining the Data Base</a></a></h4>
+<p>One important problem in
+designing logic programming languages is that of arranging things so
+that as few irrelevant data-base entries as possible will be examined in
+checking a given pattern. In our system, in addition to storing all
+assertions in one big stream, we store all assertions whose <code>car</code>s are
+constant symbols in separate streams, in a table indexed by the symbol.
+To fetch an assertion that may match a pattern, we first check to see if
+the <code>car</code> of the pattern is a constant symbol. If so, we return (to be
+tested using the matcher) all the stored assertions that have the same
+<code>car</code>. If the pattern's <code>car</code> is not a constant symbol, we return all
+the stored assertions. Cleverer methods could also take advantage of
+information in the frame, or try also to optimize the case where the
+<code>car</code> of the pattern is not a constant symbol. We avoid building our
+criteria for indexing (using the <code>car</code>, handling only the case of
+constant symbols) into the program; instead we call on predicates and
+selectors that embody our criteria.</p>
+<pre><code class="language-scheme editable">(define THE-ASSERTIONS the-empty-stream)
+(define (fetch-assertions pattern frame)
+  (if (use-index? pattern)
+      (get-indexed-assertions pattern)
+      (get-all-assertions)))
+(define (get-all-assertions) THE-ASSERTIONS)
+(define (get-indexed-assertions pattern)
+  (get-stream (index-key-of pattern) 'assertion-stream))
+</code></pre>
+<p><code>Get-stream</code> looks up a stream in the table and returns an empty stream
+if nothing is stored there.</p>
+<pre><code class="language-scheme editable">(define (get-stream key1 key2)
+  (let ((s (get key1 key2)))
+    (if s s the-empty-stream)))
+</code></pre>
+<p>Rules are stored similarly, using the <code>car</code> of the rule conclusion. Rule
+conclusions are arbitrary patterns, however, so they differ from
+assertions in that they can contain variables. A pattern whose <code>car</code> is
+a constant symbol can match rules whose conclusions start with a
+variable as well as rules whose conclusions have the same <code>car</code>. Thus,
+when fetching rules that might match a pattern whose <code>car</code> is a constant
+symbol we fetch all rules whose conclusions start with a variable as
+well as those whose conclusions have the same <code>car</code> as the pattern. For
+this purpose we store all rules whose conclusions start with a variable
+in a separate stream in our table, indexed by the symbol <code>?</code>.</p>
+<pre><code class="language-scheme editable">(define THE-RULES the-empty-stream)
+(define (fetch-rules pattern frame)
+  (if (use-index? pattern)
+      (get-indexed-rules pattern)
+      (get-all-rules)))
+(define (get-all-rules) THE-RULES)
+(define (get-indexed-rules pattern)
+  (stream-append
+   (get-stream (index-key-of pattern) 'rule-stream)
+   (get-stream '? 'rule-stream)))
+</code></pre>
+<p><code>Add-rule-or-assertion!</code> is used by <code>query-driver-loop</code> to add
+assertions and rules to the data base. Each item is stored in the index,
+if appropriate, and in a stream of all assertions or rules in the data
+base.</p>
+<pre><code class="language-scheme editable">(define (add-rule-or-assertion! assertion)
+  (if (rule? assertion)
+      (add-rule! assertion)
+      (add-assertion! assertion)))
+(define (add-assertion! assertion)
+  (store-assertion-in-index assertion)
+  (let ((old-assertions THE-ASSERTIONS))
+    (set! THE-ASSERTIONS
+          (cons-stream assertion old-assertions)))
+  'ok))
+(define (add-rule! rule)
+  (store-rule-in-index rule)
+  (let ((old-rules THE-RULES))
+    (set! THE-RULES (cons-stream rule old-rules)))
+  'ok))
+</code></pre>
+<p>To actually store an assertion or a rule, we check to see if it can be
+indexed. If so, we store it in the appropriate stream.</p>
+<pre><code class="language-scheme editable">(define (store-assertion-in-index assertion)
+  (if (indexable? assertion)
+      (let ((key (index-key-of assertion)))
+        (let ((current-assertion-stream
+               (get-stream key 'assertion-stream)))
+          (put key
+               'assertion-stream
+               (cons-stream assertion
+                            current-assertion-stream))))))
+(define (store-rule-in-index rule)
+  (let ((pattern (conclusion rule)))
+    (if (indexable? pattern)
+        (let ((key (index-key-of pattern)))
+          (let ((current-rule-stream
+                 (get-stream key 'rule-stream)))
+            (put key
+                 'rule-stream
+                 (cons-stream rule
+                              current-rule-stream)))))))
+</code></pre>
+<p>The following procedures define how the data-base index is used. A
+pattern (an assertion or a rule conclusion) will be stored in the table
+if it starts with a variable or a constant symbol.</p>
+<pre><code class="language-scheme editable">(define (indexable? pat)
+  (let ((key (index-key-of pat)))
+    (or (symbol? key) (var? key))))
+(define (index-key-of pat)
+  (let ((key (car pat)))
+    (if (var? key) '? key)))
+(define (use-index? pat)
+  (let ((key (car pat)))
+    (symbol? key)))
+</code></pre>
+<h4 id="4446--stream-operations"><a class="header" href="#4446--stream-operations"><a href="book-Z-H-4.html#%_toc_%_sec_4.4.4.6">4.4.4.6  Stream Operations</a></a></h4>
+<p>The query evaluator uses the following stream operations,
+which are adaptations of the stream procedures in chapter 3.</p>
+<p><code>Singleton-stream</code> makes a stream containing one element:</p>
+<pre><code class="language-scheme editable">(define (singleton-stream x)
+  (cons-stream x the-empty-stream))
+</code></pre>
+<p><code>Stream-flatmap</code> is a version of <code>flatmap</code> (see
+exercise <a href="book-Z-H-15.html#%_thm_2.28">2.28</a>) that is modified to work
+with streams. It takes a procedure <code>proc</code> and a stream <code>s</code> and returns
+the stream formed by concatenating the streams that result from applying
+<code>proc</code> to each element of <code>s</code>.</p>
+<pre><code class="language-scheme editable">(define (stream-flatmap proc s)
+  (if (stream-null? s)
+      the-empty-stream
+      (interleave-delayed
+       (proc (stream-car s))
+       (delay (stream-flatmap proc (stream-cdr s))))))
+</code></pre>
+<p><code>Interleave-delayed</code> is like the <code>interleave</code> procedure of
+section <a href="book-Z-H-24.html#%_sec_3.5.3">3.5.3</a>, except that the second
+stream argument is delayed. This is the appropriate way to combine
+streams in the query system, because the second stream may not yet be
+needed. If we do not delay the second stream, we might do a lot of
+superfluous computation. For example, if the first stream is infinite,
+we would never get to the second stream at all.</p>
+<pre><code class="language-scheme editable">(define (interleave-delayed s1 delayed-s2)
+  (if (stream-null? s1)
+      (force delayed-s2)
+      (cons-stream
+       (stream-car s1)
+       (interleave-delayed (force delayed-s2)
+                           (delay (stream-cdr s1))))))
+</code></pre>
+<p><code>Stream-append-delayed</code> is like <code>stream-append</code>
+(section <a href="book-Z-H-24.html#%_sec_3.5.3">3.5.3</a>), but it takes a delayed
+second stream, for the same reason as <code>interleave-delayed</code>.</p>
+<pre><code class="language-scheme editable">(define (stream-append-delayed s1 delayed-s2)
+  (if (stream-null? s1)
+      (force delayed-s2)
+      (cons-stream
+       (stream-car s1)
+       (stream-append-delayed (stream-cdr s1) delayed-s2))))
+</code></pre>
+<h4 id="4447--query-syntax-procedures"><a class="header" href="#4447--query-syntax-procedures"><a href="book-Z-H-4.html#%_toc_%_sec_4.4.4.7">4.4.4.7  Query Syntax Procedures</a></a></h4>
+<p>The following procedures define the syntax of queries,
+assertions, and rules. They are used by the evaluator and the driver
+loop.</p>
+<p><code>Type</code> and <code>contents</code> are used by <code>qeval</code> to get the type and contents of
+a query. The type is the <code>car</code> of the query.</p>
+<pre><code class="language-scheme editable">(define (type exp) (if (pair? exp) (car exp) 'simple))
+(define (contents exp) (if (pair? exp) (cdr exp) exp))
+</code></pre>
+<p><code>Assertion-to-be-added?</code> and <code>add-assertion-body</code> are used by the driver
+loop to identify and extract the body of an <code>assert!</code> expression.</p>
+<pre><code class="language-scheme editable">(define (assertion-to-be-added? exp)
+  (tagged-list? exp 'assert!))
+(define (add-assertion-body exp) (cadr exp))
+</code></pre>
+<p><code>Empty-conjunction?</code>, <code>first-conjunct</code>, and <code>rest-conjuncts</code> are used by
+<code>conjoin</code> to manipulate <code>and</code> queries.</p>
+<pre><code class="language-scheme editable">(define (empty-conjunction? exps) (null? exps))
+(define (first-conjunct exps) (car exps))
+(define (rest-conjuncts exps) (cdr exps))
+</code></pre>
+<p><code>Empty-disjunction?</code>, <code>first-disjunct</code>, and <code>rest-disjuncts</code> are used by
+<code>disjoin</code> to manipulate <code>or</code> queries.</p>
+<pre><code class="language-scheme editable">(define (empty-disjunction? exps) (null? exps))
+(define (first-disjunct exps) (car exps))
+(define (rest-disjuncts exps) (cdr exps))
+</code></pre>
+<p><code>Negated-query</code> is used by <code>negate</code> to get the query to be negated from a
+<code>not</code> query.</p>
+<pre><code class="language-scheme editable">(define (negated-query exps) (car exps))
+</code></pre>
+<p><code>Predicate</code> and <code>args</code> are used by <code>execute</code> to get the parts of a
+<code>lisp-value</code> query.</p>
+<pre><code class="language-scheme editable">(define (predicate exps) (car exps))
+(define (args exps) (cdr exps))
+</code></pre>
+<p><code>Rule?</code>, <code>conclusion</code>, and <code>rule-body</code> are used to manipulate rules.</p>
+<pre><code class="language-scheme editable">(define (rule? exp) (tagged-list? exp 'rule))
+(define (conclusion rule) (cadr rule))
+(define (rule-body rule)
+  (if (null? (cddr rule))
+      '(always-true)
+      (caddr rule)))
+</code></pre>
+<p>The query system uses a special internal
+representation for pattern variables in order to distinguish them from
+ordinary symbols. When the driver reads a query, it scans the query and
+replaces all the symbols that start with <code>?</code> with internal variables,
+which are lists beginning with the symbol <code>?</code>. For example, <code>?x</code> is
+represented as <code>(? x)</code>. The procedure <code>var?</code> tests whether an expression
+is such a variable. The procedure <code>variable-name</code> returns the symbol.</p>
+<pre><code class="language-scheme editable">(define (var? exp) (tagged-list? exp '?))
+(define (variable-name var) (cadr var))
+</code></pre>
+<p><code>Query-syntax-process</code> transforms a query read from the terminal into
+the internal form with variables represented as lists. It also checks
+for <code>assert!</code> so that the driver loop can tell whether the input is an
+assertion or a query.</p>
+<pre><code class="language-scheme editable">(define (query-syntax-process exp)
+  (if (tagged-list? exp 'assert!)
+      (cons 'assert! (cons (cadr exp) '())))
+      (map-over-symbols expand-question-mark exp)))
+</code></pre>
+<p><code>Map-over-symbols</code> is a tree walk that is like <code>instantiate</code> except that
+it operates on symbols rather than variables.</p>
+<pre><code class="language-scheme editable">(define (map-over-symbols proc exp)
+  (cond ((pair? exp)
+         (cons (map-over-symbols proc (car exp))
+               (map-over-symbols proc (cdr exp))))
+        ((symbol? exp) (proc exp))
+        (else exp)))
+</code></pre>
+<p><code>Expand-question-mark</code> does the actual transformation of each variable.</p>
+<pre><code class="language-scheme editable">(define (expand-question-mark symbol)
+  (let ((chars (symbol-&gt;list symbol)))
+    (if (eq? (car chars) #\?)
+        (list '? (list-&gt;symbol (cdr chars)))
+        symbol)))
+</code></pre>
+<p><code>Contract-question-mark</code> is used by the driver loop to transform the
+internal representation of a variable back to the <code>?</code>-prefix form for
+printing.</p>
+<pre><code class="language-scheme editable">(define (contract-question-mark symbol)
+  (list-&gt;symbol
+   (cons #\?
+         (symbol-&gt;list (variable-name symbol)))))
+</code></pre>
+<p><code>Make-new-variable</code> and <code>new-rule-application-id</code> are used by
+<code>apply-a-rule</code> (section <a href="book-Z-H-29.html#%_sec_4.4.4.4">4.4.4.4</a>) to
+generate new variables for each rule application.</p>
+<pre><code class="language-scheme editable">(define (make-new-variable var id)
+  (list '? (string-&gt;symbol
+           (string-append (symbol-&gt;string (variable-name var))
+                          "-"
+                          (number-&gt;string id)))))
+(define *rule-counter* 0)
+(define (new-rule-application-id)
+  (set! *rule-counter* (+ *rule-counter* 1))
+  *rule-counter*)
+</code></pre>
+<h4 id="4448--frames-and-bindings"><a class="header" href="#4448--frames-and-bindings"><a href="book-Z-H-4.html#%_toc_%_sec_4.4.4.8">4.4.4.8  Frames and Bindings</a></a></h4>
+<p>A frame is a list of bindings. A binding is a <code>cons</code> of a
+variable and a value.</p>
+<pre><code class="language-scheme editable">(define (make-binding variable value) (cons variable value))
+(define (binding-variable binding) (car binding))
+(define (binding-value binding) (cdr binding))
+(define (binding-in-frame variable frame)
+  (assoc variable frame))
+(define (extend variable value frame)
+  (cons (make-binding variable value) frame))
+</code></pre>
+<p><code>Assoc</code> is the primitive that retrieves the binding of a variable in a
+frame. It returns the binding if it finds one, and false otherwise.</p>
+<pre><code class="language-scheme editable">(define (assoc variable frame)
+  (cond ((null? frame) false)
+        ((equal? variable (binding-variable (car frame)))
+         (car frame))
+        (else (assoc variable (cdr frame)))))
+</code></pre>
+<h3 id="445--exercises"><a class="header" href="#445--exercises"><a href="book-Z-H-4.html#%_toc_%_sec_4.4.5">4.4.5  Exercises</a></a></h3>
+<p><strong>Exercise 4.70.</strong>  The <code>unify-match</code> procedure is passed a frame in which to look up and store bindings. Thus, <code>unify-match</code> can be called with a frame that already contains bindings. The procedure <code>extend-if-possible</code> must be careful, when extending the frame, to distinguish between the case where a variable is unbound and the case where it is bound to a value that happens to be another variable. The following examples, which use the representation of variables described in section <a href="book-Z-H-29.html#%_sec_4.4.4.7">4.4.4.7</a>, illustrate this difference. Suppose that the query system is working with the two patterns <code>(?x a)</code> and <code>(?y b)</code> and a frame in which <code>?y</code> is bound to <code>?x</code>:</p>
+<p><code>(unify-match '(? x a) '(? y b) (list (make-binding '(? y) '(? x))))</code></p>
+<p>First, <code>unify-match</code> is called on the <code>cdr</code>s of the patterns, <code>(a)</code> and <code>(b)</code>. This fails. Now suppose the frame is empty:</p>
+<p><code>(unify-match '(? x a) '(? y b) '())</code></p>
+<p>In this case, <code>unify-match</code> is called on the <code>cdr</code>s, and this fails. Finally, suppose the frame has a binding for <code>?y</code> but not for <code>?x</code>:</p>
+<p><code>(unify-match '(? x a) '(? y b) (list (make-binding '(? y) 'c)))</code></p>
+<p>This time, the <code>cdr</code> match succeeds, and then the <code>car</code> match is tried. <code>?X</code> is unbound, so it is bound to <code>?y</code>'s value, <code>c</code>. The resulting frame is <code>((? x) . c) ((? y) . c)</code>. In each case, we have simplified the situation by ignoring the fact that the system creates new variable names for each rule application.</p>
+<p>For each of the following examples, give the result of the match and explain it.</p>
+<p><code>a. (unify-match '(? x ?x) '((a ?y c) (a b ?z)) '())</code></p>
+<p><code>b. (unify-match '(? x ?x) '((a ?y c) (a b ?z))</code>
+<code>               (list (make-binding '(? y) 'b)))</code></p>
+<p><code>c. (unify-match '(? x (a ?y)) '(?x (a b)) '())</code></p>
+<p><strong>Exercise 4.71.</strong>  The <code>simple-query</code> procedure forms a stream of frames by appending the stream of frames from the assertions with the stream of frames from the rules. A different implementation would be to interleave the two streams. Would this be a better design? Would it be a worse design? Present arguments for both sides.</p>
+<p><strong>Exercise 4.72.</strong>  The <code>disjoin</code> procedure is implemented with <code>interleave-delayed</code>. Explain why <code>stream-append-delayed</code> would not be appropriate here.</p>
+<p><strong>Exercise 4.73.</strong>  The <code>conjoin</code> procedure is implemented as a cascade of <code>qeval</code>s. This is not the only way to compute the conjunction of a set of queries. Another way is to process the queries in parallel and to combine the resulting streams of frames. Devise a procedure that implements this parallel method. Can you find any reason to prefer the parallel method over the serial one, or vice versa?</p>
+<p><strong>Exercise 4.74.</strong>  The <code>negate</code> procedure in section <a href="book-Z-H-29.html#%_sec_4.4.4.2">4.4.4.2</a> has a bug. Consider a query such as</p>
+<p><code>(and (job ?x (computer programmer))</code>
+<code>     (not (supervisor ?x (Bitdiddle Ben))))</code></p>
+<p>This should find all the computer programmers who are not supervised by Ben Bitdiddle. The <code>and</code> will first find all computer programmers and produce a stream of frames, each containing a binding for <code>?x</code>. Then <code>negate</code> will be called on the pattern <code>(supervisor ?x (Bitdiddle Ben))</code> and this stream of frames. For each frame in the stream, <code>negate</code> will check to see if the pattern can be satisfied given the binding for <code>?x</code> in that frame. The bug is that <code>negate</code> will check for this by calling <code>qeval</code> with the pattern and a stream containing only the single frame. This is incorrect, because it will not be possible to satisfy the pattern by using a rule if that rule requires further extending the frame to bind other variables.</p>
+<p>To see the problem, suppose we have the rule</p>
+<p><code>(rule (supervisor ?x ?y) (and ...))</code></p>
+<p>and we are checking the <code>not</code> clause with a frame in which <code>?x</code> is bound to Alyssa Hacker. <code>Negate</code> will try to see if <code>(supervisor (Hacker Alyssa P) (Bitdiddle Ben))</code> can be satisfied. It will try to do this by unifying <code>(supervisor ?x ?y)</code> with <code>(supervisor (Hacker Alyssa P) (Bitdiddle Ben))</code>, which will bind <code>?y</code> to Ben Bitdiddle and then try to satisfy the body of the <code>supervisor</code> rule. If the body of the <code>supervisor</code> rule requires binding other variables, <code>negate</code> will not be able to do this, because it is processing the stream of frames with <code>singleton-stream</code>. Thus <code>negate</code> will report that the pattern cannot be satisfied, which is wrong.</p>
+<p>Fix this bug in <code>negate</code>. You will have to change <code>qeval</code> so that it can produce a stream of all possible extensions to a given frame, rather than a stream of all extensions to any frame in a given stream of frames. You can do this by having <code>qeval</code> take a single frame as argument rather than a stream of frames. Then <code>stream-flatmap</code> in <code>simple-query</code> will no longer be redundant.</p>
+<p><strong>Exercise 4.75.</strong>  The <code>lisp-value</code> special form is vulnerable to the same bug described in exercise <a href="book-Z-H-29.html#%_thm_4.75">4.74</a>. Fix this bug.</p>
+<p><strong>Exercise 4.76.</strong>  Suppose we have a data base of students in a small school:</p>
+<p><code>(student (Adams Alyssa P) (address ...) (telephone ...))</code>
+<code>(student (Bitdiddle Ben) (address ...) (telephone ...))</code>
+<code>...</code>
+<code>(class (CS101) (lecturer ...) (time ...))</code>
+<code>...</code>
+<code>(enrolled (Adams Alyssa P) (CS101))</code>
+<code>(enrolled (Bitdiddle Ben) (CS101))</code>
+<code>(enrolled (Bitdiddle Ben) (CS205))</code>
+<code>...</code></p>
+<p>Now suppose we want to find all the students who are enrolled in two different classes. The following query finds all pairs of a student and two classes and then checks if the classes are different:</p>
+<p><code>(and (enrolled ?student ?class-1)</code>
+<code>     (enrolled ?student ?class-2)</code>
+<code>     (lisp-value not (equal? ?class-1 ?class-2)))</code></p>
+<p>This is grossly inefficient, because for each student it will check every pair of classes the student is enrolled in. For example, if Ben Bitdiddle is enrolled in ten classes, this query will check 100 pairs of classes for him.</p>
+<p>Write a new special form <code>unique-query</code> that will do this job more efficiently. The following query should generate only one answer for each student:</p>
+<p><code>(unique-query (and (enrolled ?student ?class-1)</code>
+<code>                   (enrolled ?student ?class-2)))</code></p>
+<p>To implement this, you will have to change <code>qeval</code> to take an additional argument, a list of the variables that are required to be unique. <code>Qeval</code> will pass this list to the procedures that handle the special forms. For example, <code>conjoin</code> will have to be changed to check if any of the variables in the list become bound by satisfying the first conjunct. If so, these variables must be removed from the list before the rest of the conjuncts are processed.</p>
+<p><strong>Exercise 4.77.</strong>  The query system has a serious bug in that <code>lisp-value</code> and <code>not</code> may not work correctly if the patterns being tested contain variables that are not bound in the input frame stream. For example, if the frame stream passed to <code>negate</code> has a frame in which <code>?x</code> is unbound, and the pattern to be checked is <code>(job ?x (computer programmer))</code>, then <code>negate</code> will report that the pattern can be satisfied, because there is an assertion <code>(job (Fect Cy D) (computer programmer))</code> in the data base. This is incorrect. The <code>not</code> should act as a filter, to remove only those frames in which the given pattern is satisfied. An unbound variable can never cause a pattern to be satisfied. For example, a frame in which <code>?x</code> is unbound could be extended to bind <code>?x</code> to <code>(Hacker Alyssa P)</code>. But it could also be extended to bind <code>?x</code> to <code>(Bitdiddle Ben)</code>. The <code>not</code> should let the frame pass only if there is no way to extend it that satisfies the pattern. Fix this bug in <code>negate</code> and <code>lisp-value</code>. You will have to change the way that frames are created. Up to now, a frame has been a list of bindings. You will have to add to this a list of all the variables that are mentioned in the query but are not yet bound.</p>
+<p><strong>Exercise 4.78.</strong>  Implement the query language as a nondeterministic program to be run with the <code>amb</code> evaluator of section <a href="book-Z-H-28.html#%_sec_4.3">4.3</a>. In this approach, the query evaluator will not have to deal with streams of frames. Instead, a query will be transformed into a nondeterministic expression with <code>amb</code>s. Evaluating this expression with the <code>amb</code> evaluator will cause the system to search for a satisfying assignment. For example, the query</p>
+<p><code>(and (job ?x (computer programmer))</code>
+<code>     (supervisor ?x ?y))</code></p>
+<p>can be restated as follows: Find a <code>?x</code> and a <code>?y</code> such that <code>?x</code> has the job of computer programmer and <code>?y</code> is the supervisor of <code>?x</code>. In our nondeterministic language, this can be expressed as</p>
+<p><code>(let ((x (an-element-of &lt;</code><em><code>list-of-people</code></em><code>&gt;))</code>
+<code>      (y (an-element-of &lt;</code><em><code>list-of-people</code></em><code>&gt;)))</code>
+<code> (require (is-in-db?</code>(job ,x (computer programmer))))<code> </code>  (require (is-in-db? <code>(supervisor ,x ,y)))</code>
+<code>  (list x y))</code></p>
+<p>where <code>is-in-db?</code> checks if a pattern is in the data base and <code>&lt;</code><em><code>list-of-people</code></em><code>&gt;</code> is a list of all the people in the data base. The backquote notation used here is the <code>quasiquote</code> syntax described in section <a href="book-Z-H-17.html#%_sec_2.4.1">2.4.1</a>.</p>
+<p>Complete this sketch of an implementation of the query language. You must implement <code>is-in-db?</code> to check against both assertions and rules. <code>Is-in-db?</code> for a rule will require a unifier. You will also have to implement the various special forms. Think carefully about how to handle <code>not</code>.</p>
+<p><strong>Exercise 4.79.</strong>  When we apply a rule, we rename the variables of the rule with a unique new name. A less straightforward implementation of rules would not do this renaming. Instead, it would require the unifier to distinguish between variables in the query and variables in the rule. That is, if <code>?x</code> appeared in both the query and the rule, these would be two different variables. Modify the unification algorithm to keep track of the variables in the two patterns being unified. You will have to augment the frame with information to distinguish the variables of the two patterns.</p>
+<hr />
+<p><a href="book-Z-H-29.html#call_footnote_Temp_645">^[58]{.small}^</a>
+Logic programming is a major field of computer science research. The language we implement in this section is a version of
+Prolog
+(an acronym for <em>Pro</em>gramming in <em>Log</em>ic), which was developed in the
+1970s by Alain Colmerauer and his colleagues at the University of
+Marseille. The logic-programming methodology is based on the work of
+Robert Kowalski at the University of Edinburgh and on earlier work in
+automated theorem proving. See Kowalski 1979 for a discussion of the
+logic-programming approach to computer science. The language we
+implement in this section is a very simple version of Prolog. There are
+many introductory texts on Prolog, for example, Clocksin and Mellish
+1981. The computer language Planner, developed by Carl Hewitt (1969),
+was an ancestor of Prolog. Planner was a rather cumbersome language,
+and a subset of Planner, called Micro-Planner (Sussman, Winograd, and
+Charniak 1971), was used in implementing the SHRDLU program described in
+Winograd 1973.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_646">^[59]{.small}^</a>
+These rules can be stated more formally as follows: Let <code>append(x,y,z)</code>
+be the relation that is true if list <code>z</code> is the result of appending
+list <code>y</code> to list <code>x</code>. Then <code>append</code> is defined by</p>
+<ul>
+<li><code>append(nil, y, y)</code> is true for any list <code>y</code>.</li>
+<li><code>append((u . v), y, (u . z))</code> is true if <code>append(v, y, z)</code> is true.</li>
+</ul>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_647">^[60]{.small}^</a>
+This is not quite true. The Lisp <code>append</code> procedure can also be used to
+answer questions of the third type, by means of the nondeterministic
+evaluator of section <a href="book-Z-H-28.html#%_sec_4.3">4.3</a>. For example, to
+find all pairs <code>(?x, ?y)</code> that append to form <code>(a b c d)</code>, we could
+evaluate</p>
+<p><code>(let ((x (a-list)) (y (a-list)))</code>
+<code>  (require (equal? (append x y) '(a b c d)))</code>
+<code>  (list x y))</code></p>
+<p>where <code>a-list</code> is a procedure that nondeterministically generates lists.
+This is, however, a hopelessly inefficient way to solve the problem.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_648">^[61]{.small}^</a>
+One reason for the great interest in logic programming is its connection
+to the goal of developing expert systems. See, for example, Davis 1982.
+Another reason is the hope that logic programming will provide a handle
+on the problem of programming parallel computers. See, for example,
+Shapiro 1989.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_651">^[62]{.small}^</a>
+This is the dotted-tail notation introduced in
+exercise <a href="book-Z-H-15.html#%_thm_2.20">2.20</a>. We will see in
+section <a href="book-Z-H-29.html#%_sec_4.4.4.3">4.4.4.3</a> how the query system
+handles this.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_654">^[63]{.small}^</a>
+This interpretation of <code>not</code> is not the only one, or even the most
+reasonable one. Many people feel that a <code>not</code> query should be satisfied
+only if the variables in the subquery can be instantiated in some way
+that satisfies the subquery, and there is some assignment of values to
+the other variables in the main query that satisfies the main query.
+The problem of giving a clean definition of <code>not</code> in logic programming
+is a delicate one. We will return to this in
+section <a href="book-Z-H-29.html#%_sec_4.4.3">4.4.3</a>.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_655">^[64]{.small}^</a>
+We assume here that we have defined a Lisp procedure <code>&gt;</code> that can be
+applied to two arguments.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_658">^[65]{.small}^</a>
+This rule is not completely correct, because it does not specify that
+the two people must be different. We will see how to fix this below.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_659">^[66]{.small}^</a>
+In Prolog, the conclusion is written first, separated from the body by
+the symbol <code>:-</code> (which is meant to be reminiscent of a backward-facing
+implication sign). The <code>and</code> connective is indicated by commas. Thus,
+the <code>lives-near</code> rule would be written in Prolog as</p>
+<p><code>lives_near(Person1, Person2) :-</code>
+<code>  address(Person1, Town, _),</code>
+<code>  address(Person2, Town, _),</code>
+<code>  not(Person1 = Person2).</code></p>
+<p>In this expression, <code>Person1</code>, <code>Person2</code>, and <code>Town</code> are variables. The
+underscore <code>_</code> indicates an anonymous variable, i.e., a variable that is
+not used elsewhere in the rule. We have chosen to use Lisp syntax for
+our query language to make it blend with the rest of the book.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_670">^[67]{.small}^</a>
+This stream-of-frames data structure was first described by
+Eugene Charniak (see Charniak,
+Riesbeck, and McDermott 1980).</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_672">^[68]{.small}^</a>
+This worst-case estimate assumes that the number of matches of each
+query to each frame is a constant that is greater than 1 and is
+independent of the frame. For example, if each query generates two
+matches for each input frame, then <em>n</em> queries in series will generate
+2^<em>n</em>^ output frames for each input frame.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_673">^[69]{.small}^</a>
+One of the key ideas in the evolution of data-base systems has been the
+development of query-optimization techniques. See Ullman 1988 for an
+introduction to this area.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_674">^[70]{.small}^</a>
+This implementation of <code>not</code> is technically called 'negation as
+failure.' A query <code>(not q)</code> is considered to be satisfied if the query
+<code>q</code> fails. As we will see in section <a href="book-Z-H-29.html#%_sec_4.4.3">4.4.3</a>,
+this leads to some strange behavior.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_676">^[71]{.small}^</a>
+The unification algorithm we present in this chapter is a version of an
+algorithm developed by J. A. Robinson (1965). The problem of devising
+efficient unification algorithms is an active area of research.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_677">^[72]{.small}^</a>
+This is an example of how a pattern can be used to represent a set of
+values that is not yet determined. Such a pattern is often called a
+<em>partially instantiated</em> data object.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_680">^[73]{.small}^</a>
+In a practical data-base system, we would use indexing to avoid
+scanning the entire list of rules. See
+section <a href="book-Z-H-29.html#%_sec_4.4.4.5">4.4.4.5</a>.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_682">^[74]{.small}^</a>
+In a real logic programming system, the user would be able to ask for
+more than one answer to a query. This could be accomplished by having
+the driver loop, like the <code>amb</code> driver loop of
+section <a href="book-Z-H-28.html#%_sec_4.3.3">4.3.3</a>, respond to a <code>try-again</code>
+request by looking for more elements in the stream of answers. The
+stream of frames is a perfect tool for implementing this feature.
+Instead of processing the whole stream of frames at once, the driver
+would process only one frame at a time, and the <code>try-again</code> command
+would cause the driver to process the next frame in the stream.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_683">^[75]{.small}^</a>
+The method of inference is a slight variant of a method called
+<em>resolution</em>, which was developed by the logician J. A. Robinson
+(1965).</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_684">^[76]{.small}^</a>
+This is not to say that the query language is a general-purpose theorem
+prover. As we will see, the query language is organized in such a way
+that its inferences are chained in a simple fashion. This makes the
+language an effective programming system, but it also severely limits
+the kinds of deductions it can make. A general theorem prover might try
+to prove a statement by, for example, showing that the negation of the
+statement leads to a contradiction. Such a proof by contradiction is a
+very powerful inference method, but it is also very expensive to
+compute. Any programming language that included such a method as its
+central element would be hopelessly inefficient.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_686">^[77]{.small}^</a>
+Most Prolog implementations provide some mechanism for programmers to
+control the search. One common mechanism is called <code>cut</code>. <code>Cut</code> allows
+the programmer to prune the search tree, which can be useful for
+expressing things like 'if you have found one answer, don't bother
+searching for any others.'</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_688">^[78]{.small}^</a>
+This is not quite true. The system will not deduce that 2 + 2 is not 4,
+because <code>lisp-value</code> forms are handled specially. The predicate in a
+<code>lisp-value</code> form is a Lisp procedure, so it is evaluated by the
+underlying Lisp system. The query system has no information about the
+behavior of Lisp procedures, so it cannot make deductions about them.</p>
+<p><a href="book-Z-H-29.html#call_footnote_Temp_689">^[79]{.small}^</a>
+This is also called <em>negation as failure</em>. See
+footnote <a href="book-Z-H-29.html#footnote_Temp_674">70</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="4.3.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="5.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="4.3.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="5.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="./highlight.js"></script>
+        <script src="./src/languages/scheme.min.js"></script>
+        <script src="./biwascheme.min.js"></script>
+        <script src="./biwascheme_run_logic.js"></script>
+
+
+    </div>
+    </body>
+</html>

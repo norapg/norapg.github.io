@@ -1,0 +1,1712 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Compilation - SICP</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="./src/styles/docco.min.css">
+        <link rel="stylesheet" href="./run_button_style.css">
+        <link rel="stylesheet" href="./custom.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">SICP</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="55--compilation"><a class="header" href="#55--compilation"><a href="book-Z-H-4.html#%_toc_%_sec_5.5">5.5  Compilation</a></a></h2>
+<p>The explicit-control evaluator of
+section <a href="book-Z-H-34.html#%_sec_5.4">5.4</a> is a register machine whose
+controller interprets Scheme programs. In this section we will see how
+to run Scheme programs on a register machine whose controller is not a
+Scheme interpreter.</p>
+<p>The explicit-control evaluator machine is
+universal -- it can carry out any computational process that can be
+described in Scheme. The evaluator's controller orchestrates the use of
+its data paths to perform the desired computation. Thus, the
+evaluator's data paths are universal: They are sufficient to perform
+any computation we desire, given an appropriate
+controller.<a href="book-Z-H-35.html#footnote_Temp_794">^[33]{.small}^</a></p>
+<p>Commercial general-purpose computers are
+register machines organized around a collection of registers and
+operations that constitute an efficient and convenient universal set of
+data paths. The controller for a general-purpose machine is an
+interpreter for a register-machine language like the one we have been
+using. This language is called the <em>native language</em> of
+the machine, or simply <em>machine language</em>. Programs
+written in machine language are sequences of instructions that use the
+machine's data paths. For example, the explicit-control
+evaluator's instruction sequence can be thought of as a
+machine-language program for a general-purpose computer rather than as
+the controller for a specialized interpreter machine.</p>
+<p>There are two common strategies for
+bridging the gap between higher-level languages and register-machine
+languages. The explicit-control evaluator illustrates the strategy of
+interpretation. An interpreter written in the native language of a
+machine configures the machine to execute programs written in a language
+(called the <em>source language</em>) that may differ from the
+native language of the machine performing the evaluation. The primitive
+procedures of the source language are implemented as a library of
+subroutines written in the native language of the given machine. A
+program to be interpreted (called the <em>source program</em>)
+is represented as a data structure. The interpreter traverses this data
+structure, analyzing the source program. As it does so, it simulates the
+intended behavior of the source program by calling appropriate primitive
+subroutines from the library.</p>
+<p>In this section, we explore the alternative strategy of <em>compilation</em>. A
+compiler for a given source language and machine translates a source
+program into an equivalent program (called the <em>object
+program</em>) written in the machine's native language. The compiler that
+we implement in this section translates programs written in Scheme into
+sequences of instructions to be executed using the explicit-control
+evaluator machine's data
+paths.<a href="book-Z-H-35.html#footnote_Temp_795">^[34]{.small}^</a></p>
+<p>Compared with interpretation, compilation can provide a great increase
+in the efficiency of program execution, as we will explain below in the
+overview of the compiler. On the other hand, an interpreter provides a
+more powerful environment for interactive program development and
+debugging, because the source program being executed is available at run
+time to be examined and modified. In addition, because the entire
+library of primitives is present, new programs can be constructed and
+added to the system during debugging.</p>
+<p>In view of the complementary advantages of compilation and
+interpretation, modern program-development environments pursue a mixed
+strategy. Lisp interpreters are generally organized so that interpreted
+procedures and compiled procedures can call each other. This enables a
+programmer to compile those parts of a program that are assumed to be
+debugged, thus gaining the efficiency advantage of compilation, while
+retaining the interpretive mode of execution for those parts of the
+program that are in the flux of interactive development and debugging.
+In section <a href="book-Z-H-35.html#%_sec_5.5.7">5.5.7</a>, after we have
+implemented the compiler, we will show how to interface it with our
+interpreter to produce an integrated interpreter-compiler development
+system.</p>
+<h4 id="an-overview-of-the-compiler"><a class="header" href="#an-overview-of-the-compiler"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_796">An overview of the compiler</a></a></h4>
+<p>Our compiler is much like our
+interpreter, both in its structure and in the function it performs.
+Accordingly, the mechanisms used by the compiler for analyzing
+expressions will be similar to those used by the interpreter. Moreover,
+to make it easy to interface compiled and interpreted code, we will
+design the compiler to generate code that obeys the same conventions of
+register usage as the interpreter: The environment will
+be kept in the <code>env</code> register, argument lists will be accumulated in
+<code>argl</code>, a procedure to be applied will be in <code>proc</code>, procedures will
+return their answers in <code>val</code>, and the location to which a procedure
+should return will be kept in <code>continue</code>. In general, the compiler
+translates a source program into an object program that performs
+essentially the same register operations as would the interpreter in
+evaluating the same source program.</p>
+<p>This description suggests a strategy for implementing a rudimentary
+compiler: We traverse the expression in the same way the interpreter
+does. When we encounter a register instruction that the interpreter
+would perform in evaluating the expression, we do not execute the
+instruction but instead accumulate it into a sequence. The resulting
+sequence of instructions will be the object code. Observe the
+efficiency advantage of compilation over
+interpretation. Each time the interpreter evaluates an expression --
+for example, <code>(f 84 96)</code> -- it performs the work of classifying the
+expression (discovering that this is a procedure application) and
+testing for the end of the operand list (discovering that there are two
+operands). With a compiler, the expression is analyzed only once, when
+the instruction sequence is generated at compile time. The object code
+produced by the compiler contains only the instructions that evaluate
+the operator and the two operands, assemble the argument list, and apply
+the procedure (in <code>proc</code>) to the arguments (in <code>argl</code>).</p>
+<p>This is the same kind of optimization we implemented in
+the analyzing evaluator of
+section <a href="book-Z-H-26.html#%_sec_4.1.7">4.1.7</a>. But there are further
+opportunities to gain efficiency in compiled code. As the interpreter
+runs, it follows a process that must be applicable to any expression in
+the language. In contrast, a given segment of compiled code is meant to
+execute some particular expression. This can make a big difference, for
+example in the use of the stack to save registers. When the interpreter
+evaluates an expression, it must be prepared for any contingency. Before
+evaluating a subexpression, the interpreter saves all registers that
+will be needed later, because the subexpression might require an
+arbitrary evaluation. A compiler, on the other hand, can exploit the
+structure of the particular expression it is processing to generate code
+that avoids unnecessary stack operations.</p>
+<p>As a case in point, consider the combination <code>(f 84 96)</code>. Before the
+interpreter evaluates the operator of the combination, it prepares for
+this evaluation by saving the registers containing the operands and the
+environment, whose values will be needed later. The interpreter then
+evaluates the operator to obtain the result in <code>val</code>, restores the saved
+registers, and finally moves the result from <code>val</code> to <code>proc</code>. However,
+in the particular expression we are dealing with, the operator is the
+symbol <code>f</code>, whose evaluation is accomplished by the machine operation
+<code>lookup-variable-value</code>, which does not alter any registers. The
+compiler that we implement in this section will take advantage of this
+fact and generate code that evaluates the operator using the instruction</p>
+<pre><code class="language-scheme editable">(assign proc (op lookup-variable-value) (const f) (reg env))
+</code></pre>
+<p>This code not only avoids the unnecessary saves and restores but also
+assigns the value of the lookup directly to <code>proc</code>, whereas the
+interpreter would obtain the result in <code>val</code> and then move this to
+<code>proc</code>.</p>
+<p>A compiler can also optimize access to the environment. Having analyzed
+the code, the compiler can in many cases know in which frame a
+particular variable will be located and access that frame directly,
+rather than performing the <code>lookup-variable-value</code> search. We will
+discuss how to implement such variable access in
+section <a href="book-Z-H-35.html#%_sec_5.5.6">5.5.6</a>. Until then, however, we
+will focus on the kind of register and stack optimizations described
+above. There are many other optimizations that can be performed by a
+compiler, such as coding primitive operations ''in line'' instead of
+using a general <code>apply</code> mechanism (see
+exercise <a href="book-Z-H-35.html#%_thm_5.38">5.38</a>); but we will not emphasize
+these here. Our main goal in this section is to illustrate the
+compilation process in a simplified (but still interesting) context.</p>
+<h3 id="551--structure-of-the-compiler"><a class="header" href="#551--structure-of-the-compiler"><a href="book-Z-H-4.html#%_toc_%_sec_5.5.1">5.5.1  Structure of the Compiler</a></a></h3>
+<p>In
+section <a href="book-Z-H-26.html#%_sec_4.1.7">4.1.7</a> we modified our original
+metacircular interpreter to separate analysis from execution. We
+analyzed each expression to produce an execution procedure that took an
+environment as argument and performed the required operations. In our
+compiler, we will do essentially the same analysis. Instead of producing
+execution procedures, however, we will generate sequences of
+instructions to be run by our register machine.</p>
+<p>The procedure <code>compile</code> is the top-level dispatch in the compiler. It
+corresponds to the <code>eval</code> procedure of
+section <a href="book-Z-H-26.html#%_sec_4.1.1">4.1.1</a>, the <code>analyze</code> procedure
+of section <a href="book-Z-H-26.html#%_sec_4.1.7">4.1.7</a>, and the
+<code>eval-dispatch</code> entry point of the explicit-control-evaluator in
+section <a href="book-Z-H-34.html#%_sec_5.4.1">5.4.1</a>. The compiler, like the
+interpreters, uses the expression-syntax procedures
+defined in
+section <a href="book-Z-H-26.html#%_sec_4.1.2">4.1.2</a>.<a href="book-Z-H-35.html#footnote_Temp_797">^[35]{.small}^</a>
+<code>Compile</code> performs a case analysis on the syntactic type of the
+expression to be compiled. For each type of expression, it dispatches to
+a specialized <em>code generator</em>:</p>
+<pre><code class="language-scheme editable">(define (compile exp target linkage)
+  (cond ((self-evaluating? exp)
+         (compile-self-evaluating exp target linkage))
+        ((quoted? exp) (compile-quoted exp target linkage))
+        ((variable? exp)
+         (compile-variable exp target linkage))
+        ((assignment? exp)
+         (compile-assignment exp target linkage))
+        ((definition? exp)
+         (compile-definition exp target linkage))
+        ((if? exp) (compile-if exp target linkage))
+        ((lambda? exp) (compile-lambda exp target linkage))
+        ((begin? exp)
+         (compile-sequence (begin-actions exp)
+                           target
+                           linkage))
+        ((cond? exp) (compile (cond-&gt;if exp) target linkage))
+        ((application? exp)
+         (compile-application exp target linkage))
+        (else
+         (error "Unknown expression type -- COMPILE" exp))))
+</code></pre>
+<h4 id="targets-and-linkages"><a class="header" href="#targets-and-linkages"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_798">Targets and linkages</a></a></h4>
+<p><code>Compile</code> and the code generators that it calls take two
+arguments in addition to the expression to compile. There is a
+<em>target</em>, which specifies the register in which the
+compiled code is to return the value of the expression. There is also a
+<em>linkage descriptor</em>, which describes how the code
+resulting from the compilation of the expression should proceed when it
+has finished its execution. The linkage descriptor can require that the
+code do one of the following three things:</p>
+<ul>
+<li>continue at the next instruction in sequence (this is
+specified by the linkage descriptor <code>next</code>),</li>
+<li>return from the procedure being compiled (this is specified
+by the linkage descriptor <code>return</code>), or</li>
+<li>jump to a named entry point (this is specified by using the designated
+label as the linkage descriptor).</li>
+</ul>
+<p>For example, compiling the expression <code>5</code> (which is self-evaluating)
+with a target of the <code>val</code> register and a linkage of <code>next</code> should
+produce the instruction</p>
+<pre><code class="language-scheme editable">(assign val (const 5))
+</code></pre>
+<p>Compiling the same expression with a linkage of <code>return</code> should produce
+the instructions</p>
+<pre><code class="language-scheme editable">(assign val (const 5))
+(goto (reg continue))
+</code></pre>
+<p>In the first case, execution will continue with the next instruction in
+the sequence. In the second case, we will return from a procedure call.
+In both cases, the value of the expression will be placed into the
+target <code>val</code> register.</p>
+<h4 id="instruction-sequences-and-stack-usage"><a class="header" href="#instruction-sequences-and-stack-usage"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_799">Instruction sequences and stack usage</a></a></h4>
+<p>Each code generator returns an
+<em>instruction sequence</em> containing the object code it has generated for
+the expression. Code generation for a compound expression is
+accomplished by combining the output from simpler code generators for
+component expressions, just as evaluation of a compound expression is
+accomplished by evaluating the component expressions.</p>
+<p>The simplest method for combining instruction sequences is a procedure
+called <code>append-instruction-sequences</code>. It takes as
+arguments any number of instruction sequences that are to be executed
+sequentially; it appends them and returns the combined sequence. That
+is, if &lt;*<em>seq</em><del>1</del><em>&gt; and &lt;*<em>seq</em><del>2</del></em>&gt; are sequences of instructions,
+then evaluating</p>
+<p><code>(append-instruction-sequences &lt;</code><strong><code>seq</code><em><del><code>1</code></del></em><code>&gt; &lt;</code></strong><code>seq</code><em><del><code>2</code></del></em><code>&gt;)</code></p>
+<p>produces the sequence</p>
+<p><code>\&lt;</code><strong><code>seq</code><em><del><code>1</code></del></em><code>&gt;\</code>
+<code>\&lt;</code></strong><code>seq</code><em><del><code>2</code></del></em><code>&gt;\</code></p>
+<p>Whenever registers might need to be saved, the
+compiler's code generators use <code>preserving</code>, which is a
+more subtle method for combining instruction sequences. <code>Preserving</code>
+takes three arguments: a set of registers and two instruction sequences
+that are to be executed sequentially. It appends the sequences in such a
+way that the contents of each register in the set is preserved over the
+execution of the first sequence, if this is needed for the execution of
+the second sequence. That is, if the first sequence modifies the
+register and the second sequence actually needs the register's original
+contents, then <code>preserving</code> wraps a <code>save</code> and a <code>restore</code> of the
+register around the first sequence before appending the sequences.
+Otherwise, <code>preserving</code> simply returns the appended instruction
+sequences. Thus, for example,</p>
+<p><code>(preserving (list &lt;</code><strong><code>reg</code><em><del><code>1</code></del></em><code>&gt; &lt;</code></strong><code>reg</code><em><del><code>2</code></del></em><code>&gt;) &lt;</code><strong><code>seq</code><em><del><code>1</code></del></em><code>&gt; &lt;</code></strong><code>seq</code><em><del><code>2</code></del></em><code>&gt;)</code></p>
+<p>produces one of the following four sequences of instructions, depending
+on how &lt;*<em>seq</em><del>1</del><em>&gt; and &lt;*<em>seq</em><del>2</del></em>&gt; use &lt;*<em>reg</em><del>1</del><em>&gt; and
+&lt;*<em>reg</em><del>2</del></em>&gt;:</p>
+<p><img src="ch5-Z-G-9.gif" alt="" /></p>
+<p>By using <code>preserving</code> to combine instruction sequences the compiler
+avoids unnecessary stack operations. This also isolates the details of
+whether or not to generate <code>save</code> and <code>restore</code> instructions within the
+<code>preserving</code> procedure, separating them from the concerns that arise in
+writing each of the individual code generators. In fact no <code>save</code> or
+<code>restore</code> instructions are explicitly produced by the code generators.</p>
+<p>In principle, we could represent an instruction sequence simply as a
+list of instructions. <code>Append-instruction-sequences</code> could then combine
+instruction sequences by performing an ordinary list <code>append</code>. However,
+<code>preserving</code> would then be a complex operation, because it would have to
+analyze each instruction sequence to determine how the sequence uses its
+registers. <code>Preserving</code> would be inefficient as well as complex, because
+it would have to analyze each of its instruction sequence arguments,
+even though these sequences might themselves have been constructed by
+calls to <code>preserving</code>, in which case their parts would have already been
+analyzed. To avoid such repetitious analysis we will associate with each
+instruction sequence some information about its register use. When we
+construct a basic instruction sequence we will provide this information
+explicitly, and the procedures that combine instruction sequences will
+derive register-use information for the combined sequence from the
+information associated with the component sequences.</p>
+<p>An instruction sequence will contain three pieces of information:</p>
+<ul>
+<li>the set of registers that must be initialized before the instructions
+in the sequence are executed (these registers are said to be <em>needed</em>
+by the sequence),</li>
+<li>the set of registers whose values are modified by the instructions in
+the sequence, and</li>
+<li>the actual instructions (also called <em>statements</em>) in the sequence.</li>
+</ul>
+<p>We will represent an instruction sequence as a list of its three parts.
+The constructor for instruction sequences is thus</p>
+<pre><code class="language-scheme editable">(define (make-instruction-sequence needs modifies statements)
+  (list needs modifies statements))
+</code></pre>
+<p>For example, the two-instruction sequence that looks up the value of the
+variable <code>x</code> in the current environment, assigns the result to <code>val</code>,
+and then returns, requires registers <code>env</code> and <code>continue</code> to have been
+initialized, and modifies register <code>val</code>. This sequence would therefore
+be constructed as</p>
+<pre><code class="language-scheme editable">(make-instruction-sequence '(env continue) '(val)
+ '((assign val
+         (op lookup-variable-value) (const x) (reg env))
+   (goto (reg continue))))
+</code></pre>
+<p>We sometimes need to construct an instruction sequence with no
+statements:</p>
+<pre><code class="language-scheme editable">(define (empty-instruction-sequence)
+  (make-instruction-sequence '() '() '()))
+</code></pre>
+<p>The procedures for combining instruction sequences are shown in
+section <a href="book-Z-H-35.html#%_sec_5.5.4">5.5.4</a>.</p>
+<p><strong>Exercise 5.31.</strong>  In
+evaluating a procedure application, the explicit-control evaluator
+always saves and restores the <code>env</code> register around the evaluation of
+the operator, saves and restores <code>env</code> around the evaluation of each
+operand (except the final one), saves and restores <code>argl</code> around the
+evaluation of each operand, and saves and restores <code>proc</code> around the
+evaluation of the operand sequence. For each of the following
+combinations, say which of these <code>save</code> and <code>restore</code> operations are
+superfluous and thus could be eliminated by the compiler's <code>preserving</code>
+mechanism:</p>
+<pre><code class="language-scheme editable">(f 'x 'y)
+
+((f) 'x 'y)
+
+(f (g 'x) y)
+
+(f (g 'x) 'y)
+</code></pre>
+<p><strong>Exercise 5.32.</strong>  Using
+the <code>preserving</code> mechanism, the compiler will avoid saving and restoring
+<code>env</code> around the evaluation of the operator of a combination in the case
+where the operator is a symbol. We could also build such optimizations
+into the evaluator. Indeed, the explicit-control evaluator of
+section <a href="book-Z-H-34.html#%_sec_5.4">5.4</a> already performs a similar
+optimization, by treating combinations with no operands as a special
+case.</p>
+<p>a. Extend the explicit-control evaluator to recognize as a separate
+class of expressions combinations whose operator is a symbol, and to
+take advantage of this fact in evaluating such expressions.</p>
+<p>b. Alyssa P. Hacker suggests that by extending the evaluator to
+recognize more and more special cases we could incorporate all the
+compiler's optimizations, and that this would eliminate the advantage
+of compilation altogether. What do you think of this idea?</p>
+<h3 id="552--compiling-expressions"><a class="header" href="#552--compiling-expressions"><a href="book-Z-H-4.html#%_toc_%_sec_5.5.2">5.5.2  Compiling Expressions</a></a></h3>
+<p>In this section and the next we implement the code generators to which
+the <code>compile</code> procedure dispatches.</p>
+<h4 id="compiling-linkage-code"><a class="header" href="#compiling-linkage-code"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_802">Compiling linkage code</a></a></h4>
+<p>In general, the output of each code generator will end
+with instructions -- generated by the procedure <code>compile-linkage</code> --
+that implement the required linkage. If the linkage is <code>return</code> then we
+must generate the instruction <code>(goto (reg continue))</code>. This needs the
+<code>continue</code> register and does not modify any registers. If the linkage is
+<code>next</code>, then we needn't include any additional instructions. Otherwise,
+the linkage is a label, and we generate a <code>goto</code> to that label, an
+instruction that does not need or modify any
+registers.<a href="book-Z-H-35.html#footnote_Temp_803">^[36]{.small}^</a></p>
+<pre><code class="language-scheme editable">(define (compile-linkage linkage)
+  (cond ((eq? linkage 'return)
+         (make-instruction-sequence '(continue) '()
+          '((goto (reg continue)))))
+        ((eq? linkage 'next)
+         (empty-instruction-sequence))
+        (else
+         (make-instruction-sequence '() '()
+          `((goto (label ,linkage)))))))
+</code></pre>
+<p>The linkage code is appended to an instruction sequence by <code>preserving</code>
+the <code>continue</code> register, since a <code>return</code> linkage will require the
+<code>continue</code> register: If the given instruction sequence modifies
+<code>continue</code> and the linkage code needs it, <code>continue</code> will be saved and
+restored.</p>
+<pre><code class="language-scheme editable">(define (end-with-linkage linkage instruction-sequence)
+  (preserving '(continue)
+    instruction-sequence
+    (compile-linkage linkage)))
+</code></pre>
+<h4 id="compiling-simple-expressions"><a class="header" href="#compiling-simple-expressions"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_804">Compiling simple expressions</a></a></h4>
+<p>The code generators for
+self-evaluating expressions, quotations, and variables construct
+instruction sequences that assign the required value to the target
+register and then proceed as specified by the linkage descriptor.</p>
+<pre><code class="language-scheme editable">(define (compile-self-evaluating exp target linkage)
+  (end-with-linkage linkage
+   (make-instruction-sequence '() (list target)
+    `((assign ,target (const ,exp))))))
+(define (compile-quoted exp target linkage)
+  (end-with-linkage linkage
+   (make-instruction-sequence '() (list target)
+    `((assign ,target (const ,(text-of-quotation exp)))))))
+(define (compile-variable exp target linkage)
+  (end-with-linkage linkage
+   (make-instruction-sequence '(env) (list target)
+    `((assign ,target 
+             (op lookup-variable-value)
+             (const ,exp)
+             (reg env))))))
+</code></pre>
+<p>All these assignment instructions modify the target register, and the
+one that looks up a variable needs the <code>env</code> register.</p>
+<p>Assignments and definitions are handled
+much as they are in the interpreter. We recursively generate code that
+computes the value to be assigned to the variable, and append to it a
+two-instruction sequence that actually sets or defines the variable and
+assigns the value of the whole expression (the symbol <code>ok</code>) to the
+target register. The recursive compilation has target <code>val</code> and linkage
+<code>next</code> so that the code will put its result into <code>val</code> and continue with
+the code that is appended after it. The appending is done preserving
+<code>env</code>, since the environment is needed for setting or defining the
+variable and the code for the variable value could be the compilation of
+a complex expression that might modify the registers in arbitrary ways.</p>
+<pre><code class="language-scheme editable">(define (compile-assignment exp target linkage)
+  (let ((var (assignment-variable exp))
+        (get-value-code
+         (compile (assignment-value exp) 'val 'next)))
+    (end-with-linkage linkage
+     (preserving '(env)
+       get-value-code
+       (make-instruction-sequence '(env val) (list target)
+        `((perform (op set-variable-value!) 
+                   (const ,var)
+                   (reg val)
+                   (reg env))
+          (assign ,target (const ok))))))))
+(define (compile-definition exp target linkage)
+  (let ((var (definition-variable exp))
+        (get-value-code
+         (compile (definition-value exp) 'val 'next)))
+    (end-with-linkage linkage
+     (preserving '(env)
+       get-value-code
+       (make-instruction-sequence '(env val) (list target)
+        `((perform (op define-variable!) 
+                   (const ,var)
+                   (reg val)
+                   (reg env))
+          (assign ,target (const ok))))))))
+</code></pre>
+<p>The appended two-instruction sequence requires <code>env</code> and <code>val</code> and
+modifies the target. Note that although we preserve <code>env</code> for this
+sequence, we do not preserve <code>val</code>, because the <code>get-value-code</code> is
+designed to explicitly place its result in <code>val</code> for use by this
+sequence. (In fact, if we did preserve <code>val</code>, we would have a bug,
+because this would cause the previous contents of <code>val</code> to be restored
+right after the <code>get-value-code</code> is run.)</p>
+<h4 id="compiling-conditional-expressions"><a class="header" href="#compiling-conditional-expressions"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_805">Compiling conditional expressions</a></a></h4>
+<p>The code for an <code>if</code> expression compiled with a given
+target and linkage has the form</p>
+<p><code> &lt;</code><em><code>compilation of predicate, target ``val``, linkage ``next</code></em><code>&gt;</code>
+<code> (test (op false?) (reg val))</code>
+<code> (branch (label false-branch))</code>
+<code>true-branch</code>
+<code> &lt;</code><em><code>compilation of consequent with given target and given linkage or ``after-if</code></em><code>&gt;</code>
+<code>false-branch</code>
+<code> &lt;</code><em><code>compilation of alternative with given target and linkage</code></em><code>&gt;</code>
+<code>after-if</code></p>
+<p>To generate this code, we compile the predicate, consequent, and
+alternative, and combine the resulting code with instructions to test
+the predicate result and with newly generated labels to mark the true
+and false branches and the end of the
+conditional.<a href="book-Z-H-35.html#footnote_Temp_806">^[37]{.small}^</a>
+In this arrangement of code, we must branch around the true branch if
+the test is false. The only slight complication is in how the linkage
+for the true branch should be handled. If the linkage for the
+conditional is <code>return</code> or a label, then the true and false branches
+will both use this same linkage. If the linkage is <code>next</code>, the true
+branch ends with a jump around the code for the false branch to the
+label at the end of the conditional.</p>
+<pre><code class="language-scheme editable">(define (compile-if exp target linkage)
+  (let ((t-branch (make-label 'true-branch))
+        (f-branch (make-label 'false-branch))              
+        (after-if (make-label 'after-if)))
+    (let ((consequent-linkage
+           (if (eq? linkage 'next) after-if linkage)))
+      (let ((p-code (compile (if-predicate exp) 'val 'next))
+            (c-code
+             (compile
+              (if-consequent exp) target consequent-linkage))
+            (a-code
+             (compile (if-alternative exp) target linkage)))
+        (preserving '(env continue)
+          p-code
+          (append-instruction-sequences
+           (make-instruction-sequence '(val) '()
+            `((test (op false?) (reg val)) 
+              (branch (label ,f-branch))))
+           (parallel-instruction-sequences
+            (append-instruction-sequences t-branch c-code)
+            (append-instruction-sequences f-branch a-code))
+           after-if)))))
+</code></pre>
+<p><code>Env</code> is preserved around the predicate code because it could be needed
+by the true and false branches, and <code>continue</code> is preserved because it
+could be needed by the linkage code in those branches. The code for the
+true and false branches (which are not executed sequentially) is
+appended using a special combiner <code>parallel-instruction-sequences</code>
+described in section <a href="book-Z-H-35.html#%_sec_5.5.4">5.5.4</a>.</p>
+<p>Note that <code>cond</code> is a derived expression, so all that the compiler needs
+to do handle it is to apply the <code>cond-&gt;if</code> transformer (from
+section <a href="book-Z-H-26.html#%_sec_4.1.2">4.1.2</a>) and compile the resulting
+<code>if</code> expression.</p>
+<h4 id="compiling-sequences"><a class="header" href="#compiling-sequences"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_807">Compiling sequences</a></a></h4>
+<p>The compilation of sequences (from procedure bodies or
+explicit <code>begin</code> expressions) parallels their evaluation. Each
+expression of the sequence is compiled -- the last expression with the
+linkage specified for the sequence, and the other expressions with
+linkage <code>next</code> (to execute the rest of the sequence). The instruction
+sequences for the individual expressions are appended to form a single
+instruction sequence, such that <code>env</code> (needed for the rest of the
+sequence) and <code>continue</code> (possibly needed for the linkage at the end of
+the sequence) are preserved.</p>
+<pre><code class="language-scheme editable">(define (compile-sequence seq target linkage)
+  (if (last-exp? seq)
+      (compile (first-exp seq) target linkage)
+      (preserving '(env continue)
+        (compile (first-exp seq) target 'next)
+        (compile-sequence (rest-exps seq) target linkage))))
+</code></pre>
+<h4 id="compiling-lambda-expressions"><a class="header" href="#compiling-lambda-expressions"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_808">Compiling <code>lambda</code> expressions</a></a></h4>
+<p><code>Lambda</code> expressions construct procedures. The object
+code for a <code>lambda</code> expression must have the form</p>
+<p><code>&lt;{*construct procedure object and assign it to target register*}&gt;</code>
+<code>&lt;{*linkage*}&gt;</code></p>
+<p>When we compile the <code>lambda</code> expression, we also generate the code for
+the procedure body. Although the body won't be executed at the time of
+procedure construction, it is convenient to insert it into the object
+code right after the code for the <code>lambda</code>. If the linkage for the
+<code>lambda</code> expression is a label or <code>return</code>, this is fine. But if the
+linkage is <code>next</code>, we will need to skip around the code for the
+procedure body by using a linkage that jumps to a label that is inserted
+after the body. The object code thus has the form</p>
+<p><code> &lt;{*construct procedure object and assign it to target register*}&gt;</code>
+<code> &lt;{*code for given linkage*}&gt;</code><em><code>or</code></em><code> (goto (label after-lambda))</code>
+<code> &lt;{*compilation of procedure body*}&gt;</code>
+<code>after-lambda</code></p>
+<p><code>Compile-lambda</code> generates the code for constructing the procedure
+object followed by the code for the procedure body. The procedure object
+will be constructed at run time by combining the current environment
+(the environment at the point of definition) with the entry point to the
+compiled procedure body (a newly generated
+label).<a href="book-Z-H-35.html#footnote_Temp_809">^[38]{.small}^</a></p>
+<pre><code class="language-scheme editable">(define (compile-lambda exp target linkage)
+  (let ((proc-entry (make-label 'entry))
+        (after-lambda (make-label 'after-lambda)))
+    (let ((lambda-linkage
+           (if (eq? linkage 'next) after-lambda linkage)))
+      (append-instruction-sequences
+       (tack-on-instruction-sequence
+        (end-with-linkage lambda-linkage
+         (make-instruction-sequence '(env) (list target)
+          `((assign ,target 
+                   (op make-compiled-procedure)
+                   (label ,proc-entry)
+                   (reg env)))))
+        (compile-lambda-body exp proc-entry))
+       after-lambda))))
+</code></pre>
+<p><code>Compile-lambda</code> uses the special combiner
+<code>tack-on-instruction-sequence</code>
+(section <a href="book-Z-H-35.html#%_sec_5.5.4">5.5.4</a>) rather than
+<code>append-instruction-sequences</code> to append the procedure body to the
+<code>lambda</code> expression code, because the body is not part of the sequence
+of instructions that will be executed when the combined sequence is
+entered; rather, it is in the sequence only because that was a
+convenient place to put it.</p>
+<p><code>Compile-lambda-body</code> constructs the code for the body of the procedure.
+This code begins with a label for the entry point. Next come
+instructions that will cause the run-time evaluation environment to
+switch to the correct environment for evaluating the procedure body --
+namely, the definition environment of the procedure, extended to include
+the bindings of the formal parameters to the arguments with which the
+procedure is called. After this comes the code for the sequence of
+expressions that makes up the procedure body. The sequence is compiled
+with linkage <code>return</code> and target <code>val</code> so that it will end by returning
+from the procedure with the procedure result in <code>val</code>.</p>
+<pre><code class="language-scheme editable">(define (compile-lambda-body exp proc-entry)
+  (let ((formals (lambda-parameters exp)))
+    (append-instruction-sequences
+     (make-instruction-sequence '(env proc argl) '(env)
+      `(,proc-entry 
+        (assign env (op compiled-procedure-env) (reg proc))
+        (assign env
+                (op extend-environment)
+                (const ,formals)
+                (reg argl)
+                (reg env))))
+     (compile-sequence (lambda-body exp) 'val 'return))))
+</code></pre>
+<h3 id="553--compiling-combinations"><a class="header" href="#553--compiling-combinations"><a href="book-Z-H-4.html#%_toc_%_sec_5.5.3">5.5.3  Compiling Combinations</a></a></h3>
+<p>The essence of the compilation process is
+the compilation of procedure applications. The code for a combination
+compiled with a given target and linkage has the form</p>
+<p><code>&lt;{*compilation of operator, target proc, linkage next*}&gt;</code>
+<code>&lt;{*evaluate operands and construct argument list in argl*}&gt;</code>
+<code>&lt;{*compilation of procedure call with given target and linkage*}&gt;</code></p>
+<p>The registers <code>env</code>, <code>proc</code>, and <code>argl</code> may have to be saved and
+restored during evaluation of the operator and operands. Note that this
+is the only place in the compiler where a target other than <code>val</code> is
+specified.</p>
+<p>The required code is generated by <code>compile-application</code>. This
+recursively compiles the operator, to produce code that puts the
+procedure to be applied into <code>proc</code>, and compiles the operands, to
+produce code that evaluates the individual operands of the application.
+The instruction sequences for the operands are combined (by
+<code>construct-arglist</code>) with code that constructs the list of arguments in
+<code>argl</code>, and the resulting argument-list code is combined with the
+procedure code and the code that performs the procedure call (produced
+by <code>compile-procedure-call</code>). In appending the code sequences, the <code>env</code>
+register must be preserved around the evaluation of the operator (since
+evaluating the operator might modify <code>env</code>, which will be needed to
+evaluate the operands), and the <code>proc</code> register must be preserved around
+the construction of the argument list (since evaluating the operands
+might modify <code>proc</code>, which will be needed for the actual procedure
+application). <code>Continue</code> must also be preserved throughout, since it is
+needed for the linkage in the procedure call.</p>
+<pre><code class="language-scheme editable">(define (compile-application exp target linkage)
+  (let ((proc-code (compile (operator exp) 'proc 'next))
+        (operand-codes
+         (map (lambda (operand) (compile operand 'val 'next))
+              (operands exp))))
+    (preserving '(env continue)
+      proc-code
+      (preserving '(proc continue)
+        (construct-arglist operand-codes)
+        (compile-procedure-call target linkage)))))
+</code></pre>
+<p>The code to construct the argument list will evaluate each operand into
+<code>val</code> and then <code>cons</code> that value onto the argument list being
+accumulated in <code>argl</code>. Since we <code>cons</code> the arguments onto <code>argl</code> in
+sequence, we must start with the last argument and end with the first,
+so that the arguments will appear in order from first to last in the
+resulting list. Rather than waste an instruction by initializing <code>argl</code>
+to the empty list to set up for this sequence of evaluations, we make
+the first code sequence construct the initial <code>argl</code>. The general form
+of the argument-list construction is thus as follows:</p>
+<p><code>&lt;{*compilation of last operand, targeted to val*}&gt;</code>
+<code>(assign argl (op list) (reg val))</code>
+<code>&lt;{*compilation of next operand, targeted to val*}&gt;</code>
+<code>(assign argl (op cons) (reg val) (reg argl))</code>
+<code>...</code>
+<code>&lt;{*compilation of first operand, targeted to val*}&gt;</code>
+<code>(assign argl (op cons) (reg val) (reg argl))</code></p>
+<p><code>Argl</code> must be preserved around each operand evaluation except the first
+(so that arguments accumulated so far won't be lost), and <code>env</code> must be
+preserved around each operand evaluation except the last (for use by
+subsequent operand evaluations).</p>
+<p>Compiling this argument code is a bit tricky, because of the special
+treatment of the first operand to be evaluated and the need to preserve
+<code>argl</code> and <code>env</code> in different places. The <code>construct-arglist</code> procedure
+takes as arguments the code that evaluates the individual operands. If
+there are no operands at all, it simply emits the instruction</p>
+<pre><code class="language-scheme editable">(assign argl (const ()))
+</code></pre>
+<p>Otherwise, <code>construct-arglist</code> creates code that initializes <code>argl</code> with
+the last argument, and appends code that evaluates the rest of the
+arguments and adjoins them to <code>argl</code> in succession. In order to process
+the arguments from last to first, we must reverse the list of operand
+code sequences from the order supplied by <code>compile-application</code>.</p>
+<pre><code class="language-scheme editable">(define (construct-arglist operand-codes)
+  (let ((operand-codes (reverse operand-codes)))
+    (if (null? operand-codes)
+        (make-instruction-sequence '() '(argl)
+         '((assign argl (const ())))))
+        (let ((code-to-get-last-arg
+               (append-instruction-sequences
+                (car operand-codes)
+                (make-instruction-sequence '(val) '(argl)
+                 '((assign argl (op list) (reg val)))))))
+          (if (null? (cdr operand-codes))
+              code-to-get-last-arg
+              (preserving '(env)
+                code-to-get-last-arg
+                (code-to-get-rest-args
+                 (cdr operand-codes))))))))
+(define (code-to-get-rest-args operand-codes)
+  (let ((code-for-next-arg
+         (preserving '(argl)
+           (car operand-codes)
+           (make-instruction-sequence '(val argl) '(argl)
+            '((assign argl
+                    (op cons) (reg val) (reg argl)))))))
+    (if (null? (cdr operand-codes))
+        code-for-next-arg
+        (preserving '(env)
+          code-for-next-arg
+          (code-to-get-rest-args (cdr operand-codes))))))
+</code></pre>
+<h4 id="applying-procedures"><a class="header" href="#applying-procedures"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_810">Applying procedures</a></a></h4>
+<p>After evaluating the elements of a combination, the compiled code must
+apply the procedure in <code>proc</code> to the arguments in <code>argl</code>. The code
+performs essentially the same dispatch as the <code>apply</code> procedure in the
+metacircular evaluator of section <a href="book-Z-H-26.html#%_sec_4.1.1">4.1.1</a>
+or the <code>apply-dispatch</code> entry point in the explicit-control evaluator of
+section <a href="book-Z-H-34.html#%_sec_5.4.1">5.4.1</a>. It checks whether the
+procedure to be applied is a primitive procedure or a compiled
+procedure. For a primitive procedure, it uses
+<code>apply-primitive-procedure</code>; we will see shortly how it handles compiled
+procedures. The procedure-application code has the following form:</p>
+<p><code> (test (op primitive-procedure?) (reg proc))</code>
+<code> (branch (label primitive-branch))</code>
+<code>compiled-branch</code>
+<code> &lt;{*code to apply compiled procedure with given target and appropriate linkage*}&gt;</code>
+<code>primitive-branch</code>
+<code> (assign &lt;{*target*}&gt;</code>
+<code>         (op apply-primitive-procedure)</code>
+<code>         (reg proc)</code>
+<code>         (reg argl))</code>
+<code> &lt;{*linkage*}&gt;</code>
+<code>after-call</code></p>
+<p>Observe that the compiled branch must skip around the primitive branch.
+Therefore, if the linkage for the original procedure call was <code>next</code>,
+the compound branch must use a linkage that jumps to a label that is
+inserted after the primitive branch. (This is similar to the linkage
+used for the true branch in <code>compile-if</code>.)</p>
+<pre><code class="language-scheme editable">(define (compile-procedure-call target linkage)
+  (let ((primitive-branch (make-label 'primitive-branch))
+        (compiled-branch (make-label 'compiled-branch))
+        (after-call (make-label 'after-call)))
+    (let ((compiled-linkage
+           (if (eq? linkage 'next) after-call linkage)))
+      (append-instruction-sequences
+       (make-instruction-sequence '(proc) '()
+        `((test (op primitive-procedure?) (reg proc)) 
+          (branch (label ,primitive-branch))))
+       (parallel-instruction-sequences
+        (append-instruction-sequences
+         compiled-branch
+         (compile-proc-appl target compiled-linkage))
+        (append-instruction-sequences
+         primitive-branch
+         (end-with-linkage linkage
+          (make-instruction-sequence '(proc argl)
+                                     (list target)
+           `((assign ,target 
+                    (op apply-primitive-procedure)
+                    (reg proc)
+                    (reg argl)))))))
+       after-call))))
+</code></pre>
+<p>The primitive and compound branches, like the true and false branches in
+<code>compile-if</code>, are appended using <code>parallel-instruction-sequences</code> rather
+than the ordinary <code>append-instruction-sequences</code>, because they will not
+be executed sequentially.</p>
+<h4 id="applying-compiled-procedures"><a class="header" href="#applying-compiled-procedures"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_811">Applying compiled procedures</a></a></h4>
+<p>The code that handles procedure application is the most subtle part of
+the compiler, even though the instruction sequences it generates are
+very short. A compiled procedure (as constructed by <code>compile-lambda</code>)
+has an entry point, which is a label that designates where the code for
+the procedure starts. The code at this entry point computes a result in
+<code>val</code> and returns by executing the instruction <code>(goto (reg continue))</code>.
+Thus, we might expect the code for a compiled-procedure application (to
+be generated by <code>compile-proc-appl</code>) with a given target and linkage to
+look like this if the linkage is a label</p>
+<p><code> (assign continue (label proc-return))</code>
+<code> (assign val (op compiled-procedure-entry) (reg proc))</code>
+<code> (goto (reg val))</code>
+<code>proc-return</code>
+<code>(assign &lt;{*target*}&gt; (reg val))  </code><em><code>; included if target is not val</code></em><code> </code> (goto (label &lt;{<em>linkage</em>}&gt;))   <code>*</code>; linkage code<code>*</code></p>
+<p>or like this if the linkage is <code>return</code>.</p>
+<p><code> (save continue)</code>
+<code> (assign continue (label proc-return))</code>
+<code> (assign val (op compiled-procedure-entry) (reg proc))</code>
+<code> (goto (reg val))</code>
+<code>proc-return</code>
+<code>(assign &lt;{*target*}&gt; (reg val))  </code><em><code>; included if target is not val</code></em><code> </code> (restore continue)<code> </code> (goto (reg continue))   <code>*</code>; linkage code<code>*</code></p>
+<p>This code sets up <code>continue</code> so that the procedure will return to a
+label <code>proc-return</code> and jumps to the procedure's entry point. The code
+at <code>proc-return</code> transfers the procedure's result from <code>val</code> to the
+target register (if necessary) and then jumps to the location specified
+by the linkage. (The linkage is always <code>return</code> or a label, because
+<code>compile-procedure-call</code> replaces a <code>next</code> linkage for the
+compound-procedure branch by an <code>after-call</code> label.)</p>
+<p>In fact, if the target is not <code>val</code>, that is exactly the code our
+compiler will
+generate.<a href="book-Z-H-35.html#footnote_Temp_812">^[39]{.small}^</a>
+Usually, however, the target is <code>val</code> (the only time the compiler
+specifies a different register is when targeting the evaluation of an
+operator to <code>proc</code>), so the procedure result is put directly into the
+target register and there is no need to return to a special location
+that copies it. Instead, we simplify the code by setting up <code>continue</code>
+so that the procedure will ''return'' directly to the place
+specified by the caller's linkage:</p>
+<p><code>&lt;{*set up continue for linkage*}&gt;</code>
+<code>(assign val (op compiled-procedure-entry) (reg proc))</code>
+<code>(goto (reg val))</code></p>
+<p>If the linkage is a label, we set up <code>continue</code> so that the procedure
+will return to that label. (That is, the <code>(goto (reg continue))</code> the
+procedure ends with becomes equivalent to the
+<code>(goto (label &lt;</code><em><code>linkage</code></em><code>&gt;))</code> at <code>proc-return</code> above.)</p>
+<p><code>(assign continue (label &lt;{*linkage*}&gt;))</code>
+<code>(assign val (op compiled-procedure-entry) (reg proc))</code>
+<code>(goto (reg val))</code></p>
+<p>If the linkage is <code>return</code>, we don't need to set up <code>continue</code> at all:
+It already holds the desired location. (That is, the
+<code>(goto (reg continue))</code> the procedure ends with goes directly to the
+place where the <code>(goto (reg continue))</code> at <code>proc-return</code> would have
+gone.)</p>
+<p><code>(assign val (op compiled-procedure-entry) (reg proc))</code>
+<code>(goto (reg val))</code></p>
+<p>With this implementation of the <code>return</code>
+linkage, the compiler generates tail-recursive code. Calling a procedure
+as the final step in a procedure body does a direct transfer, without
+saving any information on the stack.</p>
+<p>Suppose instead that we had handled the case of a procedure call with a
+linkage of <code>return</code> and a target of <code>val</code> as shown above for a non-<code>val</code>
+target. This would destroy tail recursion. Our system would still give
+the same value for any expression. But each time we called a procedure,
+we would save <code>continue</code> and return after the call to undo the (useless)
+save. These extra saves would accumulate during a nest of procedure
+calls.<a href="book-Z-H-35.html#footnote_Temp_813">^[40]{.small}^</a></p>
+<p><code>Compile-proc-appl</code> generates the above procedure-application code by
+considering four cases, depending on whether the target for the call is
+<code>val</code> and whether the linkage is <code>return</code>. Observe that the instruction
+sequences are declared to modify all the registers, since executing the
+procedure body can change the registers in arbitrary
+ways.<a href="book-Z-H-35.html#footnote_Temp_814">^[41]{.small}^</a>
+Also note that the code sequence for the case with target <code>val</code> and
+linkage <code>return</code> is declared to need <code>continue</code>: Even though <code>continue</code>
+is not explicitly used in the two-instruction sequence, we must be sure
+that <code>continue</code> will have the correct value when we enter the compiled
+procedure.</p>
+<pre><code class="language-scheme editable">(define (compile-proc-appl target linkage)
+  (cond ((and (eq? target 'val) (not (eq? linkage 'return)))
+         (make-instruction-sequence '(proc) all-regs
+          `((assign continue (label ,linkage)) 
+            (assign val (op compiled-procedure-entry)
+                        (reg proc))
+            (goto (reg val)))))
+        ((and (not (eq? target 'val))
+              (not (eq? linkage 'return)))
+         (let ((proc-return (make-label 'proc-return)))
+           (make-instruction-sequence '(proc) all-regs
+            `((assign continue (label ,proc-return)) 
+              (assign val (op compiled-procedure-entry)
+                          (reg proc))
+              (goto (reg val))
+              ,proc-return
+              (assign ,target (reg val))
+              (goto (label ,linkage))))))
+        ((and (eq? target 'val) (eq? linkage 'return))
+         (make-instruction-sequence '(proc continue) all-regs
+          '((assign val (op compiled-procedure-entry)
+                        (reg proc))
+            (goto (reg val)))))
+        ((and (not (eq? target 'val)) (eq? linkage 'return))
+         (error "return linkage, target not val -- COMPILE"
+                target))))
+</code></pre>
+<h3 id="554--combining-instruction-sequences"><a class="header" href="#554--combining-instruction-sequences"><a href="book-Z-H-4.html#%_toc_%_sec_5.5.4">5.5.4  Combining Instruction Sequences</a></a></h3>
+<p>This section describes the details on how instruction
+sequences are represented and combined. Recall from
+section <a href="book-Z-H-35.html#%_sec_5.5.1">5.5.1</a> that an instruction
+sequence is represented as a list of the registers needed, the registers
+modified, and the actual instructions. We will also consider a label
+(symbol) to be a degenerate case of an instruction sequence, which
+doesn't need or modify any registers. So to determine the registers
+needed and modified by instruction sequences we use the selectors</p>
+<pre><code class="language-scheme editable">(define (registers-needed s)
+  (if (symbol? s) '() (car s)))
+(define (registers-modified s)
+  (if (symbol? s) '() (cadr s)))
+(define (statements s)
+  (if (symbol? s) (list s) (caddr s)))
+</code></pre>
+<p>and to determine whether a given sequence needs or modifies a given
+register we use the predicates</p>
+<pre><code class="language-scheme editable">(define (needs-register? seq reg)
+  (memq reg (registers-needed seq)))
+(define (modifies-register? seq reg)
+  (memq reg (registers-modified seq)))
+</code></pre>
+<p>In terms of these predicates and selectors, we can implement the various
+instruction sequence combiners used throughout the compiler.</p>
+<p>The basic combiner is <code>append-instruction-sequences</code>. This takes as
+arguments an arbitrary number of instruction sequences that are to be
+executed sequentially and returns an instruction sequence whose
+statements are the statements of all the sequences appended together.
+The subtle point is to determine the registers that are needed and
+modified by the resulting sequence. It modifies those registers that are
+modified by any of the sequences; it needs those registers that must be
+initialized before the first sequence can be run (the registers needed
+by the first sequence), together with those registers needed by any of
+the other sequences that are not initialized (modified) by sequences
+preceding it.</p>
+<p>The sequences are appended two at a time by <code>append-2-sequences</code>. This
+takes two instruction sequences <code>seq1</code> and <code>seq2</code> and returns the
+instruction sequence whose statements are the statements of <code>seq1</code>
+followed by the statements of <code>seq2</code>, whose modified registers are those
+registers that are modified by either <code>seq1</code> or <code>seq2</code>, and whose needed
+registers are the registers needed by <code>seq1</code> together with those
+registers needed by <code>seq2</code> that are not modified by <code>seq1</code>. (In terms of
+set operations, the new set of needed registers is the union of the set
+of registers needed by <code>seq1</code> with the set difference of the registers
+needed by <code>seq2</code> and the registers modified by <code>seq1</code>.) Thus,
+<code>append-instruction-sequences</code> is implemented as follows:</p>
+<pre><code class="language-scheme editable">(define (append-instruction-sequences . seqs)
+  (define (append-2-sequences seq1 seq2)
+    (make-instruction-sequence
+     (list-union (registers-needed seq1)
+                 (list-difference (registers-needed seq2)
+                                  (registers-modified seq1)))
+     (list-union (registers-modified seq1)
+                 (registers-modified seq2))
+     (append (statements seq1) (statements seq2))))
+  (define (append-seq-list seqs)
+    (if (null? seqs)
+        (empty-instruction-sequence)
+        (append-2-sequences (car seqs)
+                            (append-seq-list (cdr seqs)))))
+  (append-seq-list seqs))
+</code></pre>
+<p>This procedure uses some simple operations for manipulating sets
+represented as lists, similar to the (unordered) set representation
+described in section <a href="book-Z-H-16.html#%_sec_2.3.3">2.3.3</a>:</p>
+<pre><code class="language-scheme editable">(define (list-union s1 s2)
+  (cond ((null? s1) s2)
+        ((memq (car s1) s2) (list-union (cdr s1) s2))
+        (else (cons (car s1) (list-union (cdr s1) s2)))))
+(define (list-difference s1 s2)
+  (cond ((null? s1) '())
+        ((memq (car s1) s2) (list-difference (cdr s1) s2))
+        (else (cons (car s1)
+                    (list-difference (cdr s1) s2)))))
+</code></pre>
+<p><code>Preserving</code>, the second major instruction sequence combiner, takes a
+list of registers <code>regs</code> and two instruction sequences <code>seq1</code> and <code>seq2</code>
+that are to be executed sequentially. It returns an instruction sequence
+whose statements are the statements of <code>seq1</code> followed by the statements
+of <code>seq2</code>, with appropriate <code>save</code> and <code>restore</code> instructions around
+<code>seq1</code> to protect the registers in <code>regs</code> that are modified by <code>seq1</code>
+but needed by <code>seq2</code>. To accomplish this, <code>preserving</code> first creates a
+sequence that has the required <code>save</code>s followed by the statements of
+<code>seq1</code> followed by the required <code>restore</code>s. This sequence needs the
+registers being saved and restored in addition to the registers needed
+by <code>seq1</code>, and modifies the registers modified by <code>seq1</code> except for the
+ones being saved and restored. This augmented sequence and <code>seq2</code> are
+then appended in the usual way. The following procedure implements this
+strategy recursively, walking down the list of registers to be
+preserved:<a href="book-Z-H-35.html#footnote_Temp_815">^[42]{.small}^</a></p>
+<pre><code class="language-scheme editable">(define (preserving regs seq1 seq2)
+  (if (null? regs)
+      (append-instruction-sequences seq1 seq2)
+      (let ((first-reg (car regs)))
+        (if (and (needs-register? seq2 first-reg)
+                 (modifies-register? seq1 first-reg))
+            (preserving (cdr regs)
+             (make-instruction-sequence
+              (list-union (list first-reg)
+                          (registers-needed seq1))
+              (list-difference (registers-modified seq1)
+                               (list first-reg))
+              (append `((save ,first-reg)) 
+                      (statements seq1)
+                      `((restore ,first-reg)))) 
+             seq2)
+            (preserving (cdr regs) seq1 seq2)))))
+</code></pre>
+<p>Another sequence combiner, <code>tack-on-instruction-sequence</code>, is used by
+<code>compile-lambda</code> to append a procedure body to another sequence. Because
+the procedure body is not ''in line'' to be executed as part of the
+combined sequence, its register use has no impact on the register use of
+the sequence in which it is embedded. We thus ignore the procedure
+body's sets of needed and modified registers when we tack it onto the
+other sequence.</p>
+<pre><code class="language-scheme editable">(define (tack-on-instruction-sequence seq body-seq)
+  (make-instruction-sequence
+   (registers-needed seq)
+   (registers-modified seq)
+   (append (statements seq) (statements body-seq))))
+</code></pre>
+<p><code>Compile-if</code> and <code>compile-procedure-call</code> use a special combiner called
+<code>parallel-instruction-sequences</code> to append the two alternative branches
+that follow a test. The two branches will never be executed
+sequentially; for any particular evaluation of the test, one branch or
+the other will be entered. Because of this, the registers needed by the
+second branch are still needed by the combined sequence, even if these
+are modified by the first branch.</p>
+<pre><code class="language-scheme editable">(define (parallel-instruction-sequences seq1 seq2)
+  (make-instruction-sequence
+   (list-union (registers-needed seq1)
+               (registers-needed seq2))
+   (list-union (registers-modified seq1)
+               (registers-modified seq2))
+   (append (statements seq1) (statements seq2))))
+</code></pre>
+<h3 id="555--an-example-of-compiled-code"><a class="header" href="#555--an-example-of-compiled-code"><a href="book-Z-H-4.html#%_toc_%_sec_5.5.5">5.5.5  An Example of Compiled Code</a></a></h3>
+<p>Now that we have seen all the elements of
+the compiler, let us examine an example of compiled code to see how
+things fit together. We will compile the definition of a recursive
+<code>factorial</code> procedure by calling <code>compile</code>:</p>
+<pre><code class="language-scheme editable">(compile
+ '(define (factorial n)
+    (if (= n 1)
+        1
+        (* (factorial (- n 1)) n)))
+ 'val
+ 'next)
+</code></pre>
+<p>We have specified that the value of the <code>define</code> expression should be
+placed in the <code>val</code> register. We don't care what the compiled code does
+after executing the <code>define</code>, so our choice of <code>next</code> as the linkage
+descriptor is arbitrary.</p>
+<p><code>Compile</code> determines that the expression is a definition, so it calls
+<code>compile-definition</code> to compile code to compute the value to be assigned
+(targeted to <code>val</code>), followed by code to install the definition,
+followed by code to put the value of the <code>define</code> (which is the symbol
+<code>ok</code>) into the target register, followed finally by the linkage code.
+<code>Env</code> is preserved around the computation of the value, because it is
+needed in order to install the definition. Because the linkage is
+<code>next</code>, there is no linkage code in this case. The skeleton of the
+compiled code is thus</p>
+<p><code>  &lt;</code><em><code>save env if modified by code to compute value</code></em><code>&gt;</code>
+<code>  &lt;</code><em><code>compilation of definition value, target val, linkage next</code></em><code>&gt;</code>
+<code>  &lt;</code><em><code>restore env if saved above</code></em><code>&gt;</code>
+<code>  (perform (op define-variable!))</code>
+<code>           (const factorial)</code>
+<code>           (reg val)</code>
+<code>           (reg env))</code>
+<code>  (assign val (const ok))</code></p>
+<p>The expression that is to be compiled to produce the value for the
+variable <code>factorial</code> is a <code>lambda</code> expression whose value is the
+procedure that computes factorials. <code>Compile</code> handles this by calling
+<code>compile-lambda</code>, which compiles the procedure body, labels it as a new
+entry point, and generates the instruction that will combine the
+procedure body at the new entry point with the run-time environment and
+assign the result to <code>val</code>. The sequence then skips around the compiled
+procedure code, which is inserted at this point. The procedure code
+itself begins by extending the procedure's definition environment by a
+frame that binds the formal parameter <code>n</code> to the procedure argument.
+Then comes the actual procedure body. Since this code for the value of
+the variable doesn't modify the <code>env</code> register, the optional <code>save</code> and
+<code>restore</code> shown above aren't generated. (The procedure code at <code>entry2</code>
+isn't executed at this point, so its use of <code>env</code> is irrelevant.)
+Therefore, the skeleton for the compiled code becomes</p>
+<p><code>  (assign val (op make-compiled-procedure))</code>
+<code>              (label entry2)</code>
+<code>              (reg env))</code>
+<code>  (goto (label after-lambda1))</code>
+<code>entry2</code>
+<code>  (assign env (op compiled-procedure-env) (reg proc))</code>
+<code>  (assign env (op extend-environment))</code>
+<code>              (const (n))</code>
+<code>              (reg argl)</code>
+<code>              (reg env))</code>
+<code>  &lt;</code><em><code>compilation of procedure body</code></em><code>&gt;</code>
+<code>after-lambda1</code>
+<code>  (perform (op define-variable!))</code>
+<code>           (const factorial)</code>
+<code>           (reg val)</code>
+<code>           (reg env))</code>
+<code>  (assign val (const ok))</code></p>
+<p>A procedure body is always compiled (by <code>compile-lambda-body</code>) as a
+sequence with target <code>val</code> and linkage <code>return</code>. The sequence in this
+case consists of a single <code>if</code> expression:</p>
+<pre><code class="language-scheme editable">(if (= n 1)
+    1
+    (* (factorial (- n 1)) n))
+</code></pre>
+<p><code>Compile-if</code> generates code that first computes the predicate (targeted
+to <code>val</code>), then checks the result and branches around the true branch if
+the predicate is false. <code>Env</code> and <code>continue</code> are preserved around the
+predicate code, since they may be needed for the rest of the <code>if</code>
+expression. Since the <code>if</code> expression is the final expression (and only
+expression) in the sequence making up the procedure body, its target is
+<code>val</code> and its linkage is <code>return</code>, so the true and false branches are
+both compiled with target <code>val</code> and linkage <code>return</code>. (That is, the
+value of the conditional, which is the value computed by either of its
+branches, is the value of the procedure.)</p>
+<p><code>  &lt;</code><em><code>save continue, env if modified by predicate and needed by branches</code></em><code>&gt;</code>
+<code>  &lt;</code><em><code>compilation of predicate, target val, linkage next</code></em><code>&gt;</code>
+<code>  &lt;</code><em><code>restore continue, env if saved above</code></em><code>&gt;</code>
+<code>  (test (op false?) (reg val))</code>
+<code>  (branch (label false-branch4))</code>
+<code>true-branch5</code>
+<code>  &lt;</code><em><code>compilation of true branch, target val, linkage return</code></em><code>&gt;</code>
+<code>false-branch4</code>
+<code>  &lt;</code><em><code>compilation of false branch, target val, linkage return</code></em><code>&gt;</code>
+<code>after-if3</code></p>
+<p>The predicate <code>(= n 1)</code> is a procedure call. This looks up the operator
+(the symbol <code>=</code>) and places this value in <code>proc</code>. It then assembles the
+arguments <code>1</code> and the value of <code>n</code> into <code>argl</code>. Then it tests whether
+<code>proc</code> contains a primitive or a compound procedure, and dispatches to a
+primitive branch or a compound branch accordingly. Both branches resume
+at the <code>after-call</code> label. The requirements to preserve registers around
+the evaluation of the operator and operands don't result in any saving
+of registers, because in this case those evaluations don't modify the
+registers in question.</p>
+<p><code>  (assign proc)</code>
+<code>          (op lookup-variable-value) (const =) (reg env))</code>
+<code>  (assign val (const 1))</code>
+<code>  (assign argl (op list) (reg val))</code>
+<code>  (assign val (op lookup-variable-value) (const n) (reg env))</code>
+<code>  (assign argl (op cons) (reg val) (reg argl))</code>
+<code>  (test (op primitive-procedure?) (reg proc))</code>
+<code>  (branch (label primitive-branch17))</code>
+<code>compiled-branch16</code>
+<code>  (assign continue (label after-call15))</code>
+<code>  (assign val (op compiled-procedure-entry) (reg proc))</code>
+<code>  (goto (reg val))</code>
+<code>primitive-branch17</code>
+<code>  (assign val (op apply-primitive-procedure)</code>
+<code>              (reg proc)</code>
+<code>              (reg argl))</code>
+<code>after-call15</code></p>
+<p>The true branch, which is the constant 1, compiles (with target <code>val</code>
+and linkage <code>return</code>) to</p>
+<p><code>  (assign val (const 1))</code>
+<code>  (goto (reg continue))</code></p>
+<p>The code for the false branch is another a procedure call, where the
+procedure is the value of the symbol <code>*</code>, and the arguments are <code>n</code> and
+the result of another procedure call (a call to <code>factorial</code>). Each of
+these calls sets up <code>proc</code> and <code>argl</code> and its own primitive and compound
+branches. Figure <a href="book-Z-H-35.html#%_fig_5.17">5.17</a> shows the complete
+compilation of the definition of the <code>factorial</code> procedure. Notice that
+the possible <code>save</code> and <code>restore</code> of <code>continue</code> and <code>env</code> around the
+predicate, shown above, are in fact generated, because these registers
+are modified by the procedure call in the predicate and needed for the
+procedure call and the <code>return</code> linkage in the branches.</p>
+<p><strong>Exercise 5.33.</strong>  Consider the following definition of
+a factorial procedure, which is slightly different from the one given
+above:</p>
+<pre><code class="language-scheme editable">(define (factorial-alt n)
+  (if (= n 1)
+      1
+      (* n (factorial-alt (- n 1)))))
+</code></pre>
+<p>Compile this procedure and compare the resulting code with that produced
+for <code>factorial</code>. Explain any differences you find. Does either program
+execute more efficiently than the other?</p>
+<p><strong>Exercise
+5.34.</strong>  Compile the iterative factorial
+procedure</p>
+<pre><code class="language-scheme editable">(define (factorial n)
+  (define (iter product counter)
+    (if (&gt; counter n)
+        product
+        (iter (* counter product)
+              (+ counter 1))))
+  (iter 1 1))
+</code></pre>
+<p>Annotate the resulting code, showing the essential difference between
+the code for iterative and recursive versions of <code>factorial</code> that makes
+one process build up stack space and the other run in constant stack
+space.</p>
+<p><em><code>;; construct the procedure and skip over code for the procedure body</code></em><code> </code>  (assign val)<code> </code>          (op make-compiled-procedure) (label entry2) (reg env))<code> </code>  (goto (label after-lambda1))`</p>
+<p><code>entry2     </code><em><code>; calls to factorial will enter here</code></em><code> </code>  (assign env (op compiled-procedure-env) (reg proc))<code> </code>  (assign env)<code> </code>          (op extend-environment) (const (n)) (reg argl) (reg env))<code> *</code>;; begin actual procedure body<code>*</code>
+<code>  (save continue))</code>
+<code>  (save env))</code></p>
+<p><em><code>;; compute (= n 1)</code></em><code> </code>  (assign proc (op lookup-variable-value) (const =) (reg env))<code> </code>  (assign val (const 1))<code> </code>  (assign argl (op list) (reg val))<code> </code>  (assign val (op lookup-variable-value) (const n) (reg env))<code> </code>  (assign argl (op cons) (reg val) (reg argl))<code> </code>  (test (op primitive-procedure?) (reg proc))<code> </code>  (branch (label primitive-branch17))<code> </code>compiled-branch16<code> </code>  (assign continue (label after-call15))<code> </code>  (assign val (op compiled-procedure-entry) (reg proc))<code> </code>  (goto (reg val))<code> </code>primitive-branch17<code> </code>  (assign val (op apply-primitive-procedure) (reg proc) (reg argl))`</p>
+<p><code>after-call15   </code><em><code>; val now contains result of (= n 1)</code></em><code> </code>  (restore env))<code> </code>  (restore continue))<code> </code>  (test (op false?) (reg val))<code> </code>  (branch (label false-branch4))<code> </code>true-branch5  <code>*</code>; return 1<code>*</code>
+<code>  (assign val (const 1))</code>
+<code>  (goto (reg continue))</code></p>
+<p><code>false-branch4</code>
+<em><code>;; compute and return (* (factorial (- n 1)) n)</code></em><code> </code>  (assign proc (op lookup-variable-value) (const <em>) (reg env))<code> </code>  (save continue))<code> </code>  (save proc)   <code>*</code>; save * procedure<code>*</code>
+<code>  (assign val (op lookup-variable-value) (const n) (reg env))</code>
+<code>  (assign argl (op list) (reg val))</code>
+<code> (save argl)  </code></em><code>; save partial argument list for *</code>*`</p>
+<p><em><code>;; compute (factorial (- n 1)), which is the other argument for *</code></em><code> </code>  (assign proc)<code> </code>          (op lookup-variable-value) (const factorial) (reg env))<code> </code>  (save proc)  <code>*</code>; save factorial procedure<code>*</code></p>
+<p><strong>Figure 5.17:</strong>  Compilation of the definition of the <code>factorial</code>
+procedure (continued on next page).</p>
+<p><em><code>;; compute (- n 1), which is the argument for factorial</code></em><code> </code>  (assign proc (op lookup-variable-value) (const -) (reg env))<code> </code>  (assign val (const 1))<code> </code>  (assign argl (op list) (reg val))<code> </code>  (assign val (op lookup-variable-value) (const n) (reg env))<code> </code>  (assign argl (op cons) (reg val) (reg argl))<code> </code>  (test (op primitive-procedure?) (reg proc))<code> </code>  (branch (label primitive-branch8))<code> </code>compiled-branch7<code> </code>  (assign continue (label after-call6))<code> </code>  (assign val (op compiled-procedure-entry) (reg proc))<code> </code>  (goto (reg val))<code> </code>primitive-branch8<code> </code>  (assign val (op apply-primitive-procedure) (reg proc) (reg argl))`</p>
+<p><code>after-call6   </code><em><code>; val now contains result of (- n 1)</code></em><code> </code>  (assign argl (op list) (reg val))<code> </code>  (restore proc) <code>*</code>; restore factorial<code>*</code>
+<em><code>;; apply factorial</code></em><code> </code>  (test (op primitive-procedure?) (reg proc))<code> </code>  (branch (label primitive-branch11))<code> </code>compiled-branch10<code> </code>  (assign continue (label after-call9))<code> </code>  (assign val (op compiled-procedure-entry) (reg proc))<code> </code>  (goto (reg val))<code> </code>primitive-branch11<code> </code>  (assign val (op apply-primitive-procedure) (reg proc) (reg argl))`</p>
+<p><code>after-call9      </code><em><code>; val now contains result of (factorial (- n 1))</code></em><code> </code>  (restore argl) <code>*</code>; restore partial argument list for <em><code>*</code>
+<code>  (assign argl (op cons) (reg val) (reg argl))</code>
+<code> (restore proc)</code></em><code>; restore *</code>*<code> </code>  (restore continue))<code> *</code>;; apply * and return its value<code> </code>  (test (op primitive-procedure?) (reg proc))<code> </code>  (branch (label primitive-branch14))<code> </code>compiled-branch13<code> *</code>;; note that a compound procedure here is called tail-recursively<code>*</code>
+<code>  (assign val (op compiled-procedure-entry) (reg proc))</code>
+<code>  (goto (reg val))</code>
+<code>primitive-branch14</code>
+<code>  (assign val (op apply-primitive-procedure) (reg proc) (reg argl))</code>
+<code>  (goto (reg continue))</code>
+<code>after-call12</code>
+<code>after-if3</code>
+<code>after-lambda1</code>
+<em><code>;; assign the procedure to the variable factorial</code></em><code> </code>  (perform)<code> </code>   (op define-variable!) (const factorial) (reg val) (reg env))<code> </code>  (assign val (const ok))`</p>
+<p><strong>Figure 5.17:</strong>  (continued)</p>
+<p><strong>Exercise 5.35.</strong>  What expression was compiled to
+produce the code shown in figure <a href="book-Z-H-35.html#%_fig_5.18">5.18</a>?</p>
+<p><code>  (assign val (op make-compiled-procedure) (label entry16))</code>
+<code>                                           (reg env))</code>
+<code>  (goto (label after-lambda15))</code>
+<code>entry16</code>
+<code>  (assign env (op compiled-procedure-env) (reg proc))</code>
+<code>  (assign env)</code>
+<code>          (op extend-environment) (const (x)) (reg argl) (reg env))</code>
+<code>  (assign proc (op lookup-variable-value) (const +) (reg env))</code>
+<code>  (save continue))</code>
+<code>  (save proc))</code>
+<code>  (save env))</code>
+<code>  (assign proc (op lookup-variable-value) (const g) (reg env))</code>
+<code>  (save proc))</code>
+<code>  (assign proc (op lookup-variable-value) (const +) (reg env))</code>
+<code>  (assign val (const 2))</code>
+<code>  (assign argl (op list) (reg val))</code>
+<code>  (assign val (op lookup-variable-value) (const x) (reg env))</code>
+<code>  (assign argl (op cons) (reg val) (reg argl))</code>
+<code>  (test (op primitive-procedure?) (reg proc))</code>
+<code>  (branch (label primitive-branch19))</code>
+<code>compiled-branch18</code>
+<code>  (assign continue (label after-call17))</code>
+<code>  (assign val (op compiled-procedure-entry) (reg proc))</code>
+<code>  (goto (reg val))</code>
+<code>primitive-branch19</code>
+<code>  (assign val (op apply-primitive-procedure) (reg proc) (reg argl))</code>
+<code>after-call17</code>
+<code>  (assign argl (op list) (reg val))</code>
+<code>  (restore proc))</code>
+<code>  (test (op primitive-procedure?) (reg proc))</code>
+<code>  (branch (label primitive-branch22))</code>
+<code>compiled-branch21</code>
+<code>  (assign continue (label after-call20))</code>
+<code>  (assign val (op compiled-procedure-entry) (reg proc))</code>
+<code>  (goto (reg val))</code>
+<code>primitive-branch22</code>
+<code>  (assign val (op apply-primitive-procedure) (reg proc) (reg argl))</code></p>
+<p><strong>Figure 5.18:</strong>  An example of compiler output (continued on next
+page). See exercise <a href="book-Z-H-35.html#%_thm_5.35">5.35</a>.</p>
+<p><code>after-call20</code>
+<code>  (assign argl (op list) (reg val))</code>
+<code>  (restore env))</code>
+<code>  (assign val (op lookup-variable-value) (const x) (reg env))</code>
+<code>  (assign argl (op cons) (reg val) (reg argl))</code>
+<code>  (restore proc))</code>
+<code>  (restore continue))</code>
+<code>  (test (op primitive-procedure?) (reg proc))</code>
+<code>  (branch (label primitive-branch25))</code>
+<code>compiled-branch24</code>
+<code>  (assign val (op compiled-procedure-entry) (reg proc))</code>
+<code>  (goto (reg val))</code>
+<code>primitive-branch25</code>
+<code>  (assign val (op apply-primitive-procedure) (reg proc) (reg argl))</code>
+<code>  (goto (reg continue))</code>
+<code>after-call23</code>
+<code>after-lambda15</code>
+<code>  (perform (op define-variable!) (const f) (reg val) (reg env))</code>
+<code>  (assign val (const ok))</code></p>
+<p><strong>Figure 5.18:</strong>  (continued)</p>
+<p><strong>Exercise 5.36.</strong>  What
+order of evaluation does our compiler produce for operands of a
+combination? Is it left-to-right, right-to-left, or some other order?
+Where in the compiler is this order determined? Modify the compiler so
+that it produces some other order of evaluation. (See the discussion of
+order of evaluation for the explicit-control evaluator in
+section <a href="book-Z-H-34.html#%_sec_5.4.1">5.4.1</a>.) How does changing the
+order of operand evaluation affect the efficiency of the code that
+constructs the argument list?</p>
+<p><strong>Exercise 5.37.</strong>  One
+way to understand the compiler's <code>preserving</code> mechanism for optimizing
+stack usage is to see what extra operations would be generated if we did
+not use this idea. Modify <code>preserving</code> so that it always generates the
+<code>save</code> and <code>restore</code> operations. Compile some simple expressions and
+identify the unnecessary stack operations that are generated. Compare
+the code to that generated with the <code>preserving</code> mechanism intact.</p>
+<p><strong>Exercise 5.38.</strong>  Our
+compiler is not very clever. For example, it does not understand that
+<code>(f 3)</code> is a call to the procedure <code>f</code> with argument 3, but rather treats
+it as a general application. The general <code>compile-application</code> code sets
+up <code>argl</code> and <code>proc</code> and then determines that the procedure is compound,
+at which point it pushes <code>continue</code>, sets <code>continue</code> to a new value, and
+goes to the procedure's entry point. A better strategy for <code>(f 3)</code> would
+be to compile it as</p>
+<p><code>(assign argl (const (3)))</code>
+<code>(assign proc (op lookup-variable-value) (const f) (reg env))</code>
+<code>(assign continue (label &lt;</code><em><code>linkage</code></em><code>&gt;))</code>
+<code>(assign val (op compiled-procedure-entry) (reg proc))</code>
+<code>(goto (reg val))</code></p>
+<p>if the linkage is a label, or as</p>
+<p><code>(assign argl (const (3)))</code>
+<code>(assign proc (op lookup-variable-value) (const f) (reg env))</code>
+<code>(assign val (op compiled-procedure-entry) (reg proc))</code>
+<code>(goto (reg val))</code></p>
+<p>if the linkage is <code>return</code>. This strategy doesn't require a <code>test</code> for
+primitive versus compound procedures, and it doesn't require saving
+<code>continue</code>. Modify the compiler to incorporate this optimization. To do
+this you will have to modify <code>compile-application</code> to recognize the case
+where the operator is a symbol and to dispatch to a special code
+generator for this case. Also, this optimization cannot be used for any
+procedure, because some procedures must be called by the general
+<code>apply</code> mechanism of the interpreter. For example, <code>(apply f '(1 2))</code>
+must be handled by the interpreter's <code>apply</code> procedure, not by jumping
+directly to the entry point of the procedure <code>f</code>. To handle this, we
+will stipulate that only procedures with a fixed number of arguments can
+be called in this way. The <code>lambda</code> syntax we have been using specifies
+procedures with a fixed number of arguments, so we can identify the
+procedures to which the optimization is applicable by looking at the
+<code>lambda</code> expression.</p>
+<p><strong>Exercise 5.48.</strong>  The optimization of
+exercise <a href="book-Z-H-35.html#%_thm_5.47">5.47</a> is effective because we can
+determine at compile time that the operator is a symbol, and therefore
+we know that its value will be a procedure. We can extend this optimization
+by noticing that if the operator is a <code>lambda</code> expression, then we have
+the procedure itself at compile time. A clever compiler can produce code
+that completely avoids the overhead of constructing the procedure object
+at run time and applying it. Instead, the compiler can generate code for
+the procedure body directly, with the arguments substituted for the
+parameters. For example, compiling</p>
+<pre><code class="language-scheme editable">((lambda (x y) (+ x y)) 3 4)
+</code></pre>
+<p>could generate the same code as compiling <code>(+ 3 4)</code>. This is a version
+of the optimization called <em>in-line expansion</em>.</p>
+<p>a. Extend the compiler to incorporate in-line expansion. To do this,
+modify <code>compile-application</code> to check if the operator of a combination
+is a <code>lambda</code> expression. If so, it should compile the combination as
+follows: First compile the operands of the combination. Then compile the
+procedure body with the linkage of the original combination, in a new
+compile-time environment where the procedure parameters are bound to
+<em>temporary storage</em>. The values of the operands should be loaded into
+the temporary storage before the procedure body is executed. You will
+have to invent a mechanism for allocating and managing temporary
+storage.</p>
+<p>b. The implementation in part a is still not as good as it could be,
+because the values of the operands are still computed and stored in
+temporary storage, only to be immediately fetched as the values of the
+parameters. A better implementation would substitute the code for the
+operands directly into the body of the procedure in place of references
+to the parameters. For example, the code for</p>
+<pre><code class="language-scheme editable">((lambda (x y) (+ x y)) 3 4)
+</code></pre>
+<p>would be the same as for <code>(+ 3 4)</code>. And the code for</p>
+<pre><code class="language-scheme editable">((lambda (x) (* x x)) (+ y 1))
+</code></pre>
+<p>would be the same as for <code>(* (+ y 1) (+ y 1))</code>. Implement this version of
+in-line expansion. You will have to be careful about how you handle
+substitutions for variables that appear more than once in the procedure
+body.</p>
+<p><strong>Exercise 5.49.</strong>  The compiler can also
+be made to operate on programs that use the explicit-control evaluator's
+data structures. This will allow us to compile the evaluator of
+section <a href="book-Z-H-34.html#%_sec_5.4">5.4</a> to produce an object-code
+version of the evaluator that can be run on the evaluator machine. Set
+up a system that can do this. You will have to supply the compiler with
+a library of primitive procedures for manipulating lists and vectors.
+You will also have to arrange for the machine to be able to <code>get</code> and
+<code>set!</code> the contents of the machine registers. One way to do this is to
+represent the machine registers as a vector, as we did for the stack in
+section <a href="book-Z-H-32.html#%_sec_5.2.3">5.2.3</a>.</p>
+<hr />
+<p>^[33]{.small}^](book-Z-H-35.html#call_footnote_Temp_794)
+This is a deep idea. The fact that a single machine can be programmed to
+carry out any computation that can be carried out by any other machine
+is the basis for the great flexibility of the general-purpose computer.
+The idea of a universal computational machine was first clearly
+formulated by Alan Turing in 1936. In his seminal paper, Turing presented
+a simple computational model -- now called a Turing machine -- and
+argued that any ''effective process'' can be formulated as a program
+for such a machine. He then implemented a universal machine, i.e., a
+Turing machine that behaves as an evaluator for Turing-machine programs.
+(See footnote <a href="book-Z-H-26.html#footnote_Temp_553">19</a> in
+chapter 4.)</p>
+<p>^[34]{.small}^](book-Z-H-35.html#call_footnote_Temp_795)
+The explicit-control evaluator machine is itself a register machine,
+described in a register-machine language. We can thus think of the
+compiler as a program that translates Scheme programs into programs in
+the register-machine language.</p>
+<p>^[35]{.small}^](book-Z-H-35.html#call_footnote_Temp_797)
+We will assume that the syntax procedures have been augmented to support
+any new special forms that our compiler will handle, such as <code>let</code>
+(exercise <a href="book-Z-H-26.html#%_thm_4.6">4.6</a>).</p>
+<p>^[36]{.small}^](book-Z-H-35.html#call_footnote_Temp_803)
+The <code>compile-linkage</code> procedure uses the <code>quasiquote</code> syntax described
+in section <a href="book-Z-H-17.html#%_sec_2.4.1">2.4.1</a>. For example,
+<code>((goto (label ,linkage)))</code> is our way of writing
+<code>(list '(goto (label 'try-again)))</code> if the value of <code>linkage</code> is the
+symbol <code>try-again</code>.</p>
+<p>^[37]{.small}^](book-Z-H-35.html#call_footnote_Temp_806)
+The labels are created using <code>make-label</code> from the register-machine
+simulator (section <a href="book-Z-H-32.html#%_sec_5.2.2">5.2.2</a>).</p>
+<p>^[38]{.small}^](book-Z-H-35.html#call_footnote_Temp_809)
+The compiler needs to be able to mention the run-time environment in the
+code it emits. It does this by means of the <code>make-compiled-procedure</code>
+operation. This is an operation that will be executed by the evaluator
+machine. We can implement it as a new primitive procedure for the
+evaluator machine. <code>Make-compiled-procedure</code> takes a label and an
+environment and returns a procedure object that contains the label and
+the environment. We also need corresponding selectors
+<code>compiled-procedure-entry</code> and <code>compiled-procedure-env</code> and a predicate
+<code>compiled-procedure?</code> (to be used in the evaluator's <code>apply-dispatch</code>).
+The implementation of these procedure-representation operations is given
+in section <a href="book-Z-H-35.html#%_sec_5.5.7">5.5.7</a>.</p>
+<p>^[39]{.small}^](book-Z-H-35.html#call_footnote_Temp_812)
+The compiler uses <code>all-regs</code> to indicate that all registers are modified
+by a procedure call. <code>All-regs</code> is a list of all the registers used by
+the evaluator machine: <code>(env proc val continue argl)</code>.</p>
+<p>^[40]{.small}^](book-Z-H-35.html#call_footnote_Temp_813)
+This is a subtle but important point about tail recursion. See
+exercise <a href="book-Z-H-34.html#%_thm_5.26">5.26</a>.</p>
+<p>^[41]{.small}^](book-Z-H-35.html#call_footnote_Temp_814)
+This is not quite true. A procedure does not modify the <code>continue</code>
+register. But the compiler must act as if any register might be modified,
+unless it has specific knowledge about the procedure being called.
+Exercises <a href="book-Z-H-35.html#%_thm_5.47">5.47</a>
+and <a href="book-Z-H-35.html#%_thm_5.48">5.48</a> explore this issue.</p>
+<p>^[42]{.small}^](book-Z-H-35.html#call_footnote_Temp_815)
+The implementation of <code>preserving</code> shown here is inefficient because it
+walks down the list of registers to be preserved and generates a separate
+<code>save</code>/<code>restore</code> pair for each register. A more realistic implementation
+would generate a single instruction to save all the registers on the
+stack and a single instruction to restore them. We have not provided
+such instructions in our register-machine language in order to keep the
+language simple.</p>
+<p>^[43]{.small}^](book-Z-H-35.html#call_footnote_Temp_822)
+We assume here that the primitive operations of the machine can take
+constants as arguments.</p>
+<p>^[44]{.small}^](book-Z-H-35.html#call_footnote_Temp_823)
+This is not the best way to design a compiler. With this approach, the
+list of reserved words will be different for the compiler and the
+interpreter, and the languages they accept will therefore be different.
+This will make it difficult to debug the compiler, since programs that
+run on the interpreter may not run on the compiled-code machine. A better
+approach is to have the compiler determine which names are names of
+primitives by looking them up in the compile-time environment. If the
+compiler finds that a name is bound to a primitive procedure object, it
+can generate open code for that primitive. This is another example of
+the advantages of using compile-time environments, as discussed in
+section <a href="book-Z-H-35.html#%_sec_5.5.6">5.5.6</a>.</p>
+<p>^[45]{.small}^](book-Z-H-35.html#call_footnote_Temp_824)
+This is true if we consider only <code>lambda</code> and application. Special forms
+such as <code>let</code> can be handled by viewing them as syntactic sugar for
+<code>lambda</code> and application, as in
+section <a href="book-Z-H-26.html#%_sec_4.1.2">4.1.2</a>. <code>Define</code> is more
+problematic. See exercise <a href="book-Z-H-35.html#%_thm_5.43">5.43</a>.</p>
+<p>^[46]{.small}^](book-Z-H-35.html#call_footnote_Temp_826)
+We need to check for <code>*unassigned*</code> because the <code>letrec</code> implementation
+in exercise <a href="book-Z-H-26.html#%_thm_4.20">4.20</a> uses this to ensure that
+variables are not used before they are assigned values.</p>
+<p>^[47]{.small}^](book-Z-H-35.html#call_footnote_Temp_830)
+The global environment is the one part of the run-time environment that
+is shared by all parts of a program. In a typical Lisp system, the
+global environment is used to hold bindings for the library of primitive
+procedures. We do not want to have to recompile all of these procedures
+each time we compile a user's program. Instead, we can require that
+global variables be looked up in the ordinary way, so that primitive
+names can be bound in the global environment and these bindings can be
+shared by all compiled and interpreted code.</p>
+<p>^[48]{.small}^](book-Z-H-35.html#call_footnote_Temp_833)
+We assume that the machine operations <code>compiled-procedure?</code>,
+<code>compiled-procedure-entry</code>, and <code>compiled-procedure-env</code> have been added
+to the explicit-control evaluator.</p>
+<p>^[49]{.small}^](book-Z-H-35.html#call_footnote_Temp_834)
+We assume that the <code>branch</code> instruction has been modified to check the
+<code>flag</code> register rather than the result of a <code>test</code> instruction.</p>
+<p>^[50]{.small}^](book-Z-H-35.html#call_footnote_Temp_835)
+The <code>print-result</code> entry point is the same as the one at the end of
+<code>read-eval-print-loop</code> in
+section <a href="book-Z-H-34.html#%_sec_5.4.4">5.4.4</a>.</p>
+<p>^[51]{.small}^](book-Z-H-35.html#call_footnote_Temp_837)
+The compiler we have implemented here is, like our interpreters, written
+in Lisp. This is not a necessary feature of a compiler. There is no
+reason why a compiler for a language L~1~ cannot be written in a language
+L~2~ that is different from L~1~. For example, the first Lisp compiler was
+an assembly-language program that ran on the IBM 704.</p>
+<p>^[52]{.small}^](book-Z-H-35.html#call_footnote_Temp_838)
+This is not to say that a compiler must produce code that is less
+intelligible than an interpretation. Good compilers for use in
+interactive development environments are designed to make the object code
+as intelligible as possible. For example, the variables in the object
+code may be the same as the source-code variables, and the instruction-level
+procedure calls may be organized to parallel the source-code procedure
+calls. This permits the user to examine and modify the object code and
+to trace its execution in terms of the source language.</p>
+<p>Compilers for popular languages, such as C and C++, put
+hardly any error-checking operations into running code, so as to make
+things run as fast as possible. As a result, it falls to programmers to
+explicitly provide error checking. Unfortunately, people often neglect
+to do this, even in critical applications where speed is not a
+constraint. Their programs lead fast and dangerous lives. For example,
+the notorious ''Worm'' that paralyzed the Internet in
+1988 exploited the UNIX ^<em>TM</em>^ operating system's
+failure to check whether the input buffer has overflowed
+in the finger daemon. (See Spafford 1989.)</p>
+<p>^[53]{.small}^](book-Z-H-35.html#call_footnote_Temp_839)
+Of course, with either the interpretation or the compilation strategy we
+must also implement for the new machine storage allocation, input and
+output, and all the various operations that we took as ''primitive''
+in our discussion of the evaluator and compiler. One strategy for
+minimizing work here is to write as many of these operations as possible
+in Lisp and then compile them for the new machine. Ultimately,
+everything reduces to a small kernel (such as garbage collection and the
+mechanism for applying actual machine primitives) that is hand-coded for
+the new machine.</p>
+<p>^[54]{.small}^](book-Z-H-35.html#call_footnote_Temp_840)
+This is an instance of the process of <em>bootstrapping</em> a language. See
+exercise <a href="book-Z-H-26.html#%_thm_4.1">4.1</a> in chapter 4.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="5.4.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="5.4.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="./highlight.js"></script>
+        <script src="./src/languages/scheme.min.js"></script>
+        <script src="./biwascheme.min.js"></script>
+        <script src="./biwascheme_run_logic.js"></script>
+
+
+    </div>
+    </body>
+</html>

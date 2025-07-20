@@ -1,0 +1,1052 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Assignment and Local State - SICP</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="./src/styles/docco.min.css">
+        <link rel="stylesheet" href="./run_button_style.css">
+        <link rel="stylesheet" href="./custom.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">SICP</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="31--assignment-and-local-state"><a class="header" href="#31--assignment-and-local-state"><a href="book-Z-H-4.html#%_toc_%_sec_3.1">3.1  Assignment and Local State</a></a></h2>
+<p>We ordinarily view the world as populated
+by independent objects, each of which has a state that changes over
+time. An object is said to <code>have state'' if its behavior is influenced by its history. A bank account, for example, has state in that the answer to the question </code>Can I withdraw $100?'' depends
+upon the history of deposit and withdrawal transactions. We can
+characterize an object's state by one or more <em>state
+variables</em>, which among them maintain enough information about history
+to determine the object's current behavior. In a simple banking system,
+we could characterize the state of an account by a current balance
+rather than by remembering the entire history of account transactions.</p>
+<p>In a system composed of many objects, the objects are rarely completely
+independent. Each may influence the states of others through
+interactions, which serve to couple the state variables of one object to
+those of other objects. Indeed, the view that a system is composed of
+separate objects is most useful when the state variables of the system
+can be grouped into closely coupled subsystems that are only loosely
+coupled to other subsystems.</p>
+<p>This view of a system can be a powerful framework for organizing
+computational models of the system. For such a model to be modular, it
+should be decomposed into computational objects that model the actual
+objects in the system. Each computational object must have its own
+<em>local state variables</em> describing the actual object's state. Since the
+states of objects in the system being modeled change over time, the
+state variables of the corresponding computational objects must also
+change. If we choose to model the flow of time in the system by the
+elapsed time in the computer, then we must have a way to construct
+computational objects whose behaviors change as our programs run. In
+particular, if we wish to model state variables by ordinary symbolic
+names in the programming language, then the language must provide an
+<em>assignment operator</em> to enable us to change the value
+associated with a name.</p>
+<h3 id="311--local-state-variables"><a class="header" href="#311--local-state-variables"><a href="book-Z-H-4.html#%_toc_%_sec_3.1.1">3.1.1  Local State Variables</a></a></h3>
+<p>To
+illustrate what we mean by having a computational object with
+time-varying state, let us model the situation of withdrawing money from
+a bank account. We will do this using a procedure <code>withdraw</code>, which
+takes as argument an <code>amount</code> to be withdrawn. If there is enough money
+in the account to accommodate the withdrawal, then <code>withdraw</code> should
+return the balance remaining after the withdrawal. Otherwise, <code>withdraw</code>
+should return the message <em>Insufficient funds.</em> For example, if we begin
+with $100 in the account, we should obtain the following sequence of
+responses using <code>withdraw</code>:</p>
+<pre><code class="language-scheme editable">(withdraw 25)
+</code></pre>
+<p><em><code>75</code></em></p>
+<pre><code class="language-scheme editable">(withdraw 25)
+</code></pre>
+<p><em><code>50</code></em></p>
+<pre><code class="language-scheme editable">(withdraw 60)
+</code></pre>
+<p><em><code>"Insufficient funds"</code></em></p>
+<pre><code class="language-scheme editable">(withdraw 15)
+</code></pre>
+<p><em><code>35</code></em></p>
+<p>Observe that the expression <code>(withdraw 25)</code>, evaluated twice, yields
+different values. This is a new kind of behavior for a procedure. Until
+now, all our procedures could be viewed as specifications for computing
+mathematical functions. A call to a procedure computed the value of the
+function applied to the given arguments, and two calls to the same
+procedure with the same arguments always produced the same
+result.<a href="book-Z-H-20.html#footnote_Temp_321">^[1]{.small}^</a>{#call_footnote_Temp_321}</p>
+<p>To implement <code>withdraw</code>, we can use a variable <code>balance</code> to indicate the
+balance of money in the account and define <code>withdraw</code> as a procedure
+that accesses <code>balance</code>. The <code>withdraw</code> procedure checks to see if
+<code>balance</code> is at least as large as the requested <code>amount</code>. If so,
+<code>withdraw</code> decrements <code>balance</code> by <code>amount</code> and returns the new value of
+<code>balance</code>. Otherwise, <code>withdraw</code> returns the <em>Insufficient funds</em>
+message. Here are the definitions of <code>balance</code> and <code>withdraw</code>:</p>
+<pre><code class="language-scheme editable">(define balance 100)
+
+(define (withdraw amount)
+  (if (&gt;= balance amount)
+      (begin (set! balance (- balance amount))
+             balance)
+      "Insufficient funds"))
+</code></pre>
+<p>Decrementing <code>balance</code> is accomplished by the expression</p>
+<pre><code class="language-scheme editable">(set! balance (- balance amount))
+</code></pre>
+<p>This uses the <code>set!</code> special form, whose
+syntax is</p>
+<pre><code class="language-scheme editable">(set! &lt;name&gt; &lt;new-value&gt;)
+</code></pre>
+<p>Here &lt;<em>name</em>&gt; is a symbol and &lt;<em>new-value</em>&gt; is any expression.
+<code>Set!</code> changes &lt;<em>name</em>&gt; so that its value is the result obtained by
+evaluating &lt;<em>new-value</em>&gt;. In the case at hand, we are changing
+<code>balance</code> so that its new value will be the result of subtracting
+<code>amount</code> from the previous value of
+<code>balance</code>.<a href="book-Z-H-20.html#footnote_Temp_322">^[2]{.small}^</a>{#call_footnote_Temp_322}</p>
+<p><code>Withdraw</code> also uses the <code>begin</code> special
+form to cause two expressions to be evaluated in the case where the <code>if</code>
+test is true: first decrementing <code>balance</code> and then returning the value
+of <code>balance</code>. In general, evaluating the expression</p>
+<pre><code class="language-scheme editable">(begin &lt;exp~1~&gt; &lt;exp~2~&gt; ... &lt;exp~k~&gt;)
+</code></pre>
+<p>causes the expressions &lt;<em>exp~1~</em>&gt; through &lt;<em>exp~<em>k</em>~</em>&gt; to be
+evaluated in sequence and the value of the final expression
+&lt;<em>exp~<em>k</em>~</em>&gt; to be returned as the value of the entire <code>begin</code>
+form.<a href="book-Z-H-20.html#footnote_Temp_323">^[3]{.small}^</a>{#call_footnote_Temp_323}</p>
+<p>Although <code>withdraw</code> works as desired, the variable <code>balance</code> presents a
+problem. As specified above, <code>balance</code> is a name defined in the global
+environment and is freely accessible to be examined or modified by any
+procedure. It would be much better if we could somehow make <code>balance</code>
+internal to <code>withdraw</code>, so that <code>withdraw</code> would be the only procedure
+that could access <code>balance</code> directly and any other procedure could
+access <code>balance</code> only indirectly (through calls to <code>withdraw</code>). This
+would more accurately model the notion that <code>balance</code> is a local state
+variable used by <code>withdraw</code> to keep track of the state of the account.</p>
+<p>We can make <code>balance</code> internal to <code>withdraw</code> by rewriting the definition
+as follows:</p>
+<pre><code class="language-scheme editable">(define new-withdraw
+  (let ((balance 100))
+    (lambda (amount)
+      (if (&gt;= balance amount)
+          (begin (set! balance (- balance amount))
+                 balance)
+          "Insufficient funds"))))
+</code></pre>
+<p>What we have done here is use <code>let</code> to establish an environment with a
+local variable <code>balance</code>, bound to the initial value 100. Within this
+local environment, we use <code>lambda</code> to create a procedure that takes
+<code>amount</code> as an argument and behaves like our previous <code>withdraw</code>
+procedure. This procedure -- returned as the result of evaluating the
+<code>let</code> expression -- is <code>new-withdraw</code>, which behaves in precisely the
+same way as <code>withdraw</code> but whose variable <code>balance</code> is not accessible by
+any other
+procedure.<a href="book-Z-H-20.html#footnote_Temp_324">^[4]{.small}^</a>{#call_footnote_Temp_324}</p>
+<p>Combining <code>set!</code> with local variables is the general programming
+technique we will use for constructing computational objects with local
+state. Unfortunately, using this technique raises a serious problem:
+When we first introduced procedures, we also introduced the substitution
+model of evaluation (section <a href="book-Z-H-10.html#%_sec_1.1.5">1.1.5</a>) to
+provide an interpretation of what procedure application means. We said
+that applying a procedure should be interpreted as evaluating the body
+of the procedure with the formal parameters replaced by their values.
+The trouble is that, as soon as we introduce assignment into our
+language, substitution is no longer an adequate model of procedure
+application. (We will see why this is so in
+section <a href="book-Z-H-20.html#%_sec_3.1.3">3.1.3</a>.) As a consequence, we
+technically have at this point no way to understand why the
+<code>new-withdraw</code> procedure behaves as claimed above. In order to really
+understand a procedure such as <code>new-withdraw</code>, we will need to develop a
+new model of procedure application. In
+section <a href="book-Z-H-21.html#%_sec_3.2">3.2</a> we will introduce such a
+model, together with an explanation of <code>set!</code> and local variables.
+First, however, we examine some variations on the theme established by
+<code>new-withdraw</code>.</p>
+<p>The following procedure, <code>make-withdraw</code>, creates ``withdrawal
+processors.'' The formal parameter <code>balance</code> in <code>make-withdraw</code>
+specifies the initial amount of money in the
+account.<a href="book-Z-H-20.html#footnote_Temp_325">^[5]{.small}^</a>{#call_footnote_Temp_325}</p>
+<pre><code class="language-scheme editable">(define (make-withdraw balance)
+  (lambda (amount)
+    (if (&gt;= balance amount)
+        (begin (set! balance (- balance amount))
+               balance)
+        "Insufficient funds")))
+</code></pre>
+<p><code>Make-withdraw</code> can be used as follows to create two objects <code>W1</code> and
+<code>W2</code>:</p>
+<pre><code class="language-scheme editable">(define W1 (make-withdraw 100))
+(define W2 (make-withdraw 100))
+(W1 50)
+</code></pre>
+<p><em><code>50</code></em></p>
+<pre><code class="language-scheme editable">(W2 70)
+</code></pre>
+<p><em><code>30</code></em></p>
+<pre><code class="language-scheme editable">(W2 40)
+</code></pre>
+<p><em><code>"Insufficient funds"</code></em></p>
+<pre><code class="language-scheme editable">(W1 40)
+</code></pre>
+<p><em><code>10</code></em></p>
+<p>Observe that <code>W1</code> and <code>W2</code> are completely independent objects, each with
+its own local state variable <code>balance</code>. Withdrawals from one do not
+affect the other.</p>
+<p>We can also create objects that handle deposits as well as withdrawals,
+and thus we can represent simple bank accounts. Here is a procedure that
+returns a ``bank-account object'' with a specified initial balance:</p>
+<pre><code class="language-scheme editable">(define (make-account balance)
+  (define (withdraw amount)
+    (if (&gt;= balance amount)
+        (begin (set! balance (- balance amount))
+               balance)
+        "Insufficient funds"))
+  (define (deposit amount)
+    (set! balance (+ balance amount))
+    balance)
+  (define (dispatch m)
+    (cond ((eq? m 'withdraw) withdraw)
+          ((eq? m 'deposit) deposit)
+          (else (error "Unknown request -- MAKE-ACCOUNT"
+                       m))))
+  dispatch)
+</code></pre>
+<p>Each call to <code>make-account</code> sets up an environment with a local state
+variable <code>balance</code>. Within this environment, <code>make-account</code> defines
+procedures <code>deposit</code> and <code>withdraw</code> that access <code>balance</code> and an
+additional procedure <code>dispatch</code> that takes a ``message'' as input
+and returns one of the two local procedures. The <code>dispatch</code> procedure
+itself is returned as the value that represents the bank-account object.
+This is precisely the <em>message-passing</em> style of
+programming that we saw in
+section <a href="book-Z-H-17.html#%_sec_2.4.3">2.4.3</a>, although here we are
+using it in conjunction with the ability to modify local variables.</p>
+<p><code>Make-account</code> can be used as follows:</p>
+<pre><code class="language-scheme editable">(define acc (make-account 100))
+((acc 'withdraw) 50)
+</code></pre>
+<p><em><code>50</code></em></p>
+<pre><code class="language-scheme editable">((acc 'withdraw) 60)
+</code></pre>
+<p><em><code>"Insufficient funds"</code></em></p>
+<pre><code class="language-scheme editable">((acc 'deposit) 40)
+</code></pre>
+<p><em><code>90</code></em></p>
+<pre><code class="language-scheme editable">((acc 'withdraw) 60)
+</code></pre>
+<p><em><code>30</code></em></p>
+<p>Each call to <code>acc</code> returns the locally defined <code>deposit</code> or <code>withdraw</code>
+procedure, which is then applied to the specified <code>amount</code>. As was the
+case with <code>make-withdraw</code>, another call to <code>make-account</code></p>
+<pre><code class="language-scheme editable">(define acc2 (make-account 100))
+</code></pre>
+<p>will produce a completely separate account object, which maintains its
+own local <code>balance</code>.</p>
+<p><strong>Exercise 3.1.</strong>  An <em>accumulator</em> is a
+procedure that is called repeatedly with a single numeric argument and
+accumulates its arguments into a sum. Each time it is called, it returns
+the currently accumulated sum. Write a procedure
+<code>make-accumulator</code> that generates accumulators, each
+maintaining an independent sum. The input to <code>make-accumulator</code> should
+specify the initial value of the sum; for example</p>
+<pre><code class="language-scheme editable">(define A (make-accumulator 5))
+(A 10)
+</code></pre>
+<p><em><code>15</code></em></p>
+<pre><code class="language-scheme editable">(A 10)
+</code></pre>
+<p><em><code>25</code></em></p>
+<p><strong>Exercise 3.2.</strong>  In software-testing applications, it
+is useful to be able to count the number of times a given procedure is
+called during the course of a computation. Write a procedure
+<code>make-monitored</code> that takes
+as input a procedure, <code>f</code>, that itself takes one input. The result
+returned by <code>make-monitored</code> is a third procedure, say <code>mf</code>, that keeps
+track of the number of times it has been called by maintaining an
+internal counter. If the input to <code>mf</code> is the special symbol
+<code>how-many-calls?</code>, then <code>mf</code> returns the value of the counter. If the
+input is the special symbol <code>reset-count</code>, then <code>mf</code> resets the counter
+to zero. For any other input, <code>mf</code> returns the result of calling <code>f</code> on
+that input and increments the counter. For instance, we could make a
+monitored version of the <code>sqrt</code> procedure:</p>
+<pre><code class="language-scheme editable">(define s (make-monitored sqrt))
+
+(s 100)
+</code></pre>
+<p><em><code>10</code></em></p>
+<pre><code class="language-scheme editable">(s 'how-many-calls?)
+</code></pre>
+<p><em><code>1</code></em></p>
+<p><strong>Exercise 3.3.</strong>  Modify
+the <code>make-account</code> procedure so that it creates password-protected
+accounts. That is, <code>make-account</code> should take a symbol as an additional
+argument, as in</p>
+<pre><code class="language-scheme editable">(define acc (make-account 100 'secret-password))
+</code></pre>
+<p>The resulting account object should process a request only if it is
+accompanied by the password with which the account was created, and
+should otherwise return a complaint:</p>
+<pre><code class="language-scheme editable">((acc 'secret-password 'withdraw) 40)
+</code></pre>
+<p><em><code>60</code></em></p>
+<pre><code class="language-scheme editable">((acc 'some-other-password 'deposit) 50)
+</code></pre>
+<p><em><code>"Incorrect password"</code></em></p>
+<p><strong>Exercise 3.4.</strong>  Modify the <code>make-account</code> procedure of
+exercise <a href="book-Z-H-20.html#%_thm_3.3">3.3</a> by adding another local state
+variable so that, if an account is accessed more than seven consecutive
+times with an incorrect password, it invokes the procedure
+<code>call-the-cops</code>.</p>
+<h3 id="312--the-benefits-of-introducing-assignment"><a class="header" href="#312--the-benefits-of-introducing-assignment"><a href="book-Z-H-4.html#%_toc_%_sec_3.1.2">3.1.2  The Benefits of Introducing Assignment</a></a></h3>
+<p>As we shall see,
+introducing assignment into our programming language leads us into a
+thicket of difficult conceptual issues. Nevertheless, viewing systems as
+collections of objects with local state is a powerful technique for
+maintaining a modular design. As a simple example, consider the design
+of a procedure <code>rand</code> that, whenever it is called, returns an integer
+chosen at random.</p>
+<p>It is not at all clear what is meant by ``chosen at
+random.'' What we presumably want is for successive calls to <code>rand</code> to
+produce a sequence of numbers that has statistical properties of uniform
+distribution. We will not discuss methods for generating suitable
+sequences here. Rather, let us assume that we have a procedure
+<code>rand-update</code> that has the property that if we start with a given number
+<em>x</em><del>1</del> and form</p>
+<p><em><code>x</code></em><del><code>2</code></del><code>= (rand-update</code><em><code>x</code></em><del><code>1</code></del><code>)</code>
+<em><code>x</code></em><del><code>3</code></del><code>= (rand-update</code><em><code>x</code></em><del><code>2</code></del><code>)</code></p>
+<p>then the sequence of values <em>x</em><del>1</del>, <em>x</em><del>2</del>, <em>x</em><del>3</del>, ..., will have the
+desired statistical
+properties.<a href="book-Z-H-20.html#footnote_Temp_330">^[6]{.small}^</a>{#call_footnote_Temp_330}</p>
+<p>We can implement <code>rand</code> as a procedure with a local state variable <code>x</code>
+that is initialized to some fixed value <code>random-init</code>. Each call to
+<code>rand</code> computes <code>rand-update</code> of the current value of <code>x</code>, returns this
+as the random number, and also stores this as the new value of <code>x</code>.</p>
+<pre><code class="language-scheme editable">(define rand
+  (let ((x random-init))
+    (lambda ()
+      (set! x (rand-update x))
+      x)))
+</code></pre>
+<p>Of course, we could generate the same sequence of random numbers without
+using assignment by simply calling <code>rand-update</code> directly. However, this
+would mean that any part of our program that used random numbers would
+have to explicitly remember the current value of <code>x</code> to be passed as an
+argument to <code>rand-update</code>. To realize what an annoyance this would be,
+consider using random numbers to implement a technique called
+<em>Monte Carlo simulation</em>.</p>
+<p>The Monte Carlo method consists of choosing sample experiments at random
+from a large set and then making deductions on the basis of the
+probabilities estimated from tabulating the results of those
+experiments. For example, we can approximate
+<img src="book-Z-G-D-9.gif" alt="" />{border="0"} using the fact that
+6/<img src="book-Z-G-D-9.gif" alt="" />{border="0"}^2^ is the probability that two
+integers chosen at random will have no factors in common; that is, that
+their greatest common divisor will be
+1.<a href="book-Z-H-20.html#footnote_Temp_331">^[7]{.small}^</a>{#call_footnote_Temp_331}
+To obtain the approximation to <img src="book-Z-G-D-9.gif" alt="" />{border="0"}, we
+perform a large number of experiments. In each experiment we choose two
+integers at random and perform a test to see if their GCD
+is 1. The fraction of times that the test is passed gives us our
+estimate of 6/<img src="book-Z-G-D-9.gif" alt="" />{border="0"}^2^, and from this we
+obtain our approximation to <img src="book-Z-G-D-9.gif" alt="" />{border="0"}.</p>
+<p>The heart of our program is a procedure <code>monte-carlo</code>, which takes as
+arguments the number of times to try an experiment, together with the
+experiment, represented as a no-argument procedure that will return
+either true or false each time it is run. <code>Monte-carlo</code> runs the
+experiment for the designated number of trials and returns a number
+telling the fraction of the trials in which the experiment was found to
+be true.</p>
+<pre><code class="language-scheme editable">(define (estimate-pi trials)
+  (sqrt (/ 6 (monte-carlo trials cesaro-test))))
+(define (cesaro-test)
+  (= (gcd (rand) (rand)) 1))
+(define (monte-carlo trials experiment)
+  (define (iter trials-remaining trials-passed)
+    (cond ((= trials-remaining 0)
+           (/ trials-passed trials))
+          ((experiment)
+           (iter (- trials-remaining 1) (+ trials-passed 1)))
+          (else
+           (iter (- trials-remaining 1) trials-passed))))
+  (iter trials 0))
+</code></pre>
+<p>Now let us try the same computation using <code>rand-update</code> directly rather
+than <code>rand</code>, the way we would be forced to proceed if we did not use
+assignment to model local state:</p>
+<pre><code class="language-scheme editable">(define (estimate-pi trials)
+  (sqrt (/ 6 (random-gcd-test trials random-init))))
+(define (random-gcd-test trials initial-x)
+  (define (iter trials-remaining trials-passed x)
+    (let ((x1 (rand-update x)))
+      (let ((x2 (rand-update x1)))
+        (cond ((= trials-remaining 0)  
+               (/ trials-passed trials))
+              ((= (gcd x1 x2) 1)
+               (iter (- trials-remaining 1)
+                     (+ trials-passed 1)
+                     x2))
+              (else
+               (iter (- trials-remaining 1)
+                     trials-passed
+                     x2))))))
+  (iter trials 0 initial-x))
+</code></pre>
+<p>While the program is still simple, it betrays some painful breaches of
+modularity. In our first version of the program, using <code>rand</code>, we can
+express the Monte Carlo method directly as a general <code>monte-carlo</code>
+procedure that takes as an argument an arbitrary <code>experiment</code> procedure.
+In our second version of the program, with no local state for the
+random-number generator, <code>random-gcd-test</code> must explicitly manipulate
+the random numbers <code>x1</code> and <code>x2</code> and recycle <code>x2</code> through the iterative
+loop as the new input to <code>rand-update</code>. This explicit handling of the
+random numbers intertwines the structure of accumulating test results
+with the fact that our particular experiment uses two random numbers,
+whereas other Monte Carlo experiments might use one random number or
+three. Even the top-level procedure <code>estimate-pi</code> has to be concerned
+with supplying an initial random number. The fact that the random-number
+generator's insides are leaking out into other parts of the program
+makes it difficult for us to isolate the Monte Carlo idea so that it can
+be applied to other tasks. In the first version of the program,
+assignment encapsulates the state of the random-number generator within
+the <code>rand</code> procedure, so that the details of random-number generation
+remain independent of the rest of the program.</p>
+<p>The general phenomenon illustrated by the Monte Carlo example is this:
+From the point of view of one part of a complex process, the other parts
+appear to change with time. They have hidden time-varying local state.
+If we wish to write computer programs whose structure reflects this
+decomposition, we make computational objects (such as bank accounts and
+random-number generators) whose behavior changes with time. We model
+state with local state variables, and we model the changes of state with
+assignments to those variables.</p>
+<p>It is tempting to conclude this discussion by saying that, by
+introducing assignment and the technique of hiding state in local
+variables, we are able to structure systems in a more modular fashion
+than if all state had to be manipulated explicitly, by passing
+additional parameters. Unfortunately, as we shall see, the story is not
+so simple.</p>
+<p><strong>Exercise
+3.5.</strong>  <em>Monte Carlo
+integration</em> is a method of estimating definite integrals by means of
+Monte Carlo simulation. Consider computing the area of a region of space
+described by a predicate <em>P</em>(<em>x</em>, <em>y</em>) that is true for points (<em>x</em>,
+<em>y</em>) in the region and false for points not in the region. For example,
+the region contained within a circle of radius 3 centered at (5, 7) is
+described by the predicate that tests whether (<em>x</em> - 5)^2^ + (<em>y</em> -
+7)^2^[&lt;]{.underline} 3^2^. To estimate the area of the region described
+by such a predicate, begin by choosing a rectangle that contains the
+region. For example, a rectangle with diagonally opposite corners at (2,
+4) and (8, 10) contains the circle above. The desired integral is the
+area of that portion of the rectangle that lies in the region. We can
+estimate the integral by picking, at random, points (<em>x</em>,<em>y</em>) that lie
+in the rectangle, and testing <em>P</em>(<em>x</em>, <em>y</em>) for each point to determine
+whether the point lies in the region. If we try this with many points,
+then the fraction of points that fall in the region should give an
+estimate of the proportion of the rectangle that lies in the region.
+Hence, multiplying this fraction by the area of the entire rectangle
+should produce an estimate of the integral.</p>
+<p>Implement Monte Carlo integration as a procedure
+<code>estimate-integral</code> that takes as arguments a predicate
+<code>P</code>, upper and lower bounds <code>x1</code>, <code>x2</code>, <code>y1</code>, and <code>y2</code> for the
+rectangle, and the number of trials to perform in order to produce the
+estimate. Your procedure should use the same <code>monte-carlo</code> procedure
+that was used above to estimate <img src="book-Z-G-D-9.gif" alt="" />{border="0"}. Use
+your <code>estimate-integral</code> to produce an estimate of
+<img src="book-Z-G-D-9.gif" alt="" />{border="0"} by measuring the area of a unit
+circle.</p>
+<p>You will find it useful to have a procedure that returns a number chosen
+at random from a given range. The following <code>random-in-range</code> procedure
+implements this in terms of the <code>random</code> procedure used in
+section <a href="book-Z-H-11.html#%_sec_1.2.6">1.2.6</a>, which returns a
+nonnegative number less than its
+input.<a href="book-Z-H-20.html#footnote_Temp_333">^[8]{.small}^</a>{#call_footnote_Temp_333}</p>
+<pre><code class="language-scheme editable">(define (random-in-range low high)
+  (let ((range (- high low)))
+    (+ low (random range))))
+</code></pre>
+<p><strong>Exercise 3.6.</strong>  It is
+useful to be able to reset a random-number generator to produce a
+sequence starting from a given value. Design a new <code>rand</code> procedure that
+is called with an argument that is either the symbol <code>generate</code> or the
+symbol <code>reset</code> and behaves as follows: <code>(rand 'generate)</code> produces a new
+random number; <code>((rand 'reset) &lt;</code><em><code>new-value</code></em><code>&gt;)</code> resets the internal
+state variable to the designated &lt;<em>new-value</em>&gt;. Thus, by resetting the
+state, one can generate repeatable sequences. These are very handy to
+have when testing and debugging programs that use random numbers.</p>
+<h3 id="313--the-costs-of-introducing-assignment"><a class="header" href="#313--the-costs-of-introducing-assignment"><a href="book-Z-H-4.html#%_toc_%_sec_3.1.3">3.1.3  The Costs of Introducing Assignment</a></a></h3>
+<p>As we have seen, the <code>set!</code> operation enables us to
+model objects that have local state. However, this advantage comes at a
+price. Our programming language can no longer be interpreted in terms of
+the substitution model of procedure application that we introduced in
+section <a href="book-Z-H-10.html#%_sec_1.1.5">1.1.5</a>. Moreover, no simple model
+with ``nice'' mathematical properties can be an adequate framework
+for dealing with objects and assignment in programming languages.</p>
+<p>So long as we do not use assignments, two evaluations of the same
+procedure with the same arguments will produce the same result, so that
+procedures can be viewed as computing mathematical functions.
+Programming without any use of assignments, as we did throughout the
+first two chapters of this book, is accordingly known as
+<em>functional programming</em>.</p>
+<p>To understand how assignment complicates matters,
+consider a simplified version of the <code>make-withdraw</code> procedure of
+section <a href="book-Z-H-20.html#%_sec_3.1.1">3.1.1</a> that does not bother to
+check for an insufficient amount:</p>
+<pre><code class="language-scheme editable">(define (make-simplified-withdraw balance)
+  (lambda (amount)
+    (set! balance (- balance amount))
+    balance))
+(define W (make-simplified-withdraw 25))
+(W 20)
+</code></pre>
+<p><em><code>5</code></em></p>
+<pre><code class="language-scheme editable">(W 10)
+</code></pre>
+<p><em><code>- 5</code></em></p>
+<p>Compare this procedure with the following <code>make-decrementer</code> procedure,
+which does not use <code>set!</code>:</p>
+<pre><code class="language-scheme editable">(define (make-decrementer balance)
+  (lambda (amount)
+    (- balance amount)))
+</code></pre>
+<p><code>Make-decrementer</code> returns a procedure that subtracts its input from a
+designated amount <code>balance</code>, but there is no accumulated effect over
+successive calls, as with <code>make-simplified-withdraw</code>:</p>
+<pre><code class="language-scheme editable">(define D (make-decrementer 25))
+(D 20)
+</code></pre>
+<p><em><code>5</code></em></p>
+<pre><code class="language-scheme editable">(D 10)
+</code></pre>
+<p><em><code>15</code></em></p>
+<p>We can use the substitution model to explain how <code>make-decrementer</code>
+works. For instance, let us analyze the evaluation of the expression</p>
+<pre><code class="language-scheme editable">((make-decrementer 25) 20)
+</code></pre>
+<p>We first simplify the operator of the combination by substituting 25 for
+<code>balance</code> in the body of <code>make-decrementer</code>. This reduces the expression
+to</p>
+<pre><code class="language-scheme editable">((lambda (amount) (- 25 amount)) 20)
+</code></pre>
+<p>Now we apply the operator by substituting 20 for <code>amount</code> in the body of
+the <code>lambda</code> expression:</p>
+<pre><code class="language-scheme editable">(- 25 20)
+</code></pre>
+<p>The final answer is 5.</p>
+<p>Observe, however, what happens if we attempt a similar substitution
+analysis with <code>make-simplified-withdraw</code>:</p>
+<pre><code class="language-scheme editable">((make-simplified-withdraw 25) 20)
+</code></pre>
+<p>We first simplify the operator by substituting 25 for <code>balance</code> in the
+body of <code>make-simplified-withdraw</code>. This reduces the expression
+to^[9]{.small}^](book-Z-H-20.html#footnote_Temp_335){#call_footnote_Temp_335}</p>
+<pre><code class="language-scheme editable">((lambda (amount) (set! balance (- 25 amount)) 25) 20)
+</code></pre>
+<p>Now we apply the operator by substituting 20 for <code>amount</code> in the body of
+the <code>lambda</code> expression:</p>
+<pre><code class="language-scheme editable">(set! balance (- 25 20)) 25
+</code></pre>
+<p>If we adhered to the substitution model, we would have to say that the
+meaning of the procedure application is to first set <code>balance</code> to 5 and
+then return 25 as the value of the expression. This gets the wrong
+answer. In order to get the correct answer, we would have to somehow
+distinguish the first occurrence of <code>balance</code> (before the effect of the
+<code>set!</code>) from the second occurrence of <code>balance</code> (after the effect of the
+<code>set!</code>), and the substitution model cannot do this.</p>
+<p>The trouble here is that substitution is based ultimately on the notion
+that the symbols in our language are essentially names for values. But
+as soon as we introduce <code>set!</code> and the idea that the value of a variable
+can change, a variable can no longer be simply a name. Now a variable
+somehow refers to a place where a value can be stored, and the value
+stored at this place can change. In
+section <a href="book-Z-H-21.html#%_sec_3.2">3.2</a> we will see how environments
+play this role of ``place'' in our computational model.</p>
+<h4 id="sameness-and-change"><a class="header" href="#sameness-and-change"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_336">Sameness and change</a></a></h4>
+<p>The issue surfacing here is more profound
+than the mere breakdown of a particular model of computation. As soon as
+we introduce change into our computational models, many notions that
+were previously straightforward become problematical. Consider the
+concept of two things being ``the same.''</p>
+<p>Suppose we call <code>make-decrementer</code> twice with the same argument to
+create two procedures:</p>
+<pre><code class="language-scheme editable">(define D1 (make-decrementer 25))
+(define D2 (make-decrementer 25))
+</code></pre>
+<p>Are <code>D1</code> and <code>D2</code> the same? An acceptable answer is yes, because <code>D1</code>
+and <code>D2</code> have the same computational behavior -- each is a procedure
+that subtracts its input from 25. In fact, <code>D1</code> could be substituted for
+<code>D2</code> in any computation without changing the result.</p>
+<p>Contrast this with making two calls to <code>make-simplified-withdraw</code>:</p>
+<pre><code class="language-scheme editable">(define W1 (make-simplified-withdraw 25))
+(define W2 (make-simplified-withdraw 25))
+</code></pre>
+<p>Are <code>W1</code> and <code>W2</code> the same? Surely not, because calls to <code>W1</code> and <code>W2</code>
+have distinct effects, as shown by the following sequence of
+interactions:</p>
+<pre><code class="language-scheme editable">(W1 20)
+</code></pre>
+<p><em><code>5</code></em></p>
+<pre><code class="language-scheme editable">(W1 20)
+</code></pre>
+<p><em><code>- 15</code></em></p>
+<pre><code class="language-scheme editable">(W2 20)
+</code></pre>
+<p><em><code>5</code></em></p>
+<p>Even though <code>W1</code> and <code>W2</code> are ``equal'' in the sense that they are
+both created by evaluating the same expression,
+<code>(make-simplified-withdraw 25)</code>, it is not true that <code>W1</code> could be
+substituted for <code>W2</code> in any expression without changing the result of
+evaluating the expression.</p>
+<p>A language that supports the concept that ``equals can be substituted
+for equals'' in an expresssion without changing the value of the
+expression is said to be
+<em>referentially
+transparent</em>. Referential transparency is violated when we include
+<code>set!</code> in our computer language. This makes it tricky to determine when
+we can simplify expressions by substituting equivalent expressions.
+Consequently, reasoning about programs that use assignment becomes
+drastically more difficult.</p>
+<p>Once we forgo referential transparency, the notion of what it means for
+computational objects to be <code>the same'' becomes difficult to capture in a formal way. Indeed, the meaning of </code>same'' in the real
+world that our programs model is hardly clear in itself. In general, we
+can determine that two apparently identical objects are indeed <code>the same one'' only by modifying one object and then observing whether the other object has changed in the same way. But how can we tell if an object has </code>changed'' other than by observing the <code>same'' object twice and seeing whether some property of the object differs from one observation to the next? Thus, we cannot determine </code>change''
+without some <em>a priori</em> notion of ``sameness,'' and we cannot
+determine sameness without observing the effects of change.</p>
+<p>As an example of how this issue arises in programming,
+consider the situation where Peter and Paul have a bank account with
+$100 in it. There is a substantial difference between modeling this as</p>
+<pre><code class="language-scheme editable">(define peter-acc (make-account 100))
+(define paul-acc (make-account 100))
+</code></pre>
+<p>and modeling it as</p>
+<pre><code class="language-scheme editable">(define peter-acc (make-account 100))
+(define paul-acc peter-acc)
+</code></pre>
+<p>In the first situation, the two bank accounts are distinct. Transactions
+made by Peter will not affect Paul's account, and vice versa. In the
+second situation, however, we have defined <code>paul-acc</code> to be <em>the same
+thing</em> as <code>peter-acc</code>. In effect, Peter and Paul now have a joint bank
+account, and if Peter makes a withdrawal from <code>peter-acc</code> Paul will
+observe less money in <code>paul-acc</code>. These two similar but distinct
+situations can cause confusion in building computational models. With
+the shared account, in particular, it can be especially confusing that
+there is one object (the bank account) that has two different names
+(<code>peter-acc</code> and <code>paul-acc</code>); if we are searching for all the places in
+our program where <code>paul-acc</code> can be changed, we must remember to look
+also at things that change
+<code>peter-acc</code>.<a href="book-Z-H-20.html#footnote_Temp_337">^[10]{.small}^</a>{#call_footnote_Temp_337}</p>
+<p>With reference to the above remarks on <code>sameness'' and </code>change,'' observe that if Peter and Paul could only examine their
+bank balances, and could not perform operations that changed the
+balance, then the issue of whether the two accounts are distinct would
+be moot. In general, so long as we never modify data objects, we can
+regard a compound data object to be precisely the totality of its
+pieces. For example, a rational number is determined by giving its
+numerator and its denominator. But this view is no longer valid in the
+presence of change, where a compound data object has an <code>identity'' that is something different from the pieces of which it is composed. A bank account is still </code>the same'' bank account even if we change
+the balance by making a withdrawal; conversely, we could have two
+different bank accounts with the same state information. This
+complication is a consequence, not of our programming language, but of
+our perception of a bank account as an object. We do not, for example,
+ordinarily regard a rational number as a changeable object with
+identity, such that we could change the numerator and still have ``the
+same'' rational number.</p>
+<h4 id="pitfalls-of-imperative-programming"><a class="header" href="#pitfalls-of-imperative-programming"><a href="book-Z-H-4.html#%_toc_%_sec_Temp_338">Pitfalls of imperative programming</a></a></h4>
+<p>In contrast to functional programming, programming that makes extensive
+use of assignment is known as <em>imperative
+programming</em>. In addition to raising complications about computational
+models, programs written in imperative style are susceptible to bugs
+that cannot occur in functional programs. For example, recall the
+iterative factorial program from
+section <a href="book-Z-H-11.html#%_sec_1.2.1">1.2.1</a>:</p>
+<pre><code class="language-scheme editable">(define (factorial n)
+  (define (iter product counter)
+    (if (&gt; counter n)
+        product
+        (iter (* counter product)
+              (+ counter 1))))
+  (iter 1 1))
+</code></pre>
+<p>Instead of passing arguments in the internal iterative loop, we could
+adopt a more imperative style by using explicit assignment to update the
+values of the variables <code>product</code> and <code>counter</code>:</p>
+<pre><code class="language-scheme editable">(define (factorial n)
+  (let ((product 1)
+        (counter 1))
+    (define (iter)
+      (if (&gt; counter n)
+          product
+          (begin (set! product (* counter product))
+                 (set! counter (+ counter 1))
+                 (iter))))
+    (iter)))
+</code></pre>
+<p>This does not change the results produced
+by the program, but it does introduce a subtle trap. How do we decide
+the order of the assignments? As it happens, the program is correct as
+written. But writing the assignments in the opposite order</p>
+<pre><code class="language-scheme editable">(set! counter (+ counter 1))
+(set! product (* counter product))
+</code></pre>
+<p>would have produced a different, incorrect result. In general,
+programming with assignment forces us to carefully consider the relative
+orders of the assignments to make sure that each statement is using the
+correct version of the variables that have been changed. This issue
+simply does not arise in functional
+programs.<a href="book-Z-H-20.html#footnote_Temp_339">^[11]{.small}^</a>{#call_footnote_Temp_339}
+The complexity of imperative programs becomes even worse if we consider
+applications in which several processes execute concurrently. We will
+return to this in section <a href="book-Z-H-23.html#%_sec_3.4">3.4</a>. First,
+however, we will address the issue of providing a computational model
+for expressions that involve assignment, and explore the uses of objects
+with local state in designing simulations.</p>
+<p><strong>Exercise 3.7.</strong>  Consider the bank
+account objects created by <code>make-account</code>, with the password
+modification described in exercise <a href="book-Z-H-20.html#%_thm_3.3">3.3</a>.
+Suppose that our banking system requires the ability to make joint
+accounts. Define a procedure <code>make-joint</code> that
+accomplishes this. <code>Make-joint</code> should take three arguments. The first
+is a password-protected account. The second argument must match the
+password with which the account was defined in order for the
+<code>make-joint</code> operation to proceed. The third argument is a new password.
+<code>Make-joint</code> is to create an additional access to the original account
+using the new password. For example, if <code>peter-acc</code> is a bank account
+with password <code>open-sesame</code>, then</p>
+<pre><code class="language-scheme editable">(define paul-acc
+  (make-joint peter-acc 'open-sesame 'rosebud))
+</code></pre>
+<p>will allow one to make transactions on <code>peter-acc</code> using the name
+<code>paul-acc</code> and the password <code>rosebud</code>. You may wish to modify your
+solution to exercise <a href="book-Z-H-20.html#%_thm_3.3">3.3</a> to accommodate
+this new feature.</p>
+<p><strong>Exercise 3.8.</strong>  When we
+defined the evaluation model in
+section <a href="book-Z-H-10.html#%_sec_1.1.3">1.1.3</a>, we said that the first
+step in evaluating an expression is to evaluate its subexpressions. But
+we never specified the order in which the subexpressions should be
+evaluated (e.g., left to right or right to left). When we introduce
+assignment, the order in which the arguments to a procedure are
+evaluated can make a difference to the result. Define a simple procedure
+<code>f</code> such that evaluating <code>(+ (f 0) (f 1))</code> will return 0 if the
+arguments to <code>+</code> are evaluated from left to right but will return 1 if
+the arguments are evaluated from right to left.</p>
+<p>::: smallprint</p>
+<hr />
+<p>:::</p>
+<p>::: footnote
+^[1]{.small}^](book-Z-H-20.html#call_footnote_Temp_321){#footnote_Temp_321}
+Actually, this is not quite true. One exception was the
+random-number generator in
+section <a href="book-Z-H-11.html#%_sec_1.2.6">1.2.6</a>. Another exception
+involved the operation/type tables we introduced in
+section <a href="book-Z-H-17.html#%_sec_2.4.3">2.4.3</a>, where the values of two
+calls to <code>get</code> with the same arguments depended on intervening calls to
+<code>put</code>. On the other hand, until we introduce assignment, we have no way
+to create such procedures ourselves.</p>
+<p>^[2]{.small}^](book-Z-H-20.html#call_footnote_Temp_322){#footnote_Temp_322}
+The value of a <code>set!</code> expression is
+implementation-dependent. <code>Set!</code> should be used only for its effect, not
+for its value.</p>
+<p>The name <code>set!</code> reflects a
+naming convention used in Scheme: Operations that change the values of
+variables (or that change data structures, as we will see in
+section <a href="book-Z-H-22.html#%_sec_3.3">3.3</a>) are given names that end with
+an exclamation point. This is similar to the convention of designating
+predicates by names that end with a question mark.</p>
+<p>^[3]{.small}^](book-Z-H-20.html#call_footnote_Temp_323){#footnote_Temp_323}
+We have already used <code>begin</code> implicitly in our programs,
+because in Scheme the body of a procedure can be a sequence of
+expressions. Also, the &lt;<em>consequent</em>&gt; part of each clause in a
+<code>cond</code> expression can be a sequence of
+expressions rather than a single expression.</p>
+<p>^[4]{.small}^](book-Z-H-20.html#call_footnote_Temp_324){#footnote_Temp_324}
+In programming-language jargon, the variable <code>balance</code> is said to be
+<em>encapsulated</em> within the <code>new-withdraw</code>
+procedure. Encapsulation reflects the general system-design principle
+known as the <em>hiding principle</em>: One can
+make a system more modular and robust by protecting parts of the system
+from each other; that is, by providing information access only to those
+parts of the system that have a ``need to know.''</p>
+<p>^[5]{.small}^](book-Z-H-20.html#call_footnote_Temp_325){#footnote_Temp_325}
+In contrast with <code>new-withdraw</code> above, we do not have to use <code>let</code> to
+make <code>balance</code> a local variable, since formal parameters are already
+local. This will be clearer after the discussion of the environment
+model of evaluation in section <a href="book-Z-H-21.html#%_sec_3.2">3.2</a>. (See
+also exercise <a href="book-Z-H-21.html#%_thm_3.10">3.10</a>.)</p>
+<p>^[6]{.small}^](book-Z-H-20.html#call_footnote_Temp_330){#footnote_Temp_330}
+One common way to implement <code>rand-update</code> is to use the rule that <em>x</em> is
+updated to <em>ax</em> + <em>b</em> modulo <em>m</em>, where <em>a</em>, <em>b</em>, and <em>m</em> are
+appropriately chosen integers. Chapter 3 of Knuth 1981
+includes an extensive discussion of techniques for generating sequences
+of random numbers and establishing their statistical properties.
+Notice that the <code>rand-update</code> procedure computes a mathematical function:
+Given the same input twice, it produces the same output. Therefore, the
+number sequence produced by <code>rand-update</code> certainly is not <code>random,'' if by </code>random'' we insist that each number in the sequence is
+unrelated to the preceding number. The relation between ``real
+randomness'' and so-called <em>pseudo-random</em> sequences,
+which are produced by well-determined computations and yet have suitable
+statistical properties, is a complex question involving difficult issues
+in mathematics and philosophy.
+Kolmogorov, Solomonoff, and
+Chaitin have made great progress in clarifying these issues; a
+discussion can be found in Chaitin 1975.</p>
+<p>^[7]{.small}^](book-Z-H-20.html#call_footnote_Temp_331){#footnote_Temp_331}
+This theorem is due to E. Cesàro. See section 4.5.2 of
+Knuth 1981 for a discussion and a proof.</p>
+<p>^[8]{.small}^](book-Z-H-20.html#call_footnote_Temp_333){#footnote_Temp_333}
+MIT Scheme provides such a procedure. If
+<code>random</code> is given an exact integer (as in
+section <a href="book-Z-H-11.html#%_sec_1.2.6">1.2.6</a>) it returns an exact
+integer, but if it is given a decimal value (as in this exercise) it
+returns a decimal value.</p>
+<p>^[9]{.small}^](book-Z-H-20.html#call_footnote_Temp_335){#footnote_Temp_335}
+We don't substitute for the occurrence of <code>balance</code> in the <code>set!</code>
+expression because the &lt;<em>name</em>&gt; in a <code>set!</code> is not evaluated. If we
+did substitute for it, we would get <code>(set! 25 (- 25 amount))</code>, which
+makes no sense.</p>
+<p>^[10]{.small}^](book-Z-H-20.html#call_footnote_Temp_337){#call_footnote_Temp_337}
+The phenomenon of a single computational object being accessed by more
+than one name is known as <em>aliasing</em>. The joint bank
+account situation illustrates a very simple example of an alias. In
+section <a href="book-Z-H-22.html#%_sec_3.3">3.3</a> we will see much more complex
+examples, such as <code>distinct'' compound data structures that share parts. Bugs can occur in our programs if we forget that a change to an object may also, as a </code>side effect,'' change a <code>different'' object because the two </code>different'' objects are actually a single
+object appearing under different aliases. These so-called <em>side-effect
+bugs</em> are so difficult to locate and to analyze that some people have
+proposed that programming languages be designed in such a way as to not
+allow side effects or aliasing
+(Lampson et
+al. 1981; Morris, Schmidt, and Wadler 1980).</p>
+<p>^[11]{.small}^](book-Z-H-20.html#call_footnote_Temp_339){#footnote_Temp_339}
+In view of this, it is ironic that introductory programming is most
+often taught in a highly imperative style. This may be a vestige of a
+belief, common throughout the 1960s and 1970s, that programs that call
+procedures must inherently be less efficient than programs that perform
+assignments. (Steele (1977) debunks this argument.)
+Alternatively it may reflect a view that step-by-step assignment is
+easier for beginners to visualize than procedure call. Whatever the
+reason, it often saddles beginning programmers with ``should I set
+this variable before or after that one'' concerns that can complicate
+programming and obscure the important ideas.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="3.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="3.2.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="3.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="3.2.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="./highlight.js"></script>
+        <script src="./src/languages/scheme.min.js"></script>
+        <script src="./biwascheme.min.js"></script>
+        <script src="./biwascheme_run_logic.js"></script>
+
+
+    </div>
+    </body>
+</html>
